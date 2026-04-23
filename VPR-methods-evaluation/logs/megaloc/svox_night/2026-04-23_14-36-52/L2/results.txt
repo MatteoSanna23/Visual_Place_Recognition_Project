@@ -1,0 +1,14 @@
+Distance Metric: L2
+Database: /teamspace/studios/this_studio/data/svox/images/test/gallery
+Queries: /teamspace/studios/this_studio/data/svox/images/test/queries_night
+Method: megaloc
+Backbone: Dinov2
+Descriptors Dimension: 8448
+Number of Queries: 823
+Number of Database Images: 17166
+
+R@1: 97.1, R@5: 98.9, R@10: 99.1, R@20: 99.4
+R@1: 97.08%
+R@5: 98.91%
+R@10: 99.15%
+R@20: 99.39%

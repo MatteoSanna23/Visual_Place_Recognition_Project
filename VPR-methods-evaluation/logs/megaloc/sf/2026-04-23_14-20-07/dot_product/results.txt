@@ -1,0 +1,14 @@
+Distance Metric: dot_product
+Database: /teamspace/studios/this_studio/data/sf_xs/test/database
+Queries: /teamspace/studios/this_studio/data/sf_xs/test/queries
+Method: megaloc
+Backbone: Dinov2
+Descriptors Dimension: 8448
+Number of Queries: 1000
+Number of Database Images: 27191
+
+R@1: 85.6, R@5: 89.4, R@10: 90.0, R@20: 90.7
+R@1: 85.60%
+R@5: 89.40%
+R@10: 90.00%
+R@20: 90.70%
