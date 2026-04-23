@@ -96,6 +96,14 @@ def parse_arguments():
         action="store_true",
         help="set to True if you want to save the data for uncertainty estimation",
     )
+    parser.add_argument(
+        "--distance_metric",
+        type=str,
+        nargs="+",
+        default=["L2"],
+        choices=["L2", "dot_product"],
+        help="distance metric(s) for KNN search: L2 (Euclidean) and/or dot_product (Inner Product)",
+    )
     args = parser.parse_args()
 
     args.use_labels = not args.no_labels
