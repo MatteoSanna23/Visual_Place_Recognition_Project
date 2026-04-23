@@ -105,6 +105,22 @@ def main(args):
     # Slice the database descriptors from the combined descriptor matrix.
     database_descriptors = all_descriptors[: test_ds.num_database]
 
+    # Debug: Print descriptor norms statistics to understand normalization
+    logger.info("\n=== Descriptor Norms Statistics ===")
+    db_norms = np.linalg.norm(database_descriptors, axis=1)
+    q_norms = np.linalg.norm(queries_descriptors, axis=1)
+    logger.info(f"Database descriptors:")
+    logger.info(f"  Min norm: {db_norms.min():.6f}")
+    logger.info(f"  Max norm: {db_norms.max():.6f}")
+    logger.info(f"  Mean norm: {db_norms.mean():.6f}")
+    logger.info(f"  Std norm: {db_norms.std():.6f}")
+    logger.info(f"Queries descriptors:")
+    logger.info(f"  Min norm: {q_norms.min():.6f}")
+    logger.info(f"  Max norm: {q_norms.max():.6f}")
+    logger.info(f"  Mean norm: {q_norms.mean():.6f}")
+    logger.info(f"  Std norm: {q_norms.std():.6f}")
+    logger.info("===================================\n")
+
     # Optionally persist descriptors for external analysis or debugging.
     if args.save_descriptors:
         logger.info(f"Saving the descriptors in {log_dir}")
@@ -125,9 +141,7 @@ def main(args):
         
         # Build a FAISS index based on the selected distance metric.
         if distance_metric == "dot_product":
-            # Normalize descriptors for dot product (equivalent to cosine similarity)
-            faiss.normalize_L2(db_desc)
-            faiss.normalize_L2(q_desc)
+            # Use raw dot product (Inner Product) without normalization
             # Build a FAISS flat Inner Product index for exact nearest-neighbor search.
             faiss_index = faiss.IndexFlatIP(args.descriptors_dimension)
         else:  # L2 distance (default)
@@ -153,7 +167,7 @@ def main(args):
                 # Test every configured k in ascending order.
                 for i, n in enumerate(args.recall_values):
                     # If any positive appears in top-n predictions, count this query as correct for this and larger k.
-                    if np.any(np.in1d(preds[:n], positives_per_query[query_index])):
+                    if np.any(np.isin(preds[:n], positives_per_query[query_index])):
                         recalls[i:] += 1
                         break
 
@@ -163,6 +177,21 @@ def main(args):
             recalls_str = ", ".join([f"R@{val}: {rec:.1f}" for val, rec in zip(args.recall_values, recalls)])
             # Log final recall metrics.
             logger.info(f"{distance_metric}: {recalls_str}")
+            
+            # Save results summary to metric subdirectory
+            results_file = metric_log_dir / "results.txt"
+            with open(results_file, "w") as f:
+                f.write(f"Distance Metric: {distance_metric}\n")
+                f.write(f"Database: {args.database_folder}\n")
+                f.write(f"Queries: {args.queries_folder}\n")
+                f.write(f"Method: {args.method}\n")
+                f.write(f"Backbone: {args.backbone}\n")
+                f.write(f"Descriptors Dimension: {args.descriptors_dimension}\n")
+                f.write(f"Number of Queries: {test_ds.num_queries}\n")
+                f.write(f"Number of Database Images: {test_ds.num_database}\n")
+                f.write(f"\n{recalls_str}\n")
+                for val, rec in zip(args.recall_values, recalls):
+                    f.write(f"R@{val}: {rec:.2f}%\n")
 
         # Optionally save qualitative prediction visualizations.
         if args.num_preds_to_save != 0:
