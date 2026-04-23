@@ -94,6 +94,17 @@ class MixVPR(nn.Module):
 ### otherwise `self.backbone = ResNet()` will fail
 ### (academic purpose)
 
+class ResNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        # Carichiamo la struttura base
+        full_resnet = torchvision.models.resnet50(weights=None)
+        # La chiamiamo 'model' perché il file .pth usa questo nome internamente
+        self.model = nn.Sequential(*list(full_resnet.children())[:7])
+
+    def forward(self, x):
+        return self.model(x)
+
 
 class MixVPRModel(torch.nn.Module):
     def __init__(self, agg_config={}):
@@ -125,7 +136,17 @@ def get_mixvpr(descriptors_dimension):
         os.makedirs("trained_models/mixvpr", exist_ok=True)
         gdown.download(url=url, output=file_path, fuzzy=True)
     state_dict = torch.load(file_path)
-    model.load_state_dict(state_dict)
-    model = model.eval()
+    new_state_dict = {}
+    for key, value in state_dict.items():
+        # Sostituiamo i nomi dei layer della ResNet per farli combaciare con nn.Sequential
+        new_key = key.replace("backbone.model.conv1", "backbone.model.0")
+        new_key = new_key.replace("backbone.model.bn1", "backbone.model.1")
+        new_key = new_key.replace("backbone.model.layer1", "backbone.model.4")
+        new_key = new_key.replace("backbone.model.layer2", "backbone.model.5")
+        new_key = new_key.replace("backbone.model.layer3", "backbone.model.6")
+        new_state_dict[new_key] = value
 
+    # Carichiamo usando strict=False per ignorare i parametri di tracking BN se necessario
+    model.load_state_dict(new_state_dict, strict=False)
+    model = model.eval()
     return model

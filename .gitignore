@@ -172,3 +172,19 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# --- Specifici per il Progetto VPR ---
+
+# Escludi i dataset (le immagini sono troppe e pesanti)
+data/
+
+# Escludi i log e le predizioni (quelli che hanno impiegato 45 minuti a salvarsi)
+logs/
+log_dir/
+
+# Escludi i modelli scaricati (i file .pth da centinaia di MB)
+trained_models/
+
+# Escludi eventuali file pesanti salvati per l'incertezza
+*.torch
+*.pth
