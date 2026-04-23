@@ -1,3 +1,4 @@
 [submodule "image-matching-models"]
 	path = image-matching-models
 	url = https://github.com/alexstoken/image-matching-models.git
+	ignore = dirty
