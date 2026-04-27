@@ -124,9 +124,10 @@ def save_preds(predictions, eval_ds, log_dir, save_only_wrong_preds=None, use_la
         if save_only_wrong_preds and preds_correct[1]:
             continue
 
-        prediction_image = build_prediction_image(list_of_images_paths, preds_correct)
-        pred_image_path = viz_dir / f"{query_index:03d}.jpg"
-        prediction_image.save(pred_image_path)
+        # Temporarily disabled: save only txt files, not images
+        # prediction_image = build_prediction_image(list_of_images_paths, preds_correct)
+        # pred_image_path = viz_dir / f"{query_index:03d}.jpg"
+        # prediction_image.save(pred_image_path)
 
         if use_labels:
             positives_paths = [eval_ds.database_paths[idx] for idx in positives_per_query[query_index]]
