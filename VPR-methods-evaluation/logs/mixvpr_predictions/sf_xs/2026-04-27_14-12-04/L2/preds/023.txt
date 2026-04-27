@@ -1,0 +1,31 @@
+Query path:
+../data/sf_xs/test/queries/@0544898.92@4176859.77@10@S@037.73792@-122.49041@20958226424@@@@@@20150920@@.jpg
+
+Predictions paths:
+../data/sf_xs/test/database/@0544896.90@4176859.54@10@S@037.73792@-122.49044@jGOCQ5NN7Gt9Cq9D-mgdqA@@288@@@@201311@@.jpg
+../data/sf_xs/test/database/@0544898.60@4176869.53@10@S@037.73801@-122.49042@Nzd8vvAOZqaLJdUvNrZxQQ@@236@@@@201311@@.jpg
+../data/sf_xs/test/database/@0544898.60@4176869.53@10@S@037.73801@-122.49042@Nzd8vvAOZqaLJdUvNrZxQQ@@266@@@@201311@@.jpg
+../data/sf_xs/test/database/@0551676.72@4176092.60@10@S@037.73065@-122.41355@k3LJHzVCkrvZmKpNnoIeBQ@@255@@@@201312@@.jpg
+../data/sf_xs/test/database/@0547840.26@4177549.57@10@S@037.74399@-122.45699@m_5lK4lRinJ70K6td1zzCA@@158@@@@201311@@.jpg
+../data/sf_xs/test/database/@0545171.43@4176927.61@10@S@037.73852@-122.48732@AjBAWYci5eP76nBOhSf-qA@@264@@@@201311@@.jpg
+../data/sf_xs/test/database/@0547153.26@4175814.76@10@S@037.72839@-122.46490@4ovAwWMG6aLY3TK6-NzYNA@@341@@@@201311@@.jpg
+../data/sf_xs/test/database/@0549771.99@4174407.73@10@S@037.71557@-122.43528@qxS6K6-W6jjnhPQQJ4NX6w@@267@@@@201312@@.jpg
+../data/sf_xs/test/database/@0549101.20@4178856.23@10@S@037.75570@-122.44259@V2T3pa2VJkobw3DqGN-i4w@@324@@@@201311@@.jpg
+../data/sf_xs/test/database/@0547191.45@4176072.38@10@S@037.73071@-122.46445@0oM0oHaqtTbaQMOTq56tKA@@252@@@@201311@@.jpg
+../data/sf_xs/test/database/@0546510.55@4177741.67@10@S@037.74579@-122.47207@2fe123uUqpI4Om1lqS7xsA@@244@@@@201311@@.jpg
+../data/sf_xs/test/database/@0547868.40@4176496.79@10@S@037.73450@-122.45674@4unSgOcRxCE-6E_jDjya7Q@@33@@@@201311@@.jpg
+../data/sf_xs/test/database/@0547212.67@4175904.97@10@S@037.72920@-122.46422@UaO7zUIGIkPaqtvALkYREg@@82@@@@201311@@.jpg
+../data/sf_xs/test/database/@0548230.01@4177344.35@10@S@037.74212@-122.45258@r7gmsrVLVT6B3DrxF7kd6A@@295@@@@201311@@.jpg
+../data/sf_xs/test/database/@0547288.92@4175978.63@10@S@037.72986@-122.46335@XJw4P2wP-aLbzfHq5HItuA@@36@@@@201311@@.jpg
+../data/sf_xs/test/database/@0549236.41@4179521.65@10@S@037.76169@-122.44101@Dr4ckLrjlIvnMC5u1caP-g@@94@@@@201312@@.jpg
+../data/sf_xs/test/database/@0544755.58@4179194.30@10@S@037.75897@-122.49190@N2mMDegfaCgtf4E9IMnM2w@@236@@@@201311@@.jpg
+../data/sf_xs/test/database/@0546094.29@4179233.86@10@S@037.75926@-122.47670@Z5V5oXInoDSCez7r28eMAw@@85@@@@201311@@.jpg
+../data/sf_xs/test/database/@0549440.55@4174267.05@10@S@037.71432@-122.43905@0zmupLKssY57J7POuyh7fQ@@42@@@@201312@@.jpg
+../data/sf_xs/test/database/@0547736.17@4177571.15@10@S@037.74419@-122.45817@Bm1z2X0uBYP6kyNfej3ZyA@@132@@@@201312@@.jpg
+
+Positives paths:
+../data/sf_xs/test/database/@0544898.60@4176869.53@10@S@037.73801@-122.49042@Nzd8vvAOZqaLJdUvNrZxQQ@@266@@@@201311@@.jpg
+../data/sf_xs/test/database/@0544898.60@4176869.53@10@S@037.73801@-122.49042@Nzd8vvAOZqaLJdUvNrZxQQ@@236@@@@201311@@.jpg
+../data/sf_xs/test/database/@0544896.90@4176859.54@10@S@037.73792@-122.49044@jGOCQ5NN7Gt9Cq9D-mgdqA@@318@@@@201311@@.jpg
+../data/sf_xs/test/database/@0544896.90@4176859.54@10@S@037.73792@-122.49044@jGOCQ5NN7Gt9Cq9D-mgdqA@@288@@@@201311@@.jpg
+../data/sf_xs/test/database/@0544893.41@4176852.86@10@S@037.73786@-122.49048@0KucWGfhMWYekaIAzNJokg@@308@@@@201311@@.jpg

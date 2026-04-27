@@ -1,0 +1,57 @@
+[submodule "matching/third_party/LightGlue"]
+	path = matching/third_party/LightGlue
+	url = https://github.com/cvg/LightGlue.git
+[submodule "matching/third_party/RoMa"]
+	path = matching/third_party/RoMa
+	url = https://github.com/Parskatt/RoMa
+[submodule "matching/third_party/DeDoDe"]
+	path = matching/third_party/DeDoDe
+	url = https://github.com/Parskatt/DeDoDe
+[submodule "matching/third_party/imatch-toolbox"]
+	path = matching/third_party/imatch-toolbox
+	url = https://github.com/ga1i13o/image-matching-toolbox
+[submodule "matching/third_party/duster"]
+	path = matching/third_party/duster
+	url = https://github.com/naver/dust3r
+[submodule "matching/third_party/Steerers"]
+	path = matching/third_party/Steerers
+	url = https://github.com/georg-bn/rotation-steerers.git
+[submodule "matching/third_party/accelerated_features"]
+	path = matching/third_party/accelerated_features
+	url = https://github.com/verlab/accelerated_features.git
+[submodule "matching/third_party/omniglue"]
+	path = matching/third_party/omniglue
+	url = https://github.com/google-research/omniglue.git
+[submodule "matching/third_party/gim"]
+	path = matching/third_party/gim
+	url = https://github.com/alexstoken/gim.git
+[submodule "matching/third_party/EfficientLoFTR"]
+	path = matching/third_party/EfficientLoFTR
+	url = https://github.com/zju3dv/EfficientLoFTR
+[submodule "matching/third_party/Se2_LoFTR"]
+	path = matching/third_party/Se2_LoFTR
+	url = https://github.com/alexstoken/se2-loftr.git
+[submodule "matching/third_party/aspanformer"]
+	path = matching/third_party/aspanformer
+	url = https://github.com/alexstoken/ml-aspanformer.git
+[submodule "matching/third_party/MatchFormer"]
+	path = matching/third_party/MatchFormer
+	url = https://github.com/jamycheung/MatchFormer.git
+[submodule "matching/third_party/mast3r"]
+	path = matching/third_party/mast3r
+	url = https://github.com/naver/mast3r.git
+[submodule "matching/third_party/keypt2subpx"]
+	path = matching/third_party/keypt2subpx
+	url = https://github.com/KimSinjeong/keypt2subpx.git
+[submodule "matching/third_party/SphereGlue"]
+	path = matching/third_party/SphereGlue
+	url = https://github.com/vishalsharbidar/SphereGlue
+[submodule "matching/third_party/affine-steerers"]
+	path = matching/third_party/affine-steerers
+	url = https://github.com/georg-bn/affine-steerers.git
+[submodule "matching/third_party/XoFTR"]
+	path = matching/third_party/XoFTR
+	url = https://github.com/OnderT/XoFTR
+[submodule "matching/third_party/MINIMA"]
+	path = matching/third_party/MINIMA
+	url = https://github.com/LSXI7/MINIMA
