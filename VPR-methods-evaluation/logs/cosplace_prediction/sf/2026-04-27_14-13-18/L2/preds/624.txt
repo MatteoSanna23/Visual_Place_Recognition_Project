@@ -1,0 +1,33 @@
+Query path:
+/teamspace/studios/this_studio/data/sf_xs/test/queries/@0550320.74@4179795.81@10@S@037.76410@-122.42868@36835690240@@@@@@20170915@@.jpg
+
+Predictions paths:
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0553360.72@4181946.15@10@S@037.78331@-122.39401@xBZF7A2m0csEuGHcWJtF1Q@@345@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0553362.49@4181943.94@10@S@037.78329@-122.39399@z5ucw-KsuvrWh97eqk1sWA@@345@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0551639.07@4181536.84@10@S@037.77972@-122.41359@aXMBFA6z_MC8H-dTpAxHIw@@75@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550321.76@4179786.72@10@S@037.76402@-122.42867@9DzIjYubq4rS7zch1aaPhQ@@175@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550322.70@4179776.74@10@S@037.76393@-122.42866@Sz7gKkjjBz9OUxqZa9k9rA@@175@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550329.72@4179782.33@10@S@037.76398@-122.42858@iBHyiVhdoV2xnfWqbwe80A@@178@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550329.72@4179782.33@10@S@037.76398@-122.42858@iBHyiVhdoV2xnfWqbwe80A@@208@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550329.64@4179795.65@10@S@037.76410@-122.42858@XBYIgOObTRo02NnZ_93I2w@@210@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0545751.26@4181520.89@10@S@037.77989@-122.48045@2-Q2wUBlgSu0CYQpxUDZEg@@25@@@@201312@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0545750.34@4181527.54@10@S@037.77995@-122.48046@gvOCPeDINTWu1jiDh8xUiw@@25@@@@201312@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550331.71@4179744.62@10@S@037.76364@-122.42856@PngCvWrxhzeOPhiIfQVsxQ@@206@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0551650.76@4179954.72@10@S@037.76546@-122.41357@5w92WIbBKFbJZP1NF5c8FQ@@115@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0552007.34@4183742.71@10@S@037.79958@-122.40925@jtJiiWkDPEoI72XcOdfyVg@@130@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550322.70@4179776.74@10@S@037.76393@-122.42866@Sz7gKkjjBz9OUxqZa9k9rA@@205@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550329.64@4179795.65@10@S@037.76410@-122.42858@XBYIgOObTRo02NnZ_93I2w@@180@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0551445.28@4184222.94@10@S@037.80394@-122.41560@_eBvNzN-5QY0iuHE-sahSA@@349@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0552339.83@4182958.15@10@S@037.79249@-122.40553@ZsKTLQdtK1G46AbjnJCqXg@@290@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550209.94@4183535.16@10@S@037.79781@-122.42968@AwebcZNIqddRiKpUg4mZaA@@290@@@@201312@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550970.24@4182033.08@10@S@037.78423@-122.42115@naFLJRMuBrqot53O3hPyHw@@201@@@@201305@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550247.72@4182394.78@10@S@037.78753@-122.42933@fe73GiqrxNcrRsPJaXFCcw@@290@@@@201312@@.jpg
+
+Positives paths:
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550322.70@4179776.74@10@S@037.76393@-122.42866@Sz7gKkjjBz9OUxqZa9k9rA@@175@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550329.72@4179782.33@10@S@037.76398@-122.42858@iBHyiVhdoV2xnfWqbwe80A@@178@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550329.64@4179795.65@10@S@037.76410@-122.42858@XBYIgOObTRo02NnZ_93I2w@@210@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550329.64@4179795.65@10@S@037.76410@-122.42858@XBYIgOObTRo02NnZ_93I2w@@180@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550329.72@4179782.33@10@S@037.76398@-122.42858@iBHyiVhdoV2xnfWqbwe80A@@208@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550321.76@4179786.72@10@S@037.76402@-122.42867@9DzIjYubq4rS7zch1aaPhQ@@175@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550322.70@4179776.74@10@S@037.76393@-122.42866@Sz7gKkjjBz9OUxqZa9k9rA@@205@@@@201311@@.jpg
