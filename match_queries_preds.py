@@ -1,4 +1,4 @@
-
+import time
 import os
 import sys
 import argparse
@@ -55,6 +55,10 @@ def main(args):
     start_query = start_query if start_query >= 0 else 0
     num_queries = num_queries if num_queries >= 0 else len(txt_files)
 
+    # --- Start monitoring time ---
+    start_time_total = time.time()
+    count_processed = 0
+    
     for txt_file in tqdm(txt_files[start_query : start_query + num_queries]):
         q_num = Path(txt_file).stem
         out_file = output_folder.joinpath(f"{q_num}.torch")
@@ -69,6 +73,27 @@ def main(args):
             result["all_desc0"] = result["all_desc1"] = None
             results.append(result)
         torch.save(results, out_file)
+        count_processed += 1
+        
+    # --- COMPUTE TIMING STATISTICS and SAVE ---
+    end_time_total = time.time()
+    total_duration = end_time_total - start_time_total
+    
+    if count_processed > 0:
+        avg_time = total_duration / count_processed
+        
+        stats_file = output_folder.joinpath("timing_report.txt")
+        with open(stats_file, "w") as f:
+            f.write(f"--- Timing Report for {matcher_name} ---\n")
+            f.write(f"Total queries processed: {count_processed}\n")
+            f.write(f"Total time: {total_duration:.2f} seconds ({total_duration/60:.2f} minutes)\n")
+            f.write(f"Average time per query: {avg_time:.4f} seconds\n")
+            f.write(f"Device used: {device}\n")
+        
+        print(f"\n[INFO] Report saved in: {stats_file}")
+        print(f"[INFO] Average time per query: {avg_time:.4f}s")
+    else:
+        print("\n[INFO] No new queries processed (all files already existed).")
 
 if __name__ == "__main__":
     args = parse_arguments()
