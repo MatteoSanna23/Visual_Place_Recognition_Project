@@ -33,6 +33,8 @@ def parse_arguments():
     parser.add_argument("--num-preds", type=int, default=100, help="number of predictions to match")
     parser.add_argument("--start-query", type=int, default=-1, help="query to start from")
     parser.add_argument("--num-queries", type=int, default=-1, help="number of queries")
+    parser.add_argument("--old-path-prefix", type=str, default=None, help="old path prefix to replace (e.g., /teamspace/studios/this_studio/Visual_Place_Recognition_Project/data/)")
+    parser.add_argument("--new-path-prefix", type=str, default=None, help="new path prefix to use (e.g., /teamspace/studios/this_studio/data/)")
 
     return parser.parse_args()
 
@@ -45,6 +47,8 @@ def main(args):
     preds_folder = args.preds_dir
     start_query = args.start_query
     num_queries = args.num_queries
+    old_prefix = args.old_path_prefix
+    new_prefix = args.new_path_prefix
 
     output_folder = Path(preds_folder + f"_{matcher_name}") if args.out_dir is None else Path(args.out_dir)
     output_folder.mkdir(exist_ok=True)
@@ -66,6 +70,13 @@ def main(args):
             continue
         results = []
         q_path, pred_paths = read_file_preds(txt_file)
+        
+        # Map paths if prefixes are provided
+        if old_prefix is not None and new_prefix is not None:
+            if q_path.startswith(old_prefix):
+                q_path = q_path.replace(old_prefix, new_prefix, 1)
+            pred_paths = [p.replace(old_prefix, new_prefix, 1) if p.startswith(old_prefix) else p for p in pred_paths]
+        
         img0 = matcher.load_image(q_path, resize=img_size)
         for pred_path in pred_paths[:num_preds]:
             img1 = matcher.load_image(pred_path, resize=img_size)
