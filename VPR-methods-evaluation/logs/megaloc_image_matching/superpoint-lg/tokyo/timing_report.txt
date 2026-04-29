@@ -1,0 +1,5 @@
+--- Timing Report for superpoint-lg ---
+Total queries processed: 315
+Total time: 1188.43 seconds (19.81 minutes)
+Average time per query: 3.7728 seconds
+Device used: cuda
