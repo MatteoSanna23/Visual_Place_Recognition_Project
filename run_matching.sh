@@ -2,9 +2,9 @@
 
 # --- PATH CONFIGURATION ---
 # Set the base path where VPR model prediction folders are located
-BASE_PREDS_DIR="/teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/netvlad_predictions/tokyo/2026-04-27_14-07-39/L2/preds"
+BASE_PREDS_DIR="/teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_predictions/tokyo/2026-04-27_14-07-39/L2/preds"
 # Set the base path where you want to save matching results
-BASE_OUT_DIR="/teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/netvlad_image_matching"
+BASE_OUT_DIR="/teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_image_matching"
 DATABASE_NAME="tokyo"
 # --- FIXED PARAMETERS ---
 # The project-recommended size is 512
@@ -13,13 +13,18 @@ IM_SIZE=512
 NUM_PREDS=20
 DEVICE="cuda"
 
+# --- PATH MAPPING (for datasets outside Visual_Place_Recognition_Project) ---
+# Leave empty if paths are correct as-is. Otherwise, set the old and new prefixes.
+OLD_PATH_PREFIX="/teamspace/studios/this_studio/data/"
+NEW_PATH_PREFIX="/teamspace/studios/this_studio/Visual_Place_Recognition_Project/data/"
+
 # --- MODEL LISTS ---
 # Names of folders containing VPR prediction .txt files
 AVAILABLE_VPR_MODELS=("netvlad" "cosplace" "mixvpr" "megaloc")
 
 # Names of available matchers (ensure they match those in 'available_models')
 # "superglue", "loftr", "superpoint-lg"
-MATCHERS=("superglue" "loftr" "superpoint-lg")
+MATCHERS=("loftr" "superpoint-lg")
 
 # --- COMMAND LINE ARGUMENT HANDLING ---
 if [ $# -eq 0 ]; then
@@ -59,7 +64,9 @@ for matcher in "${MATCHERS[@]}"; do
                 --matcher "$matcher" \
                 --device "$DEVICE" \
                 --im-size "$IM_SIZE" \
-                --num-preds "$NUM_PREDS"
+                --num-preds "$NUM_PREDS" \
+                --old-path-prefix "$OLD_PATH_PREFIX" \
+                --new-path-prefix "$NEW_PATH_PREFIX"
         else
             echo "WARNING: Folder ${INPUT_DIR} not found. Skipping..."
         fi
