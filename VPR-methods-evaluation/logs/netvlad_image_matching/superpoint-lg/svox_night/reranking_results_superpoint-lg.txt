@@ -1,15 +1,14 @@
---------------------------------------------------
-Distance Metric: L2 (Standard)
-Predictions Dir: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/netvlad_predictions/svox_night/2026-04-27_14-24-49/L2/preds
-Inliers Dir:     /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/netvlad_image_matching/superpoint-lg/svox_night
-Method:          netvlad + superpoint-lg
-Number of Queries: 823
-Threshold:       25 meters
---------------------------------------------------
 
-FINAL RESULTS:
-R@1: 25.39%
-R@5: 27.10%
-R@10: 28.43%
-R@20: 29.53%
---------------------------------------------------
+=================================================================
+VPR RE-RANKING EVALUATION (823 queries)
+-----------------------------------------------------------------
+Dataset: svox_night | Model: netvlad | Matcher: superpoint-lg
+-----------------------------------------------------------------
+Metric     | Original Retrieval   | With Re-ranking
+-----------------------------------------------------------------
+R@1        |               8.02% |         25.39%
+R@5        |              17.38% |         27.10%
+R@10       |              23.09% |         28.43%
+R@20       |              29.65% |         29.53%
+=================================================================
+Histogram saved to: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/netvlad_image_matching/superpoint-lg/svox_night/analysis_histogram.png
