@@ -1,0 +1,15 @@
+--------------------------------------------------
+Distance Metric: L2 (Standard)
+Predictions Dir: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/netvlad_predictions/sf_xs/2026-04-27_14-13-18/L2/preds
+Inliers Dir:     /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/netvlad_image_matching/superpoint-lg/sf_xs
+Method:          netvlad + superpoint-lg
+Number of Queries: 1000
+Threshold:       25 meters
+--------------------------------------------------
+
+FINAL RESULTS:
+R@1: 53.20%
+R@5: 55.40%
+R@10: 55.80%
+R@20: 56.20%
+--------------------------------------------------

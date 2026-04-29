@@ -1,0 +1,15 @@
+--------------------------------------------------
+Distance Metric: L2 (Standard)
+Predictions Dir: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/netvlad_predictions/svox_night/2026-04-27_14-24-49/L2/preds
+Inliers Dir:     /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/netvlad_image_matching/loftr/svox_night
+Method:          netvlad + loftr
+Number of Queries: 823
+Threshold:       25 meters
+--------------------------------------------------
+
+FINAL RESULTS:
+R@1: 25.52%
+R@5: 28.07%
+R@10: 28.55%
+R@20: 29.53%
+--------------------------------------------------
