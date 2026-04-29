@@ -1,0 +1,15 @@
+--------------------------------------------------
+Distance Metric: L2 (Standard)
+Predictions Dir: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_predictions/sf_xs/2026-04-27_14-13-18/L2/preds
+Inliers Dir:     /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_image_matching/superpoint-lg/sf_xs
+Method:          cosplace + superpoint-lg
+Number of Queries: 1000
+Threshold:       25 meters
+--------------------------------------------------
+
+FINAL RESULTS:
+R@1: 0.00%
+R@5: 0.00%
+R@10: 0.00%
+R@20: 0.00%
+--------------------------------------------------

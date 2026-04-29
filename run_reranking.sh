@@ -47,6 +47,9 @@ for matcher_path in "${MATCHING_ROOT}"/*; do
             --num-preds 20 \
             --positive-dist-threshold 25 \
             --recall-values 1 5 10 20 \
+            --vpr-model "$VPR_MODEL" \
+            --dataset "$DATASET" \
+            --matcher "$MATCHER_NAME" \
             > "$OUTPUT_FILE" 2>&1
             
             echo "=> Results saved in: $OUTPUT_FILE"
