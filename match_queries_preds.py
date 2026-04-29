@@ -71,6 +71,10 @@ def main(args):
         results = []
         q_path, pred_paths = read_file_preds(txt_file)
         
+        # Convert Windows paths to Linux paths
+        q_path = q_path.replace("\\", "/")
+        pred_paths = [p.replace("\\", "/") for p in pred_paths]
+        
         # Map paths if prefixes are provided
         if old_prefix is not None and new_prefix is not None:
             if q_path.startswith(old_prefix):
