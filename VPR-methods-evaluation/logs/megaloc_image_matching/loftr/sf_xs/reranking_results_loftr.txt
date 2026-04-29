@@ -2,13 +2,13 @@
 =================================================================
 VPR RE-RANKING EVALUATION (1000 queries)
 -----------------------------------------------------------------
-Dataset: sf_xs | Model: cosplace | Matcher: loftr
+Dataset: sf_xs | Model: megaloc | Matcher: loftr
 -----------------------------------------------------------------
 Metric     | Original Retrieval   | With Re-ranking
 -----------------------------------------------------------------
-R@1        |              51.50% |         73.80%
-R@5        |              66.30% |         75.90%
-R@10       |              71.80% |         76.40%
-R@20       |              76.90% |         76.90%
+R@1        |              86.90% |         86.50%
+R@5        |              90.40% |         89.70%
+R@10       |              91.20% |         90.80%
+R@20       |              91.50% |         91.50%
 =================================================================
-Histogram saved to: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_image_matching/loftr/sf_xs/analysis_histogram.png
+Histogram saved to: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/megaloc_image_matching/loftr/sf_xs/analysis_histogram.png

@@ -1,15 +1,14 @@
---------------------------------------------------
-Distance Metric: L2 (Standard)
-Predictions Dir: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_predictions/sf_xs/2026-04-27_14-13-18/L2/preds
-Inliers Dir:     /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_image_matching/superpoint-lg/sf_xs
-Method:          cosplace + superpoint-lg
-Number of Queries: 1000
-Threshold:       25 meters
---------------------------------------------------
 
-FINAL RESULTS:
-R@1: 0.00%
-R@5: 0.00%
-R@10: 0.00%
-R@20: 0.00%
---------------------------------------------------
+=================================================================
+VPR RE-RANKING EVALUATION (1000 queries)
+-----------------------------------------------------------------
+Dataset: sf_xs | Model: cosplace | Matcher: superpoint-lg
+-----------------------------------------------------------------
+Metric     | Original Retrieval   | With Re-ranking
+-----------------------------------------------------------------
+R@1        |              51.50% |         73.80%
+R@5        |              66.30% |         76.00%
+R@10       |              71.80% |         76.50%
+R@20       |              76.90% |         76.90%
+=================================================================
+Histogram saved to: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_image_matching/superpoint-lg/sf_xs/analysis_histogram.png

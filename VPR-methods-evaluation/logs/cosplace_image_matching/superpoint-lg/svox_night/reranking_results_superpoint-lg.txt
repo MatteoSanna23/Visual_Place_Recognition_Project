@@ -1,15 +1,14 @@
---------------------------------------------------
-Distance Metric: L2 (Standard)
-Predictions Dir: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_predictions/svox_night/2026-04-27_14-24-49/L2/preds
-Inliers Dir:     /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_image_matching/superpoint-lg/svox_night
-Method:          cosplace + superpoint-lg
-Number of Queries: 823
-Threshold:       25 meters
---------------------------------------------------
 
-FINAL RESULTS:
-R@1: 0.00%
-R@5: 0.00%
-R@10: 0.00%
-R@20: 0.00%
---------------------------------------------------
+=================================================================
+VPR RE-RANKING EVALUATION (823 queries)
+-----------------------------------------------------------------
+Dataset: svox_night | Model: cosplace | Matcher: superpoint-lg
+-----------------------------------------------------------------
+Metric     | Original Retrieval   | With Re-ranking
+-----------------------------------------------------------------
+R@1        |              50.67% |         73.27%
+R@5        |              67.44% |         76.91%
+R@10       |              74.85% |         79.22%
+R@20       |              80.19% |         80.19%
+=================================================================
+Histogram saved to: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_image_matching/superpoint-lg/svox_night/analysis_histogram.png
