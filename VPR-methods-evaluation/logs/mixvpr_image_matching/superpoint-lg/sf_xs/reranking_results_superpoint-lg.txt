@@ -1,0 +1,14 @@
+
+=================================================================
+VPR RE-RANKING EVALUATION (1000 queries)
+-----------------------------------------------------------------
+Dataset: sf_xs | Model: mixvpr | Matcher: superpoint-lg
+-----------------------------------------------------------------
+Metric     | Original Retrieval   | With Re-ranking
+-----------------------------------------------------------------
+R@1        |              70.20% |         81.40%
+R@5        |              79.00% |         83.30%
+R@10       |              81.30% |         83.70%
+R@20       |              83.90% |         83.90%
+=================================================================
+Histogram saved to: /teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/mixvpr_image_matching/superpoint-lg/sf_xs/analysis_histogram.png
