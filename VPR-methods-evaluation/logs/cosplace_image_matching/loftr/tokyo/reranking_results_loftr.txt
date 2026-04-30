@@ -2,13 +2,13 @@
 =================================================================
 VPR RE-RANKING EVALUATION (315 queries)
 -----------------------------------------------------------------
-Dataset: tokyo | Model: cosplace | Matcher: superpoint-lg
+Dataset: tokyo | Model: cosplace | Matcher: loftr
 -----------------------------------------------------------------
 Metric     | Original Retrieval   | With Re-ranking
 -----------------------------------------------------------------
 R@1        |              55.56% |         76.51%
-R@5        |              74.29% |         80.63%
+R@5        |              74.29% |         80.32%
 R@10       |              79.68% |         81.90%
 R@20       |              85.08% |         85.08%
 =================================================================
-Histogram saved to: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_image_matching/superpoint-lg/tokyo/analysis_histogram.png
+Histogram saved to: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_image_matching/loftr/tokyo/analysis_histogram.png
