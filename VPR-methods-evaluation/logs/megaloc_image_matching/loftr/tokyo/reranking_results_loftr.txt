@@ -1,0 +1,14 @@
+
+=================================================================
+VPR RE-RANKING EVALUATION (315 queries)
+-----------------------------------------------------------------
+Dataset: tokyo | Model: megaloc | Matcher: loftr
+-----------------------------------------------------------------
+Metric     | Original Retrieval   | With Re-ranking
+-----------------------------------------------------------------
+R@1        |              94.92% |         93.97%
+R@5        |              97.78% |         97.46%
+R@10       |              98.41% |         98.41%
+R@20       |              98.73% |         98.73%
+=================================================================
+Histogram saved to: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/megaloc_image_matching/loftr/tokyo/analysis_histogram.png

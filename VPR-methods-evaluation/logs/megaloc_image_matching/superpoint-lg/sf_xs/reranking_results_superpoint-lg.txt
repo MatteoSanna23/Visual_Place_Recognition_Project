@@ -1,0 +1,14 @@
+
+=================================================================
+VPR RE-RANKING EVALUATION (1000 queries)
+-----------------------------------------------------------------
+Dataset: sf_xs | Model: megaloc | Matcher: superpoint-lg
+-----------------------------------------------------------------
+Metric     | Original Retrieval   | With Re-ranking
+-----------------------------------------------------------------
+R@1        |              86.90% |         87.00%
+R@5        |              90.40% |         90.60%
+R@10       |              91.20% |         91.30%
+R@20       |              91.50% |         91.50%
+=================================================================
+Histogram saved to: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/megaloc_image_matching/superpoint-lg/sf_xs/analysis_histogram.png

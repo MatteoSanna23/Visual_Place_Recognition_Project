@@ -1,0 +1,34 @@
+Query path:
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\queries_night\@0620379.28@5735453.82@20141216_185349@.jpg
+
+Predictions paths:
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620378.91@5735457.23@201205@wQKtHL6-4KMyIifw35NTrg@B@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620383.28@5735446.84@201205@IXd4ADjeFC9RDNphv1U_gw@B@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620387.47@5735436.74@201205@zy9UVSu4PRajf2R0Q9g3oQ@B@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620421.08@5735359.80@201205@-Gr1TByE11uJ40IPO0F48g@B@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620373.55@5734280.55@201207@xGMrOel1wZepSfP-RYtNqg@F@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620340.58@5734590.73@201206@nhBVbM0T54NgyYJ9vr9GyQ@F@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620407.71@5735389.11@201205@7BkG0WcXYVw8-vHEoM1IFQ@F@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620341.29@5734586.12@201206@C0a9HmdbNj1WdEUkN9ubEw@F@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620007.12@5734776.10@201207@VISq74Ir73FoFbrYm5i4aQ@F@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0619569.53@5735540.74@201205@rf33YEbOqDXPP7AAcoEWag@B@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0621726.05@5733606.46@201207@vjnNiFC1lQaPTzPiA9z9aw@B@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620375.72@5734276.88@201207@HLvTZ-pq60V-k4R0-xL48g@B@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620001.75@5734768.26@201207@R8WbFMEs2ZMAih-tDEirzg@F@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620407.71@5735389.11@201205@7BkG0WcXYVw8-vHEoM1IFQ@B@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620307.16@5734781.33@201206@TasdxvBGhhKnKvMQiagBxA@F@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620301.03@5734647.96@201206@xhHhP_zUuvF40M0MUBn9NQ@B@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0619800.28@5734542.25@201207@7bcHfXUeNbIMn6ytKZY36Q@B@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0622038.95@5735499.70@201205@F79N65BmoA_4TlxsX1RRjw@B@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0621739.21@5734957.60@201206@3_oqTUz57joLM8JHUjJoGA@F@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620348.40@5734519.15@201207@u_OhHiCkbd1UQ2D6YWPOWw@F@.jpg
+
+Positives paths:
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620378.91@5735457.23@201205@wQKtHL6-4KMyIifw35NTrg@B@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620387.47@5735436.74@201205@zy9UVSu4PRajf2R0Q9g3oQ@B@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620383.28@5735446.84@201205@IXd4ADjeFC9RDNphv1U_gw@F@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620383.28@5735446.84@201205@IXd4ADjeFC9RDNphv1U_gw@B@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620387.47@5735436.74@201205@zy9UVSu4PRajf2R0Q9g3oQ@F@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620378.91@5735457.23@201205@wQKtHL6-4KMyIifw35NTrg@F@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620374.51@5735467.83@201205@iN8Pg7Fvzx3WX5t1g6lLjA@B@.jpg
+C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery\@0620374.51@5735467.83@201205@iN8Pg7Fvzx3WX5t1g6lLjA@F@.jpg

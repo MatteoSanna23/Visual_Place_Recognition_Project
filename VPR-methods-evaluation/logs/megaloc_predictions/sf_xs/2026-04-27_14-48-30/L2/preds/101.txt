@@ -1,0 +1,32 @@
+Query path:
+/teamspace/studios/this_studio/data/sf_xs/test/queries/@0546820.71@4179657.91@10@S@037.76304@-122.46842@11370733135@@@@@@20131214@@.jpg
+
+Predictions paths:
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0546820.33@4179662.90@10@S@037.76309@-122.46843@WGmRCzaGu2SEKDYkTHg2yw@@206@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0546821.27@4179651.81@10@S@037.76299@-122.46842@zELZwUUeiHfPaECyogXYeQ@@236@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0546821.27@4179651.81@10@S@037.76299@-122.46842@zELZwUUeiHfPaECyogXYeQ@@266@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0546821.34@4179640.71@10@S@037.76289@-122.46842@INcFBnKbZoCcrbxOCU5Qpg@@266@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0546821.34@4179640.71@10@S@037.76289@-122.46842@INcFBnKbZoCcrbxOCU5Qpg@@296@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0546820.33@4179662.90@10@S@037.76309@-122.46843@WGmRCzaGu2SEKDYkTHg2yw@@236@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0549898.48@4180448.76@10@S@037.77001@-122.43343@4TDBL76ji0TS38pF2iUH6w@@231@@@@201312@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0549952.73@4179490.45@10@S@037.76137@-122.43288@81w3Hp7f8w4mnPOWLRFr7g@@265@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0551361.03@4177824.83@10@S@037.74628@-122.41701@CFZhDXOYNFZmjuHXPh1eZQ@@303@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0550496.33@4178897.95@10@S@037.75600@-122.42675@73sRv-eif0L_AXLoZH_TWg@@55@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0549897.55@4180457.63@10@S@037.77009@-122.43344@o8EkSwoAkyO5Sp3Tz9uzmw@@201@@@@201312@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0547581.32@4181196.19@10@S@037.77687@-122.45969@Cp4sd2p83aimK7j7SnvMww@@56@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0544486.00@4181482.89@10@S@037.77961@-122.49482@JNfHt3XHlutJGGkJL9j76g@@146@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0548395.30@4180255.61@10@S@037.76835@-122.45051@L6di9j3YF7jPOO6R_2raNA@@50@@@@201312@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0552318.81@4176420.63@10@S@037.73357@-122.40624@yWhBijVrCITHo_HndjqiaQ@@244@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0549937.58@4178647.12@10@S@037.75377@-122.43311@voYeZRTHnGipGuk7q3hWOw@@355@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0552356.37@4176055.84@10@S@037.73028@-122.40584@CL2Sil_ynqeCztqzxgciiA@@221@@@@201312@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0549202.02@4178937.83@10@S@037.75643@-122.44144@M56koA02pNXDDy-Ar_HysQ@@32@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0548196.22@4174984.21@10@S@037.72085@-122.45312@O9v4S4S8J_C73_dk4Q4nLg@@209@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0546952.60@4182110.16@10@S@037.78514@-122.46677@lHiLjYgEYItrI8kf4V8R6w@@236@@@@201311@@.jpg
+
+Positives paths:
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0546821.27@4179651.81@10@S@037.76299@-122.46842@zELZwUUeiHfPaECyogXYeQ@@236@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0546820.33@4179662.90@10@S@037.76309@-122.46843@WGmRCzaGu2SEKDYkTHg2yw@@236@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0546820.33@4179662.90@10@S@037.76309@-122.46843@WGmRCzaGu2SEKDYkTHg2yw@@206@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0546821.34@4179640.71@10@S@037.76289@-122.46842@INcFBnKbZoCcrbxOCU5Qpg@@296@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0546821.27@4179651.81@10@S@037.76299@-122.46842@zELZwUUeiHfPaECyogXYeQ@@266@@@@201311@@.jpg
+/teamspace/studios/this_studio/data/sf_xs/test/database/@0546821.34@4179640.71@10@S@037.76289@-122.46842@INcFBnKbZoCcrbxOCU5Qpg@@266@@@@201311@@.jpg

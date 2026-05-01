@@ -1,5 +1,5 @@
 .idea
 .spyproject
 __pycache__
-logs/
 trained_models/
+*.torch

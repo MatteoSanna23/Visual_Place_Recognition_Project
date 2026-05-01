@@ -1,0 +1,14 @@
+Distance Metric: L2
+Database: /teamspace/studios/this_studio/data/sf_xs/test/database
+Queries: /teamspace/studios/this_studio/data/sf_xs/test/queries
+Method: cosplace
+Backbone: ResNet50
+Descriptors Dimension: 2048
+Number of Queries: 1000
+Number of Database Images: 27191
+
+R@1: 51.5, R@5: 66.3, R@10: 71.8, R@20: 76.9
+R@1: 51.50%
+R@5: 66.30%
+R@10: 71.80%
+R@20: 76.90%

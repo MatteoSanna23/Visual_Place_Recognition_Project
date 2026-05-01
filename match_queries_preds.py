@@ -1,4 +1,4 @@
-
+import time
 import os
 import sys
 import argparse
@@ -33,6 +33,8 @@ def parse_arguments():
     parser.add_argument("--num-preds", type=int, default=100, help="number of predictions to match")
     parser.add_argument("--start-query", type=int, default=-1, help="query to start from")
     parser.add_argument("--num-queries", type=int, default=-1, help="number of queries")
+    parser.add_argument("--old-path-prefix", type=str, default=None, help="old path prefix to replace (e.g., /teamspace/studios/this_studio/Visual_Place_Recognition_Project/data/)")
+    parser.add_argument("--new-path-prefix", type=str, default=None, help="new path prefix to use (e.g., /teamspace/studios/this_studio/data/)")
 
     return parser.parse_args()
 
@@ -45,6 +47,8 @@ def main(args):
     preds_folder = args.preds_dir
     start_query = args.start_query
     num_queries = args.num_queries
+    old_prefix = args.old_path_prefix
+    new_prefix = args.new_path_prefix
 
     output_folder = Path(preds_folder + f"_{matcher_name}") if args.out_dir is None else Path(args.out_dir)
     output_folder.mkdir(exist_ok=True)
@@ -55,6 +59,10 @@ def main(args):
     start_query = start_query if start_query >= 0 else 0
     num_queries = num_queries if num_queries >= 0 else len(txt_files)
 
+    # --- Start monitoring time ---
+    start_time_total = time.time()
+    count_processed = 0
+    
     for txt_file in tqdm(txt_files[start_query : start_query + num_queries]):
         q_num = Path(txt_file).stem
         out_file = output_folder.joinpath(f"{q_num}.torch")
@@ -62,6 +70,17 @@ def main(args):
             continue
         results = []
         q_path, pred_paths = read_file_preds(txt_file)
+        
+        # Convert Windows paths to Linux paths
+        q_path = q_path.replace("\\", "/")
+        pred_paths = [p.replace("\\", "/") for p in pred_paths]
+        
+        # Map paths if prefixes are provided
+        if old_prefix is not None and new_prefix is not None:
+            if q_path.startswith(old_prefix):
+                q_path = q_path.replace(old_prefix, new_prefix, 1)
+            pred_paths = [p.replace(old_prefix, new_prefix, 1) if p.startswith(old_prefix) else p for p in pred_paths]
+        
         img0 = matcher.load_image(q_path, resize=img_size)
         for pred_path in pred_paths[:num_preds]:
             img1 = matcher.load_image(pred_path, resize=img_size)
@@ -69,6 +88,27 @@ def main(args):
             result["all_desc0"] = result["all_desc1"] = None
             results.append(result)
         torch.save(results, out_file)
+        count_processed += 1
+        
+    # --- COMPUTE TIMING STATISTICS and SAVE ---
+    end_time_total = time.time()
+    total_duration = end_time_total - start_time_total
+    
+    if count_processed > 0:
+        avg_time = total_duration / count_processed
+        
+        stats_file = output_folder.joinpath("timing_report.txt")
+        with open(stats_file, "w") as f:
+            f.write(f"--- Timing Report for {matcher_name} ---\n")
+            f.write(f"Total queries processed: {count_processed}\n")
+            f.write(f"Total time: {total_duration:.2f} seconds ({total_duration/60:.2f} minutes)\n")
+            f.write(f"Average time per query: {avg_time:.4f} seconds\n")
+            f.write(f"Device used: {device}\n")
+        
+        print(f"\n[INFO] Report saved in: {stats_file}")
+        print(f"[INFO] Average time per query: {avg_time:.4f}s")
+    else:
+        print("\n[INFO] No new queries processed (all files already existed).")
 
 if __name__ == "__main__":
     args = parse_arguments()

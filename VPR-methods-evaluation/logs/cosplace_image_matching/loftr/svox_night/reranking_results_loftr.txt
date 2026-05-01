@@ -1,0 +1,14 @@
+
+=================================================================
+VPR RE-RANKING EVALUATION (823 queries)
+-----------------------------------------------------------------
+Dataset: svox_night | Model: cosplace | Matcher: loftr
+-----------------------------------------------------------------
+Metric     | Original Retrieval   | With Re-ranking
+-----------------------------------------------------------------
+R@1        |              50.67% |         73.63%
+R@5        |              67.44% |         77.64%
+R@10       |              74.85% |         79.71%
+R@20       |              80.19% |         80.19%
+=================================================================
+Histogram saved to: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_image_matching/loftr/svox_night/analysis_histogram.png

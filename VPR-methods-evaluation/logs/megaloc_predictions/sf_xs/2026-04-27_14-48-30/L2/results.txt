@@ -1,0 +1,14 @@
+Distance Metric: L2
+Database: /teamspace/studios/this_studio/data/sf_xs/test/database
+Queries: /teamspace/studios/this_studio/data/sf_xs/test/queries
+Method: megaloc
+Backbone: Dinov2
+Descriptors Dimension: 8448
+Number of Queries: 1000
+Number of Database Images: 27191
+
+R@1: 86.9, R@5: 90.4, R@10: 91.2, R@20: 91.5
+R@1: 86.90%
+R@5: 90.40%
+R@10: 91.20%
+R@20: 91.50%
