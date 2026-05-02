@@ -184,4 +184,5 @@ trained_models/
 # Escludi eventuali file pesanti salvati per l'incertezza
 *.torch
 *.pth
-!VPR-methods-evaluation/logs/**/*.txt
+!VPR-methods-evaluation/logs/**/*.txt*.torch
+.DS_Store
