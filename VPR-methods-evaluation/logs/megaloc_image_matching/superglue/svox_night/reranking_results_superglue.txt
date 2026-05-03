@@ -2,13 +2,13 @@
 =================================================================
 VPR RE-RANKING EVALUATION (823 queries)
 -----------------------------------------------------------------
-Dataset: svox_night | Model: megaloc | Matcher: superpoint-lg
+Dataset: svox_night | Model: megaloc | Matcher: superglue
 -----------------------------------------------------------------
 Metric     | Original Retrieval   | With Re-ranking
 -----------------------------------------------------------------
-R@1        |              96.96% |         91.01%
-R@5        |              98.91% |         97.93%
-R@10       |              99.15% |         99.03%
+R@1        |              96.96% |         90.16%
+R@5        |              98.91% |         98.06%
+R@10       |              99.15% |         98.91%
 R@20       |              99.39% |         99.39%
 =================================================================
-Histogram saved to: /teamspace/studios/this_studio/Visual-Place-Recognition-Project/VPR-methods-evaluation/logs/megaloc_image_matching/superpoint-lg/svox_night/analysis_histogram.png
+Histogram saved to: /teamspace/studios/this_studio/Visual-Place-Recognition-Project/VPR-methods-evaluation/logs/megaloc_image_matching/superglue/svox_night/analysis_histogram.png
