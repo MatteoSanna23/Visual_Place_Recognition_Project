@@ -14,7 +14,6 @@ from matching import WEIGHTS_DIR, THIRD_PARTY_DIR, BaseMatcher
 
 BASE_PATH = THIRD_PARTY_DIR.joinpath("imatch-toolbox")
 add_to_path(BASE_PATH)
-import immatch
 
 
 class Patch2pixMatcher(BaseMatcher):
@@ -27,6 +26,14 @@ class Patch2pixMatcher(BaseMatcher):
 
     def __init__(self, device="cpu", *args, **kwargs):
         super().__init__(device, **kwargs)
+        try:
+            import immatch
+        except ImportError:
+            raise ImportError(
+                "Patch2pixMatcher requires the 'immatch' module (imatch-toolbox submodule). "
+                "The git submodule 'matching/third_party/imatch-toolbox' is not cloned. "
+                "Please clone it with: git submodule update --init --recursive"
+            )
 
         with open(BASE_PATH.joinpath("configs/patch2pix.yml"), "r") as f:
             args = yaml.load(f, Loader=yaml.FullLoader)["sat"]
@@ -88,6 +95,15 @@ class Patch2pixMatcher(BaseMatcher):
 class SuperGlueMatcher(BaseMatcher):
     def __init__(self, device="cpu", max_num_keypoints=2048, *args, **kwargs):
         super().__init__(device, **kwargs)
+        try:
+            import immatch
+        except ImportError:
+            raise ImportError(
+                "SuperGlueMatcher requires the 'immatch' module (imatch-toolbox submodule). "
+                "The git submodule 'matching/third_party/imatch-toolbox' is not cloned. "
+                "Please clone it with: git submodule update --init --recursive"
+            )
+        
         self.to_gray = tfm.Grayscale()
 
         with open(BASE_PATH.joinpath("configs/superglue.yml"), "r") as f:
@@ -118,6 +134,15 @@ class SuperGlueMatcher(BaseMatcher):
 class R2D2Matcher(BaseMatcher):
     def __init__(self, device="cpu", max_num_keypoints=2048, *args, **kwargs):
         super().__init__(device, **kwargs)
+        try:
+            import immatch
+        except ImportError:
+            raise ImportError(
+                "R2D2Matcher requires the 'immatch' module (imatch-toolbox submodule). "
+                "The git submodule 'matching/third_party/imatch-toolbox' is not cloned. "
+                "Please clone it with: git submodule update --init --recursive"
+            )
+        
         self.normalize = tfm.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 
         with open(BASE_PATH.joinpath("configs/r2d2.yml"), "r") as f:
@@ -161,6 +186,14 @@ class R2D2Matcher(BaseMatcher):
 class D2netMatcher(BaseMatcher):
     def __init__(self, device="cpu", *args, **kwargs):
         super().__init__(device, **kwargs)
+        try:
+            import immatch
+        except ImportError:
+            raise ImportError(
+                "D2netMatcher requires the 'immatch' module (imatch-toolbox submodule). "
+                "The git submodule 'matching/third_party/imatch-toolbox' is not cloned. "
+                "Please clone it with: git submodule update --init --recursive"
+            )
 
         with open(BASE_PATH.joinpath("configs/d2net.yml"), "r") as f:
             args = yaml.load(f, Loader=yaml.FullLoader)["sat"]
@@ -205,6 +238,14 @@ class D2netMatcher(BaseMatcher):
 class DogAffHardNNMatcher(BaseMatcher):
     def __init__(self, device="cpu", max_num_keypoints=2048, *args, **kwargs):
         super().__init__(device, **kwargs)
+        try:
+            import immatch
+        except ImportError:
+            raise ImportError(
+                "DogAffHardNNMatcher requires the 'immatch' module (imatch-toolbox submodule). "
+                "The git submodule 'matching/third_party/imatch-toolbox' is not cloned. "
+                "Please clone it with: git submodule update --init --recursive"
+            )
 
         with open(BASE_PATH.joinpath("configs/dogaffnethardnet.yml"), "r") as f:
             args = yaml.load(f, Loader=yaml.FullLoader)["example"]
