@@ -1,0 +1,14 @@
+
+=================================================================
+VPR RE-RANKING EVALUATION (1000 queries)
+-----------------------------------------------------------------
+Dataset: sf_xs | Model: mixvpr | Matcher: superglue
+-----------------------------------------------------------------
+Metric     | Original Retrieval   | With Re-ranking
+-----------------------------------------------------------------
+R@1        |              70.20% |         80.10%
+R@5        |              79.00% |         82.70%
+R@10       |              81.30% |         83.20%
+R@20       |              83.90% |         83.90%
+=================================================================
+Histogram saved to: /teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/mixvpr_image_matching/superglue/sf_xs/analysis_histogram.png

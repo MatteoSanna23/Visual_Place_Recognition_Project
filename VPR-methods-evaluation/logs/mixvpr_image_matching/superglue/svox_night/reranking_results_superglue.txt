@@ -1,0 +1,14 @@
+
+=================================================================
+VPR RE-RANKING EVALUATION (823 queries)
+-----------------------------------------------------------------
+Dataset: svox_night | Model: mixvpr | Matcher: superglue
+-----------------------------------------------------------------
+Metric     | Original Retrieval   | With Re-ranking
+-----------------------------------------------------------------
+R@1        |              62.94% |         81.90%
+R@5        |              79.83% |         86.39%
+R@10       |              84.08% |         87.48%
+R@20       |              87.97% |         87.97%
+=================================================================
+Histogram saved to: /teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/mixvpr_image_matching/superglue/svox_night/analysis_histogram.png

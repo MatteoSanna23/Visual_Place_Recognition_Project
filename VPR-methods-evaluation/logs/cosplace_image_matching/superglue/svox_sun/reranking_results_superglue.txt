@@ -1,0 +1,14 @@
+
+=================================================================
+VPR RE-RANKING EVALUATION (854 queries)
+-----------------------------------------------------------------
+Dataset: svox_sun | Model: cosplace | Matcher: superglue
+-----------------------------------------------------------------
+Metric     | Original Retrieval   | With Re-ranking
+-----------------------------------------------------------------
+R@1        |              78.45% |         87.70%
+R@5        |              89.70% |         92.62%
+R@10       |              93.09% |         94.38%
+R@20       |              94.85% |         94.85%
+=================================================================
+Histogram saved to: /teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_image_matching/superglue/svox_sun/analysis_histogram.png
