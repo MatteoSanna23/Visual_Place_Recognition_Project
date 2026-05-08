@@ -2,10 +2,10 @@
 
 # --- PATH CONFIGURATION ---
 # Set the base path where VPR model prediction folders are located
-BASE_PREDS_DIR="/teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_predictions/tokyo/2026-04-27_14-07-39/L2/preds"
+BASE_PREDS_DIR="/teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/training_logs/mixvpr_prediction/2026-05-08_14-47-39/L2/preds"
 # Set the base path where you want to save matching results
-BASE_OUT_DIR="/teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/cosplace_image_matching"
-DATABASE_NAME="tokyo"
+BASE_OUT_DIR="/teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/training_logs/mixvpr_image_matching"
+DATABASE_NAME="svox_sun"
 # --- FIXED PARAMETERS ---
 # The project-recommended size is 512
 IM_SIZE=512
@@ -15,8 +15,8 @@ DEVICE="cuda"
 
 # --- PATH MAPPING (for datasets outside Visual_Place_Recognition_Project) ---
 # Leave empty if paths are correct as-is. Otherwise, set the old and new prefixes.
-OLD_PATH_PREFIX="/teamspace/studios/this_studio/data/"
-NEW_PATH_PREFIX="/teamspace/studios/this_studio/Visual_Place_Recognition_Project/data/"
+OLD_PATH_PREFIX=""
+NEW_PATH_PREFIX=""
 
 # --- MODEL LISTS ---
 # Names of folders containing VPR prediction .txt files
@@ -24,7 +24,7 @@ AVAILABLE_VPR_MODELS=("netvlad" "cosplace" "mixvpr" "megaloc")
 
 # Names of available matchers (ensure they match those in 'available_models')
 # "superglue", "loftr", "superpoint-lg"
-MATCHERS=("loftr" "superpoint-lg")
+MATCHERS=("loftr" "superglue")
 
 # --- COMMAND LINE ARGUMENT HANDLING ---
 if [ $# -eq 0 ]; then
