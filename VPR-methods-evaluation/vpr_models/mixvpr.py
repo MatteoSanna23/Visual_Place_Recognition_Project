@@ -134,7 +134,7 @@ def get_mixvpr(descriptors_dimension):
     file_path = f"trained_models/mixvpr/{filename}"
     if not os.path.exists(file_path):
         os.makedirs("trained_models/mixvpr", exist_ok=True)
-        gdown.download(url=url, output=file_path, fuzzy=True)
+        gdown.download(url=url, output=file_path, quiet=False)
     state_dict = torch.load(file_path)
     new_state_dict = {}
     for key, value in state_dict.items():

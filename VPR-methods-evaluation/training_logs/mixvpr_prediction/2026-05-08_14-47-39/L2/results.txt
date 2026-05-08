@@ -1,0 +1,14 @@
+Distance Metric: L2
+Database: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/data/svox/images/train/gallery
+Queries: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/data/svox/images/train/queries_sun
+Method: mixvpr
+Backbone: ResNet50
+Descriptors Dimension: 4096
+Number of Queries: 712
+Number of Database Images: 22232
+
+R@1: 70.6, R@5: 82.3, R@10: 85.4, R@20: 88.2
+R@1: 70.65%
+R@5: 82.30%
+R@10: 85.39%
+R@20: 88.20%
