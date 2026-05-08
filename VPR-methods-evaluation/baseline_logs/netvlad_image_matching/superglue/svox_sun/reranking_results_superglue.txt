@@ -1,0 +1,14 @@
+
+=================================================================
+VPR RE-RANKING EVALUATION (854 queries)
+-----------------------------------------------------------------
+Dataset: svox_sun | Model: netvlad | Matcher: superglue
+-----------------------------------------------------------------
+Metric     | Original Retrieval   | With Re-ranking
+-----------------------------------------------------------------
+R@1        |              35.36% |         60.42%
+R@5        |              52.69% |         62.88%
+R@10       |              58.78% |         64.17%
+R@20       |              65.81% |         65.81%
+=================================================================
+Histogram saved to: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/netvlad_image_matching/superglue/svox_sun/analysis_histogram.png

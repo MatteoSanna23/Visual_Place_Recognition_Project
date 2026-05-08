@@ -1,0 +1,44 @@
+Query path:
+../data/svox/images/test/queries_night/@0620452.73@5735196.40@20141216_185208@.jpg
+
+Predictions paths:
+../data/svox/images/test/gallery/@0620457.10@5735198.78@201205@Oied9I9QU9y2ct_lH0G7Jg@F@.jpg
+../data/svox/images/test/gallery/@0620452.51@5735195.10@201205@QnRtUKocvDRYvOU_hody2w@F@.jpg
+../data/svox/images/test/gallery/@0620451.21@5735194.31@201206@OWNKb4Rl7-fRUrcCLH1Ddw@F@.jpg
+../data/svox/images/test/gallery/@0620461.43@5735202.31@201205@Udd9SgL9RuiN6awYyxfwoA@F@.jpg
+../data/svox/images/test/gallery/@0620443.31@5735188.25@201205@pLKgH5L80o1DDWzBaODvWw@F@.jpg
+../data/svox/images/test/gallery/@0620465.80@5735206.25@201205@zdbVKuUULFHwAO2xcOnNdw@F@.jpg
+../data/svox/images/test/gallery/@0620499.84@5735195.79@201205@A6TcOO_tPE8xrgkolUwxxA@F@.jpg
+../data/svox/images/test/gallery/@0620477.68@5735216.53@201206@gtYgLN9POD6FwTeZ7CuJWw@F@.jpg
+../data/svox/images/test/gallery/@0620497.51@5735200.41@201205@b3V_mupbP8uN7cXgJjaHmA@F@.jpg
+../data/svox/images/test/gallery/@0620470.02@5735210.47@201205@RBVxJMUtl3Lgt0cc_UwYjw@F@.jpg
+../data/svox/images/test/gallery/@0620507.08@5735181.15@201205@zkmXISbE_uN8qrZLTPcrlw@F@.jpg
+../data/svox/images/test/gallery/@0620502.09@5735191.15@201205@9UfR7ks2vhfbCsjFME7P1g@F@.jpg
+../data/svox/images/test/gallery/@0620322.12@5734736.51@201207@6oDpzDEGM_A9VDxZor3QXA@B@.jpg
+../data/svox/images/test/gallery/@0620150.30@5735309.81@201205@AUBRH1_sDG5Ykbvc_BFqLw@F@.jpg
+../data/svox/images/test/gallery/@0620103.63@5735240.85@201205@79fgoJynmOyGpg_wQcJFLw@B@.jpg
+../data/svox/images/test/gallery/@0620438.78@5735185.60@201206@Ntjfd60lp2CFD4R7w6iJ6w@F@.jpg
+../data/svox/images/test/gallery/@0620111.57@5735242.58@201207@LbLCdvO4bwRZ8_f9Wyr3ew@B@.jpg
+../data/svox/images/test/gallery/@0620129.13@5735248.16@201205@MC7zXhguUTdV_7PzDF4hSg@B@.jpg
+../data/svox/images/test/gallery/@0620704.52@5734985.39@201207@-iZFjjRro51zkzNTZ2PckQ@F@.jpg
+../data/svox/images/test/gallery/@0620109.58@5735242.65@201205@oCbOhAL0HYg-EamoLB4LBw@B@.jpg
+
+Positives paths:
+../data/svox/images/test/gallery/@0620438.78@5735185.60@201206@Ntjfd60lp2CFD4R7w6iJ6w@F@.jpg
+../data/svox/images/test/gallery/@0620438.78@5735185.60@201206@Ntjfd60lp2CFD4R7w6iJ6w@B@.jpg
+../data/svox/images/test/gallery/@0620443.31@5735188.25@201205@pLKgH5L80o1DDWzBaODvWw@B@.jpg
+../data/svox/images/test/gallery/@0620443.31@5735188.25@201205@pLKgH5L80o1DDWzBaODvWw@F@.jpg
+../data/svox/images/test/gallery/@0620433.46@5735182.86@201205@XxSTkKsEvxiPUOFqj2Ullg@B@.jpg
+../data/svox/images/test/gallery/@0620433.46@5735182.86@201205@XxSTkKsEvxiPUOFqj2Ullg@F@.jpg
+../data/svox/images/test/gallery/@0620451.21@5735194.31@201206@OWNKb4Rl7-fRUrcCLH1Ddw@F@.jpg
+../data/svox/images/test/gallery/@0620470.02@5735210.47@201205@RBVxJMUtl3Lgt0cc_UwYjw@F@.jpg
+../data/svox/images/test/gallery/@0620465.80@5735206.25@201205@zdbVKuUULFHwAO2xcOnNdw@B@.jpg
+../data/svox/images/test/gallery/@0620452.51@5735195.10@201205@QnRtUKocvDRYvOU_hody2w@F@.jpg
+../data/svox/images/test/gallery/@0620465.80@5735206.25@201205@zdbVKuUULFHwAO2xcOnNdw@F@.jpg
+../data/svox/images/test/gallery/@0620451.21@5735194.31@201206@OWNKb4Rl7-fRUrcCLH1Ddw@B@.jpg
+../data/svox/images/test/gallery/@0620470.02@5735210.47@201205@RBVxJMUtl3Lgt0cc_UwYjw@B@.jpg
+../data/svox/images/test/gallery/@0620461.43@5735202.31@201205@Udd9SgL9RuiN6awYyxfwoA@B@.jpg
+../data/svox/images/test/gallery/@0620452.51@5735195.10@201205@QnRtUKocvDRYvOU_hody2w@B@.jpg
+../data/svox/images/test/gallery/@0620457.10@5735198.78@201205@Oied9I9QU9y2ct_lH0G7Jg@F@.jpg
+../data/svox/images/test/gallery/@0620457.10@5735198.78@201205@Oied9I9QU9y2ct_lH0G7Jg@B@.jpg
+../data/svox/images/test/gallery/@0620461.43@5735202.31@201205@Udd9SgL9RuiN6awYyxfwoA@F@.jpg

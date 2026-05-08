@@ -1,0 +1,14 @@
+
+=================================================================
+VPR RE-RANKING EVALUATION (315 queries)
+-----------------------------------------------------------------
+Dataset: tokyo | Model: mixvpr | Matcher: superglue
+-----------------------------------------------------------------
+Metric     | Original Retrieval   | With Re-ranking
+-----------------------------------------------------------------
+R@1        |              78.10% |         86.67%
+R@5        |              89.52% |         91.75%
+R@10       |              92.38% |         93.33%
+R@20       |              93.65% |         93.65%
+=================================================================
+Histogram saved to: /teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/mixvpr_image_matching/superglue/tokyo/analysis_histogram.png

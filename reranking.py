@@ -44,7 +44,7 @@ def main(args):
     dataset = args.dataset
     matcher = args.matcher
 
-    # Load original retrieval recalls for comparison [cite: 10, 14, 15]
+    # Load original retrieval recalls for comparison
     original_stats = parse_original_results(preds_folder)
 
     txt_files = glob(os.path.join(preds_folder, "*.txt"))
@@ -53,16 +53,16 @@ def main(args):
     total_queries = len(txt_files)
     recalls_reranked = np.zeros(len(recall_values))
     
-    # Lists for inlier correlation analysis [cite: 82, 83, 103, 106]
+    # Lists for inlier correlation analysis
     inliers_correct_queries = []
     inliers_wrong_queries = []
 
     # Iterate through queries (tqdm removed to keep .txt output clean)
     for txt_file_query in txt_files:
-        # Get original distances from retrieval part [cite: 6, 7]
+        # Get original distances from retrieval part, for the top num_preds predictions
         geo_dists_orig = torch.tensor(get_list_distances_from_preds(txt_file_query))[:num_preds]
         
-        # Load inliers from the matching step [cite: 11]
+        # Load inliers from the matching step
         torch_file_query = inliers_folder.joinpath(Path(txt_file_query).name.replace('txt', 'torch'))
         if not torch_file_query.exists(): 
             continue
@@ -72,7 +72,7 @@ def main(args):
         for i in range(min(len(query_results), num_preds)):
             query_db_inliers[i] = query_results[i]['num_inliers']
 
-        # Analysis: correlation between original R@1 correctness and inliers [cite: 82, 103, 106]
+        # Analysis: correlation between original R@1 correctness and inliers
         if geo_dists_orig[0] <= threshold:
             inliers_correct_queries.append(query_db_inliers[0].item())
         else:
@@ -82,7 +82,7 @@ def main(args):
         _, indices = torch.sort(query_db_inliers, descending=True)
         geo_dists_reranked = geo_dists_orig[indices]
         
-        # Calculate Reranked Recall@N [cite: 14, 15]
+        # Calculate Reranked Recall@N
         for i, n in enumerate(recall_values):
             if torch.any(geo_dists_reranked[:n] <= threshold):
                 recalls_reranked[i:] += 1
@@ -105,7 +105,7 @@ def main(args):
     print("="*65)
 
     # --- GENERATE INLIER HISTOGRAM ---
-    # This addresses the goal of finding correlation between correctness and inliers [cite: 82, 83, 84]
+    # This addresses the goal of finding correlation between correctness and inliers
     if inliers_correct_queries or inliers_wrong_queries:
         plt.figure(figsize=(11, 7))
         plt.hist(inliers_correct_queries, bins=30, alpha=0.5, label='Correct Queries (Original R@1)', color='green')

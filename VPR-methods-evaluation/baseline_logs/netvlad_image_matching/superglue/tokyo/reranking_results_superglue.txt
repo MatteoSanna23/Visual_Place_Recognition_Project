@@ -1,0 +1,14 @@
+
+=================================================================
+VPR RE-RANKING EVALUATION (315 queries)
+-----------------------------------------------------------------
+Dataset: tokyo | Model: netvlad | Matcher: superglue
+-----------------------------------------------------------------
+Metric     | Original Retrieval   | With Re-ranking
+-----------------------------------------------------------------
+R@1        |              49.84% |         69.52%
+R@5        |              62.54% |         72.70%
+R@10       |              70.48% |         74.92%
+R@20       |              78.73% |         78.73%
+=================================================================
+Histogram saved to: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/netvlad_image_matching/superglue/tokyo/analysis_histogram.png

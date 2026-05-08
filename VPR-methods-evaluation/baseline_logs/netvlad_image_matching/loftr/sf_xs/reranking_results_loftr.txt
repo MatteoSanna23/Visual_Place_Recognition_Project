@@ -1,0 +1,14 @@
+
+=================================================================
+VPR RE-RANKING EVALUATION (1000 queries)
+-----------------------------------------------------------------
+Dataset: sf_xs | Model: netvlad | Matcher: loftr
+-----------------------------------------------------------------
+Metric     | Original Retrieval   | With Re-ranking
+-----------------------------------------------------------------
+R@1        |              27.20% |         53.60%
+R@5        |              43.80% |         55.30%
+R@10       |              50.30% |         55.80%
+R@20       |              56.20% |         56.20%
+=================================================================
+Histogram saved to: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/netvlad_image_matching/loftr/sf_xs/analysis_histogram.png

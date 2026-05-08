@@ -1,0 +1,46 @@
+Query path:
+../data/tokyo_xs/test/queries/@0381807.40@3946274.62@54@S@035.65324@0139.69433@00393.jpg@@@@@@@@.jpg
+
+Predictions paths:
+../data/tokyo_xs/test/database/@0381805.64@3946274.09@54@S@035.65324@0139.69431@mW4oKHVMbCAD8IbP0ohlsg@02@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0382081.21@3947267.42@54@S@035.66222@0139.69721@1ngO1BqOKQ8X4krw--fgtw@06@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0382318.74@3946847.93@54@S@035.65847@0139.69990@mvlQtJcBHq3nW_ONLCt1Hw@09@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0382885.53@3947152.29@54@S@035.66128@0139.70611@XkVnYWJOpEHg71msXSRmhA@00@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381812.46@3946282.65@54@S@035.65332@0139.69439@Fq5PVqo0rc0JaWb0qha2VA@03@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381812.46@3946282.65@54@S@035.65332@0139.69439@Fq5PVqo0rc0JaWb0qha2VA@06@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0382468.18@3946714.49@54@S@035.65729@0139.70157@xsPH552zZ8cpJDlSjIGWgw@06@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381877.49@3946707.12@54@S@035.65715@0139.69504@tuDbMzMXR-NIl6hA-DzR9A@00@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0382845.12@3947163.25@54@S@035.66138@0139.70566@bpyvIR8hFmm8GeLFm7kmZA@09@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0382018.86@3947235.85@54@S@035.66193@0139.69653@p6_1C21cKGr3PXl_MMnICQ@03@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0382712.50@3947137.26@54@S@035.66113@0139.70420@-j53X3cYZu4z0gEA9igptw@03@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0382209.03@3946712.93@54@S@035.65724@0139.69870@oCdXm8XEU3EhoRp7QSVOnQ@03@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0382235.18@3946321.64@54@S@035.65372@0139.69905@XX2lBVebhM0mw0Ulj6hXIQ@03@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0382127.51@3946682.61@54@S@035.65696@0139.69781@pdBcdsJIZ4e4cruKQP89AQ@03@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381783.66@3946616.29@54@S@035.65632@0139.69402@GuNxkqiQpO_T9H7C1hiOXA@08@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381851.09@3946593.87@54@S@035.65613@0139.69477@YE0NLoYg3cCrZdU-K6n8Xw@11@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0382175.48@3946504.03@54@S@035.65535@0139.69836@uWbQI1YpSKHuhY3u3LhZfQ@00@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0382460.95@3946612.86@54@S@035.65637@0139.70150@9bTjtomwhHIgyQtugGS3dA@05@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381945.85@3946611.47@54@S@035.65629@0139.69581@4m5aIldeCSmRqv2QK0_M1w@02@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0382230.52@3946544.02@54@S@035.65572@0139.69897@lLgED7gxvIJZdZFESPOFNg@04@@@@@@@.jpg
+
+Positives paths:
+../data/tokyo_xs/test/database/@0381784.41@3946270.93@54@S@035.65321@0139.69408@FeUX0nHezvZlysmy_BVBXA@02@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381784.41@3946270.93@54@S@035.65321@0139.69408@FeUX0nHezvZlysmy_BVBXA@01@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381805.64@3946274.09@54@S@035.65324@0139.69431@mW4oKHVMbCAD8IbP0ohlsg@03@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381784.41@3946270.93@54@S@035.65321@0139.69408@FeUX0nHezvZlysmy_BVBXA@10@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381794.22@3946259.48@54@S@035.65310@0139.69419@5peiCZC82-SGHbmI_dmf8A@02@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381812.46@3946282.65@54@S@035.65332@0139.69439@Fq5PVqo0rc0JaWb0qha2VA@00@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381798.83@3946265.41@54@S@035.65316@0139.69424@5OKlIluLZJNwAKaPEB2j_A@02@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381798.83@3946265.41@54@S@035.65316@0139.69424@5OKlIluLZJNwAKaPEB2j_A@01@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381791.01@3946263.30@54@S@035.65314@0139.69415@GmUxpPd7I-YcasvYJ7WAHg@01@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381800.82@3946251.96@54@S@035.65304@0139.69426@L-NLvGeZ6JHX6JO8Xnf_BA@01@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381800.82@3946251.96@54@S@035.65304@0139.69426@L-NLvGeZ6JHX6JO8Xnf_BA@02@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381805.64@3946274.09@54@S@035.65324@0139.69431@mW4oKHVMbCAD8IbP0ohlsg@00@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381812.46@3946282.65@54@S@035.65332@0139.69439@Fq5PVqo0rc0JaWb0qha2VA@01@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381805.64@3946274.09@54@S@035.65324@0139.69431@mW4oKHVMbCAD8IbP0ohlsg@01@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381805.64@3946274.09@54@S@035.65324@0139.69431@mW4oKHVMbCAD8IbP0ohlsg@02@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381812.46@3946282.65@54@S@035.65332@0139.69439@Fq5PVqo0rc0JaWb0qha2VA@02@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381812.46@3946282.65@54@S@035.65332@0139.69439@Fq5PVqo0rc0JaWb0qha2VA@03@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381812.46@3946282.65@54@S@035.65332@0139.69439@Fq5PVqo0rc0JaWb0qha2VA@06@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381819.18@3946291.32@54@S@035.65339@0139.69446@66MPjnlgKi5Jd_f1qWaEsw@01@@@@@@@.jpg
+../data/tokyo_xs/test/database/@0381819.18@3946291.32@54@S@035.65339@0139.69446@66MPjnlgKi5Jd_f1qWaEsw@02@@@@@@@.jpg

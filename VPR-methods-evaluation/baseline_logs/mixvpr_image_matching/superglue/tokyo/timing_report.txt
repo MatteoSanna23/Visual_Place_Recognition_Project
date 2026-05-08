@@ -1,0 +1,5 @@
+--- Timing Report for superglue ---
+Total queries processed: 315
+Total time: 469.24 seconds (7.82 minutes)
+Average time per query: 1.4896 seconds
+Device used: cuda

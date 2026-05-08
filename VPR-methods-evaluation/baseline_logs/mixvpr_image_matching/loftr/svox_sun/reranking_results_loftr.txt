@@ -1,0 +1,14 @@
+
+=================================================================
+VPR RE-RANKING EVALUATION (854 queries)
+-----------------------------------------------------------------
+Dataset: svox_sun | Model: mixvpr | Matcher: loftr
+-----------------------------------------------------------------
+Metric     | Original Retrieval   | With Re-ranking
+-----------------------------------------------------------------
+R@1        |              85.36% |         93.44%
+R@5        |              92.97% |         94.96%
+R@10       |              94.73% |         95.32%
+R@20       |              95.90% |         95.90%
+=================================================================
+Histogram saved to: /teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/VPR-methods-evaluation/logs/mixvpr_image_matching/loftr/svox_sun/analysis_histogram.png

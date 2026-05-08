@@ -1,0 +1,5 @@
+--- Timing Report for loftr ---
+Total queries processed: 1000
+Total time: 1928.22 seconds (32.14 minutes)
+Average time per query: 1.9282 seconds
+Device used: cuda

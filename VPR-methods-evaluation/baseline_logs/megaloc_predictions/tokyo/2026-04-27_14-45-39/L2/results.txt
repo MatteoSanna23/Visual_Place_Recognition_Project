@@ -1,0 +1,14 @@
+Distance Metric: L2
+Database: /teamspace/studios/this_studio/data/tokyo_xs/test/database
+Queries: /teamspace/studios/this_studio/data/tokyo_xs/test/queries
+Method: megaloc
+Backbone: Dinov2
+Descriptors Dimension: 8448
+Number of Queries: 315
+Number of Database Images: 12771
+
+R@1: 94.9, R@5: 97.8, R@10: 98.4, R@20: 98.7
+R@1: 94.92%
+R@5: 97.78%
+R@10: 98.41%
+R@20: 98.73%
