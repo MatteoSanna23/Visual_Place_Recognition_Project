@@ -23,7 +23,7 @@ def main(args):
     # Clear previously configured loguru handlers to avoid duplicated logs.
     logger.remove()
     # Build the output path: logs/<user_subdir>/<timestamp>/.
-    log_dir = Path("logs") / args.log_dir / start_time.strftime("%Y-%m-%d_%H-%M-%S")
+    log_dir = Path("training_logs") / args.log_dir / start_time.strftime("%Y-%m-%d_%H-%M-%S")
 
     # Log INFO messages to stdout with colors and a compact timestamped format.
     logger.add(sys.stdout, colorize=True, format="<green>{time:%Y-%m-%d %H:%M:%S}</green> {message}", level="INFO")
@@ -104,22 +104,6 @@ def main(args):
     queries_descriptors = all_descriptors[test_ds.num_database :]
     # Slice the database descriptors from the combined descriptor matrix.
     database_descriptors = all_descriptors[: test_ds.num_database]
-
-    # Debug: Print descriptor norms statistics to understand normalization
-    logger.info("\n=== Descriptor Norms Statistics ===")
-    db_norms = np.linalg.norm(database_descriptors, axis=1)
-    q_norms = np.linalg.norm(queries_descriptors, axis=1)
-    logger.info(f"Database descriptors:")
-    logger.info(f"  Min norm: {db_norms.min():.6f}")
-    logger.info(f"  Max norm: {db_norms.max():.6f}")
-    logger.info(f"  Mean norm: {db_norms.mean():.6f}")
-    logger.info(f"  Std norm: {db_norms.std():.6f}")
-    logger.info(f"Queries descriptors:")
-    logger.info(f"  Min norm: {q_norms.min():.6f}")
-    logger.info(f"  Max norm: {q_norms.max():.6f}")
-    logger.info(f"  Mean norm: {q_norms.mean():.6f}")
-    logger.info(f"  Std norm: {q_norms.std():.6f}")
-    logger.info("===================================\n")
 
     # Optionally persist descriptors for external analysis or debugging.
     if args.save_descriptors:
