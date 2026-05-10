@@ -1,0 +1,14 @@
+Distance Metric: L2
+Database: /teamspace/studios/this_studio/data/svox/images/train/gallery
+Queries: /teamspace/studios/this_studio/data/svox/images/train/queries_night
+Method: cosplace
+Backbone: ResNet50
+Descriptors Dimension: 2048
+Number of Queries: 702
+Number of Database Images: 22232
+
+R@1: 26.2, R@5: 36.8, R@10: 43.7, R@20: 50.6
+R@1: 26.21%
+R@5: 36.75%
+R@10: 43.73%
+R@20: 50.57%
