@@ -1,0 +1,14 @@
+Distance Metric: L2
+Database: /teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery
+Queries: /teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/queries_sun
+Method: cosplace
+Backbone: ResNet50
+Descriptors Dimension: 2048
+Number of Queries: 712
+Number of Database Images: 22232
+
+R@1: 61.5, R@5: 74.0, R@10: 78.1, R@20: 81.5
+R@1: 61.52%
+R@5: 74.02%
+R@10: 78.09%
+R@20: 81.46%

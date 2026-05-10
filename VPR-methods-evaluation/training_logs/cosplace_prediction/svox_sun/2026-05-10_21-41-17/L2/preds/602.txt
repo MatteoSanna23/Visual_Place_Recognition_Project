@@ -1,0 +1,34 @@
+Query path:
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/queries_sun/@0620226.02@5735573.19@20141216_092930@.jpg
+
+Predictions paths:
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0620233.31@5735562.66@201206@FQux8J_YOxxJBM4QmDxpMA@B@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0623196.85@5736189.61@201205@Jp1VvE0byxg9wMY6R6b0Rg@B@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0620345.62@5736490.05@201209@B1Jbaq2LEK9QqbF-ODiqCw@B@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0623260.65@5736324.89@201205@f27cAcGOTzLmOxHZdyFOwQ@F@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0620221.51@5735581.22@201206@DzJC5DDO8ZT9R-OpCHoRfQ@B@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0622297.93@5736181.17@201205@6yIyEVv_VS-6jekhJf8kkg@B@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0622228.09@5736182.95@201205@NzMqjX_JnSDBUG46GR4hIg@B@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0619792.44@5736122.06@201205@2xt3RnLbFx70cEWAA1zN-w@F@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0620182.82@5735618.37@201206@wACOFF4bck22NqJoR3y2dQ@F@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0622222.69@5736182.90@201205@8cdOy1Is2t9e-wNwzOKWLA@B@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0623261.01@5736312.91@201205@Xg2j0Osi6nEzG0EtlrpCqQ@F@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0623235.51@5736222.66@201205@-XguulByipx3waWfbb82EQ@F@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0620174.57@5735624.71@201206@45POA1VhIAg4pd_LpSRTdw@F@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0622780.89@5736237.30@201207@03fcDtopkUIDf8V4wP5azQ@F@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0624151.45@5736016.59@201204@4Dz9UgfRVl4WCVU4pvLV0w@B@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0622287.08@5736181.99@201205@qtP6un1DjneHXVHyThZUtQ@B@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0619382.22@5735695.06@201205@Yx2vzW9L57T9ubXgTOB_XA@B@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0623127.55@5736505.41@201205@DKS-zLMAA3JqhMn_XeTNoQ@B@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0623260.64@5736345.63@201205@2AGFFWAROnRuv-NImMnlcA@F@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0623055.40@5735834.96@201205@QLn-eV7AejKZBH_t0WHPbg@F@.jpg
+
+Positives paths:
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0620227.51@5735571.88@201206@81mldYyINjiBd2t9QuUw5Q@F@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0620233.31@5735562.66@201206@FQux8J_YOxxJBM4QmDxpMA@F@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0620233.31@5735562.66@201206@FQux8J_YOxxJBM4QmDxpMA@B@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0620221.51@5735581.22@201206@DzJC5DDO8ZT9R-OpCHoRfQ@F@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0620221.51@5735581.22@201206@DzJC5DDO8ZT9R-OpCHoRfQ@B@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0620227.51@5735571.88@201206@81mldYyINjiBd2t9QuUw5Q@B@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0620215.40@5735589.57@201206@dNwlfYo1X5JYtcpKUQOTlA@B@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/svox/images/train/gallery/@0620215.40@5735589.57@201206@dNwlfYo1X5JYtcpKUQOTlA@F@.jpg
