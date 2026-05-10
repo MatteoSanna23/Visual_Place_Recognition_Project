@@ -186,3 +186,7 @@ trained_models/
 *.pth
 !VPR-methods-evaluation/logs/**/*.txt*.torch
 .DS_Store
+
+# Script locali per l'esecuzione (contengono path specifici della macchina)
+run_matching.ps1
+run_matching.sh
