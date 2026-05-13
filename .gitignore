@@ -180,6 +180,7 @@ data/
 
 # Escludi i modelli scaricati (i file .pth da centinaia di MB)
 trained_models/
+baseline_logs/
 
 # Escludi eventuali file pesanti salvati per l'incertezza
 
@@ -189,4 +190,4 @@ trained_models/
 
 # Script locali per l'esecuzione (contengono path specifici della macchina)
 run_matching.ps1
-run_matching.sh
+run_matching.s
