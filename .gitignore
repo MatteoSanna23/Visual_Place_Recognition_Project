@@ -190,4 +190,4 @@ baseline_logs/
 
 # Script locali per l'esecuzione (contengono path specifici della macchina)
 run_matching.ps1
-run_matching.s
+run_matching.sh
