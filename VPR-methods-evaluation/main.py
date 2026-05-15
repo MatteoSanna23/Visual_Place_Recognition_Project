@@ -23,14 +23,7 @@ def main(args):
     # Clear previously configured loguru handlers to avoid duplicated logs.
     logger.remove()
     # Build the output path: logs/<user_subdir>/<timestamp>/.
-    log_dir = Path("training_logs") / args.log_dir / start_time.strftime("%Y-%m-%d_%H-%M-%S")
-
-    # Log INFO messages to stdout with colors and a compact timestamped format.
-    logger.add(sys.stdout, colorize=True, format="<green>{time:%Y-%m-%d %H:%M:%S}</green> {message}", level="INFO")
-    # Log INFO messages to a persistent info file inside the run directory.
-    logger.add(log_dir / "info.log", format="<green>{time:%Y-%m-%d %H:%M:%S}</green> {message}", level="INFO")
-    # Log DEBUG and above messages to a dedicated debug file.
-    logger.add(log_dir / "debug.log", level="DEBUG")
+    log_dir = Path("training_logs") / args.log_dir
 
     # Save the executed CLI command for reproducibility.
     logger.info(" ".join(sys.argv))

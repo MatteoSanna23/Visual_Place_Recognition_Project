@@ -149,3 +149,93 @@ def get_inliers_statistics(X: np.ndarray, y: np.ndarray) -> Dict:
     }
     
     return stats
+
+
+def load_inliers_val_set(
+    base_path: str,
+    vpr_model: str,
+    matcher: str,
+    val_dataset: str,
+    threshold_dist: float = 25.0,
+    top_k: int = 20
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Load inliers_top1, distances, and correctness labels from validation dataset.
+    
+    Args:
+        base_path: Base path to VPR-methods-evaluation directory
+        vpr_model: VPR model name (e.g., 'cosplace', 'mixvpr')
+        matcher: Matcher name (e.g., 'loftr', 'superglue')
+        val_dataset: Validation dataset name ('sf_xs')
+        threshold_dist: Distance threshold in meters for correctness (default 25m)
+        top_k: Number of top predictions to consider (default 20)
+    
+    Returns:
+        X: Array of inliers_top1 values
+        y: Array of correctness labels (1 = correct, 0 = wrong)
+        distances: Array of geo_dist_top1 values (for detailed analysis)
+    """
+    
+    X = []  # inliers_top1
+    y = []  # is_correct
+    distances = []  # geo distances
+    
+    # Paths
+    torch_dir = Path(base_path) / "training_logs" / f"{vpr_model}_image_matching" / matcher / val_dataset
+    preds_dir = Path(base_path) / "training_logs" / f"{vpr_model}_prediction" / val_dataset / "preds"
+    
+    print(f"\n[Loading Val] {vpr_model} + {matcher} from {val_dataset}")
+    print(f"Torch: {torch_dir}")
+    print(f"Preds: {preds_dir}")
+    
+    if not torch_dir.exists():
+        print(f"Torch directory not found: {torch_dir}")
+        return np.array(X), np.array(y), np.array(distances)
+    
+    if not preds_dir.exists():
+        print(f"Predictions directory not found: {preds_dir}")
+        return np.array(X), np.array(y), np.array(distances)
+    
+    # List torch files
+    torch_files = sorted(torch_dir.glob("*.torch"))
+    
+    if not torch_files:
+        print(f"No torch files found in {torch_dir}")
+        return np.array(X), np.array(y), np.array(distances)
+    
+    print(f"Found {len(torch_files)} queries")
+    
+    count_loaded = 0
+    for torch_file in torch_files:
+        query_id = torch_file.stem
+        txt_file = preds_dir / f"{query_id}.txt"
+        
+        if not txt_file.exists():
+            continue
+        
+        try:
+            results = torch.load(torch_file, weights_only=False)
+            inliers_top1 = results[0]['num_inliers']
+            
+            dist_list = get_list_distances_from_preds(str(txt_file))
+            geo_dist_top1 = dist_list[0]
+            
+            is_correct = 1 if geo_dist_top1 <= threshold_dist else 0
+            
+            X.append(inliers_top1)
+            y.append(is_correct)
+            distances.append(geo_dist_top1)
+            count_loaded += 1
+            
+        except Exception as e:
+            continue
+    
+    X = np.array(X)
+    y = np.array(y)
+    distances = np.array(distances)
+    
+    print(f"Loaded {count_loaded} queries")
+    print(f"Correct: {sum(y)} ({100*sum(y)/len(y):.1f}%)")
+    print(f"Wrong: {len(y)-sum(y)} ({100*(len(y)-sum(y))/len(y):.1f}%)")
+    
+    return X, y, distances  # Return distances for further analysis
