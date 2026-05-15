@@ -1,0 +1,14 @@
+Distance Metric: L2
+Database: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/data/sf_xs/val/database
+Queries: /teamspace/studios/this_studio/Visual_Place_Recognition_Project/data/sf_xs/val/queries
+Method: cosplace
+Backbone: ResNet50
+Descriptors Dimension: 2048
+Number of Queries: 7993
+Number of Database Images: 8015
+
+R@1: 79.1, R@5: 87.4, R@10: 90.7, R@20: 93.1
+R@1: 79.11%
+R@5: 87.41%
+R@10: 90.69%
+R@20: 93.12%
