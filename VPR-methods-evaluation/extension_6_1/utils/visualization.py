@@ -1,5 +1,3 @@
-"""Visualization utilities for Extension 6.1"""
-
 import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
@@ -35,5 +33,5 @@ def plot_inliers_distribution(
     plt.tight_layout()
     
     plt.savefig(output_path, dpi=150, bbox_inches='tight')
-    print(f"  ✓ Plot saved: {output_path}")
+    print(f"Plot saved: {output_path}")
     plt.close()

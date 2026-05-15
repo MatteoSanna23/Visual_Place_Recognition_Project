@@ -1,6 +1,6 @@
 {
   "input": {
-    "base_path": "/Users/lilmatte/Desktop/Poli/AML/Project/Visual_Place_Recognition_Project/VPR-methods-evaluation",
+    "base_path": "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation",
     "logs_dir": "training_logs",
     "training_datasets": ["svox_sun", "svox_night"],
     "val_dataset": "sf_xs_val",
@@ -10,7 +10,6 @@
   "matchers": ["loftr", "superglue"],
   "output": {
     "base_dir": "extension_6_1/results",
-    "step1": "step1_analysis",
     "step2": "models",
     "step3": "validation",
     "step4": "inference"

@@ -1,5 +1,3 @@
-"""Data loader for Extension 6.1 - Load inliers and labels from .torch and .txt files"""
-
 import torch
 import numpy as np
 from pathlib import Path
@@ -42,7 +40,7 @@ def load_inliers_and_labels(
     for dataset in datasets:
         # Paths
         torch_dir = Path(base_path) / "training_logs" / f"{vpr_model}_image_matching" / matcher / dataset
-        preds_dir = Path(base_path) / "training_logs" / f"{vpr_model}_prediction" / dataset
+        preds_dir = Path(base_path) / "training_logs" / f"{vpr_model}_prediction" / dataset / "preds"
         
         print(f"\n[Loading] {vpr_model} + {matcher} from {dataset}")
         print(f"Torch files: {torch_dir}")
@@ -67,8 +65,8 @@ def load_inliers_and_labels(
         
         count_loaded = 0
         for torch_file in torch_files:
-            # Extract query ID from filename (e.g., "000.torch" → "0")
-            query_id = torch_file.stem.split('_')[-1].lstrip('0') or '0'
+            # Extract query ID from filename (e.g., "000.torch" → "000")
+            query_id = torch_file.stem
             
             # Corresponding prediction file
             txt_file = preds_dir / f"{query_id}.txt"
@@ -83,7 +81,7 @@ def load_inliers_and_labels(
                 # Extract inliers from top-1 match
                 inliers_top1 = results[0]['num_inliers']
                 
-                # Load distances from prediction file
+                # Load distances from prediction file, distances correspond to top-k predictions
                 distances = get_list_distances_from_preds(str(txt_file))
                 
                 # Get distance of top-1 prediction
@@ -97,10 +95,10 @@ def load_inliers_and_labels(
                 count_loaded += 1
                 
             except Exception as e:
-                print(f"    ⚠️  Error processing query {query_id}: {e}")
+                print(f"Error processing query {query_id}: {e}")
                 continue
         
-        print(f"  ✓ Loaded {count_loaded} queries")
+        print(f"Loaded {count_loaded} queries")
     
     X = np.array(X)
     y = np.array(y)

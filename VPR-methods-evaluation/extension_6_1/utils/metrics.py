@@ -1,8 +1,6 @@
-"""Metrics for Extension 6.1"""
-
 import numpy as np
 from sklearn.metrics import average_precision_score, accuracy_score, roc_auc_score
-from typing import Dict, Tuple
+from typing import Dict
 
 
 def compute_auprc_and_accuracy(y_true: np.ndarray, y_pred_proba: np.ndarray) -> Dict:
