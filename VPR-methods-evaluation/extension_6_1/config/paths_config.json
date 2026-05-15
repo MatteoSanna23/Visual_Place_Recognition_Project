@@ -1,13 +1,13 @@
 {
   "input": {
     "base_path": "/Users/lilmatte/Desktop/Poli/AML/Project/Visual_Place_Recognition_Project/VPR-methods-evaluation",
-    "logs_dir": "logs",
-    "training_datasets": ["svox_sun", "svox_night", "gsv_xs"],
+    "logs_dir": "training_logs",
+    "training_datasets": ["svox_sun", "svox_night"],
     "val_dataset": "sf_xs_val",
-    "test_datasets": ["tokyo", "sf_xs_test"]
+    "test_datasets": ["tokyo", "sf_xs_test", "svox_sun_test", "svox_night_test"]
   },
-  "vpr_models": ["netvlad", "cosplace", "mixvpr", "megaloc"],
-  "matchers": ["loftr", "superglue", "lightglue"],
+  "vpr_models": ["cosplace", "mixvpr"],
+  "matchers": ["loftr", "superglue"],
   "output": {
     "base_dir": "extension_6_1/results",
     "step1": "step1_analysis",

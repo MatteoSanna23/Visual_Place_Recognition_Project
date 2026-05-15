@@ -27,7 +27,7 @@ def load_inliers_and_labels(
         base_path: Base path to VPR-methods-evaluation directory
         vpr_model: VPR model name (e.g., 'netvlad', 'cosplace')
         matcher: Matcher name (e.g., 'loftr', 'superglue')
-        datasets: List of dataset names (e.g., ['svox_sun', 'svox_night', 'gsv_xs'])
+        datasets: List of dataset names (e.g., ['svox_sun', 'svox_night'])
         threshold_dist: Distance threshold in meters for correctness (default 25m)
         top_k: Number of top predictions to consider (default 20)
     
@@ -41,34 +41,34 @@ def load_inliers_and_labels(
     
     for dataset in datasets:
         # Paths
-        torch_dir = Path(base_path) / "logs" / f"{vpr_model}_image_matching" / matcher
-        preds_dir = Path(base_path) / "logs" / f"{vpr_model}_predictions" / dataset
+        torch_dir = Path(base_path) / "training_logs" / f"{vpr_model}_image_matching" / matcher / dataset
+        preds_dir = Path(base_path) / "training_logs" / f"{vpr_model}_prediction" / dataset
         
         print(f"\n[Loading] {vpr_model} + {matcher} from {dataset}")
-        print(f"  Torch files: {torch_dir}")
-        print(f"  Predictions: {preds_dir}")
+        print(f"Torch files: {torch_dir}")
+        print(f"Predictions: {preds_dir}")
         
         if not torch_dir.exists():
-            print(f"  ⚠️  Torch directory not found: {torch_dir}")
+            print(f"Torch directory not found: {torch_dir}")
             continue
         
         if not preds_dir.exists():
-            print(f"  ⚠️  Predictions directory not found: {preds_dir}")
+            print(f"Predictions directory not found: {preds_dir}")
             continue
         
         # List torch files (one per query)
-        torch_files = sorted(torch_dir.glob(f"{dataset}*.torch"))
+        torch_files = sorted(torch_dir.glob("*.torch"))
         
         if not torch_files:
-            print(f"  ⚠️  No torch files found in {torch_dir}")
+            print(f"No torch files found in {torch_dir}")
             continue
         
-        print(f"  Found {len(torch_files)} queries")
+        print(f"Found {len(torch_files)} queries")
         
         count_loaded = 0
         for torch_file in torch_files:
-            # Extract query ID from filename (e.g., "svox_sun_0.torch" → "0")
-            query_id = torch_file.stem.split('_')[-1]
+            # Extract query ID from filename (e.g., "000.torch" → "0")
+            query_id = torch_file.stem.split('_')[-1].lstrip('0') or '0'
             
             # Corresponding prediction file
             txt_file = preds_dir / f"{query_id}.txt"
