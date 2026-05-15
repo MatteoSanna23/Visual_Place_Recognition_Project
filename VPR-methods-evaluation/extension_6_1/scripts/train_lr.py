@@ -136,7 +136,7 @@ def main():
     # Save summary
     summary_lines.append(f"\n{'='*80}")
     summary_path = output_dir / "validation_metrics.txt"
-    with open(summary_path, 'w') as f:
+    with open(summary_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(summary_lines))
 
 if __name__ == "__main__":
