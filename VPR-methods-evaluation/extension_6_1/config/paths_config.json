@@ -10,7 +10,6 @@
   "matchers": ["loftr", "superglue"],
   "output": {
     "base_dir": "extension_6_1/results",
-    "step2": "models",
     "step3": "validation",
     "step4": "inference"
   },
