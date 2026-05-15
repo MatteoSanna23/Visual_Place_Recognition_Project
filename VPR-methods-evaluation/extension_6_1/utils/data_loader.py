@@ -5,7 +5,7 @@ from typing import Tuple, List, Dict
 import sys
 
 # Add parent directory to path to access util.py
-parent_dir = Path(__file__).parent.parent.parent.parent.parent
+parent_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(parent_dir))
 from util import get_list_distances_from_preds
 
