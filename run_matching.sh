@@ -65,6 +65,7 @@ for matcher in "${MATCHERS[@]}"; do
                 --device "$DEVICE" \
                 --im-size "$IM_SIZE" \
                 --num-preds "$NUM_PREDS" \
+                --query-sample-fraction 0.333333 \
                 --old-path-prefix "$OLD_PATH_PREFIX" \
                 --new-path-prefix "$NEW_PATH_PREFIX"
         else

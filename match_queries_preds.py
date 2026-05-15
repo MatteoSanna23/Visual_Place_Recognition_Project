@@ -33,6 +33,7 @@ def parse_arguments():
     parser.add_argument("--num-preds", type=int, default=100, help="number of predictions to match")
     parser.add_argument("--start-query", type=int, default=-1, help="query to start from")
     parser.add_argument("--num-queries", type=int, default=-1, help="number of queries")
+    parser.add_argument("--query-sample-fraction", type=float, default=1.0, help="fraction of queries to sample (0.0-1.0, e.g., 0.25 for 1/4)")
     parser.add_argument("--old-path-prefix", type=str, default=None, help="old path prefix to replace (e.g., /teamspace/studios/this_studio/Visual_Place_Recognition_Project/data/)")
     parser.add_argument("--new-path-prefix", type=str, default=None, help="new path prefix to use (e.g., /teamspace/studios/this_studio/data/)")
 
@@ -47,6 +48,7 @@ def main(args):
     preds_folder = args.preds_dir
     start_query = args.start_query
     num_queries = args.num_queries
+    query_sample_fraction = args.query_sample_fraction
     old_prefix = args.old_path_prefix
     new_prefix = args.new_path_prefix
 
@@ -55,6 +57,13 @@ def main(args):
     
     txt_files = glob(os.path.join(preds_folder, "*.txt"))
     txt_files.sort(key=lambda x: int(Path(x).stem))
+
+    # Apply sampling if requested
+    if query_sample_fraction < 1.0:
+        num_samples = max(1, int(len(txt_files) * query_sample_fraction))
+        sample_step = len(txt_files) // num_samples
+        txt_files = txt_files[::sample_step][:num_samples]
+        print(f"[INFO] Sampling {len(txt_files)} queries ({query_sample_fraction*100:.0f}%)")
 
     start_query = start_query if start_query >= 0 else 0
     num_queries = num_queries if num_queries >= 0 else len(txt_files)
