@@ -1,0 +1,36 @@
+Query path:
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/queries/@0549803.81@4175707.17@10@S@037.72728@-122.43483@OwIRm4HO17qatgcZyJSyhA@@0@@@@202012@@.jpg
+
+Predictions paths:
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0549303.48@4181708.93@10@S@037.78140@-122.44010@33SxIf5eFU005MQXuHEgBA@@330@@@@201402@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0550754.35@4177909.83@10@S@037.74708@-122.42389@2HW6mch668Vt1u0dfellPw@@330@@@@202011@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0548004.14@4173459.72@10@S@037.70712@-122.45540@1-gzH1c5atRxq6e1wpmedA@@300@@@@201903@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0549303.48@4181708.93@10@S@037.78140@-122.44010@33SxIf5eFU005MQXuHEgBA@@300@@@@201402@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0553359.53@4176006.79@10@S@037.72978@-122.39446@-M904xRMrwcIIpwJBorUhQ@@120@@@@201311@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0546855.46@4182158.42@10@S@037.78558@-122.46787@2ChfEttTeTWXTDdF6PJpnA@@240@@@@200805@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0551953.62@4176200.86@10@S@037.73161@-122.41040@2oeThBkYdAWxA2kzV981jw@@300@@@@201404@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0552500.46@4175154.70@10@S@037.72215@-122.40427@6qcCx4ZfH6CMS1gXkrbV2Q@@300@@@@202012@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0548650.61@4174150.30@10@S@037.71331@-122.44802@6zGy-Z16a9I6sOBCanfiZg@@120@@@@201506@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0548651.73@4174558.60@10@S@037.71699@-122.44798@1itbVkVAgygBJdKzhV8F-A@@30@@@@200805@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0549901.34@4174152.21@10@S@037.71326@-122.43383@6k_6wtfd4lxt3By2OX5sgA@@0@@@@201712@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0552502.97@4175453.18@10@S@037.72484@-122.40422@2k6lA9Qi1kyoHpw6xcBqPQ@@120@@@@201605@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0549809.11@4175704.99@10@S@037.72726@-122.43477@8A95CTtfkSdpzYYgzb00Ow@@360@@@@201311@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0552554.72@4176459.86@10@S@037.73391@-122.40356@Bimo4KKlvLVUGmbwE5k3uw@@240@@@@201904@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0548004.14@4173459.72@10@S@037.70712@-122.45540@1-gzH1c5atRxq6e1wpmedA@@330@@@@201903@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0545556.42@4178852.52@10@S@037.75585@-122.48283@34c7PEA2KuJqlKpBO0i30w@@330@@@@201401@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0550157.65@4175052.48@10@S@037.72136@-122.43086@Hx0Tv90yzIfCI7zHiRHzQg@@120@@@@201312@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0549901.34@4174152.21@10@S@037.71326@-122.43383@6k_6wtfd4lxt3By2OX5sgA@@360@@@@201712@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0544758.04@4177604.38@10@S@037.74464@-122.49197@46fNGPLamUxYNYeshi30Rw@@240@@@@201401@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0552554.72@4176459.86@10@S@037.73391@-122.40356@Bimo4KKlvLVUGmbwE5k3uw@@210@@@@201904@@.jpg
+
+Positives paths:
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0549809.11@4175704.99@10@S@037.72726@-122.43477@8A95CTtfkSdpzYYgzb00Ow@@90@@@@201311@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0549809.11@4175704.99@10@S@037.72726@-122.43477@8A95CTtfkSdpzYYgzb00Ow@@300@@@@201311@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0549809.11@4175704.99@10@S@037.72726@-122.43477@8A95CTtfkSdpzYYgzb00Ow@@30@@@@201311@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0549809.11@4175704.99@10@S@037.72726@-122.43477@8A95CTtfkSdpzYYgzb00Ow@@360@@@@201311@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0549809.11@4175704.99@10@S@037.72726@-122.43477@8A95CTtfkSdpzYYgzb00Ow@@120@@@@201311@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0549809.11@4175704.99@10@S@037.72726@-122.43477@8A95CTtfkSdpzYYgzb00Ow@@150@@@@201311@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0549809.11@4175704.99@10@S@037.72726@-122.43477@8A95CTtfkSdpzYYgzb00Ow@@180@@@@201311@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0549809.11@4175704.99@10@S@037.72726@-122.43477@8A95CTtfkSdpzYYgzb00Ow@@210@@@@201311@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0549809.11@4175704.99@10@S@037.72726@-122.43477@8A95CTtfkSdpzYYgzb00Ow@@270@@@@201311@@.jpg
+/teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database/@0549809.11@4175704.99@10@S@037.72726@-122.43477@8A95CTtfkSdpzYYgzb00Ow@@240@@@@201311@@.jpg

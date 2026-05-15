@@ -1,0 +1,14 @@
+Distance Metric: L2
+Database: /teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/database
+Queries: /teamspace/studios/this_studio/AML_VPR/Visual_Place_Recognition_Project/data/sf_xs/val/queries
+Method: mixvpr
+Backbone: ResNet50
+Descriptors Dimension: 4096
+Number of Queries: 7993
+Number of Database Images: 8015
+
+R@1: 86.4, R@5: 92.8, R@10: 94.6, R@20: 96.1
+R@1: 86.38%
+R@5: 92.84%
+R@10: 94.58%
+R@20: 96.11%
