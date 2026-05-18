@@ -63,10 +63,16 @@ def main():
     # Thresholds to sweep
     thresholds = [0.50, 0.60, 0.70, 0.75, 0.80, 0.85, 0.90]
     
+    # Cost sensitivity weight: higher = prioritize accuracy, lower = prioritize speed
+    # 0.5 = prefer speed, 1.0 = balanced, 2.0 = prefer accuracy
+    cost_weight = cfg['hyperparams'].get('cost_weight', 1.0)
+    
     summary_lines = []
     summary_lines.append("=" * 90)
-    summary_lines.append("EXTENSION 6.1 - STEP 3: THRESHOLD VALIDATION (COST-SENSITIVE)")
+    summary_lines.append("EXTENSION 6.1 - STEP 3: THRESHOLD VALIDATION (COST-AWARE)")
     summary_lines.append("=" * 90)
+    summary_lines.append(f"Cost-Sensitivity Weight (w): {cost_weight} (0.5=speed, 1.0=balanced, 2.0=quality)")
+    summary_lines.append(f"Score formula: time_saved_pct - w × accuracy_loss")
     summary_lines.append("")
     
     results_by_matcher = {}
@@ -77,6 +83,25 @@ def main():
         print(f"\n{'='*90}")
         print(f"Processing matcher: {matcher.upper()}")
         print(f"{'='*90}")
+        
+        # Load timing from first VPR model's timing_report.txt
+        timing_data = {'total_time': None, 'avg_time_per_query': None}
+        for vpr_model in vpr_models:
+            timing_file = Path(base_path) / "training_logs" / f"{vpr_model}_image_matching" / matcher / val_dataset / "timing_report.txt"
+            if timing_file.exists():
+                with open(timing_file, 'r') as f:
+                    for line in f:
+                        if 'Total time:' in line:
+                            timing_data['total_time'] = float(line.split(':')[1].split('seconds')[0].strip())
+                        elif 'Average time per query:' in line:
+                            timing_data['avg_time_per_query'] = float(line.split(':')[1].split('seconds')[0].strip())
+                print(f"  [Timing] {matcher}: avg={timing_data['avg_time_per_query']:.4f}s, total={timing_data['total_time']:.1f}s")
+                break
+        
+        if timing_data['total_time'] is None or timing_data['avg_time_per_query'] is None:
+            print(f"Warning: timing data not found for {matcher}, using dummy values")
+            timing_data['total_time'] = 1.0  # Will result in proportional scoring
+            timing_data['avg_time_per_query'] = 1.0
         
         # Collect validation data from ALL VPR models
         X_all = []
@@ -98,19 +123,19 @@ def main():
                 y_all.extend(y)
                 
             except Exception as e:
-                print(f"    ⚠️  Error: {e}")
+                print(f"Error: {e}")
                 continue
         
         if len(X_all) == 0:
-            print(f"  ⚠️  No validation data for {matcher}")
+            print(f"No validation data for {matcher}")
             continue
         
         X_all = np.array(X_all)
         y_all = np.array(y_all)
         
-        print(f"\n  ✓ Validation data: {len(X_all)} queries")
-        print(f"    Correct: {sum(y_all)} ({100*sum(y_all)/len(y_all):.1f}%)")
-        print(f"    Wrong: {len(y_all)-sum(y_all)} ({100*(len(y_all)-sum(y_all))/len(y_all):.1f}%)")
+        print(f"\nValidation data: {len(X_all)} queries")
+        print(f"Correct: {sum(y_all)} ({100*sum(y_all)/len(y_all):.1f}%)")
+        print(f"Wrong: {len(y_all)-sum(y_all)} ({100*(len(y_all)-sum(y_all))/len(y_all):.1f}%)")
         
         # Get model for this matcher
         lr_model = models[matcher]
@@ -119,14 +144,15 @@ def main():
         X_reshaped = X_all.reshape(-1, 1)
         y_pred_proba = lr_model.predict_proba(X_reshaped)[:, 1]
         
-        # Sweep thresholds with cost-sensitive scoring
-        print(f"\n  Threshold sweep (Cost-Sensitive Score):")
-        print(f"  {'Threshold':<12} {'Easy %':<12} {'Accuracy':<12} {'Score':<12} {'Status':<15}")
-        print(f"  {'-'*63}")
+        # Sweep thresholds with cost-aware scoring
+        print(f"\n  Threshold sweep (Cost-Aware Score: time_saved_pct - w×accuracy_loss):")
+        print(f"  {'Thr':<6} {'Easy %':<10} {'AccLoss':<10} {'TimeSave%':<12} {'Score':<10} {'Status':<10}")
+        print(f"  {'-'*58}")
         
         threshold_results = []
         best_score = -np.inf
         best_threshold = 0.5
+        baseline_accuracy = np.mean((y_pred_proba >= 0.5).astype(int) == y_all)  # Reference accuracy at 0.5
         
         for thresh in thresholds:
             # Classify as easy/hard AND correct/wrong using the same threshold
@@ -139,8 +165,16 @@ def main():
             # Accuracy on validation set (using same threshold for consistency)
             accuracy = np.mean(y_pred_binary == y_all)
             
-            # Cost-sensitive score: balance accuracy × ease
-            score = accuracy * pct_easy_frac
+            # Cost-aware score components
+            # Time saved: (easy_queries * avg_time_per_query) / total_time
+            time_saved_sec = num_easy * timing_data['avg_time_per_query']
+            time_saved_pct = time_saved_sec / timing_data['total_time']
+            
+            # Accuracy loss: relative to baseline (0.5 threshold)
+            accuracy_loss = max(0, baseline_accuracy - accuracy)
+            
+            # Cost-aware score: maximize time saved, penalize accuracy loss
+            score = time_saved_pct - cost_weight * accuracy_loss
             
             # Track best threshold
             is_best = False
@@ -150,13 +184,15 @@ def main():
                 is_best = True
             
             status = "BEST" if is_best else ""
-            print(f"  {thresh:<12.2f} {pct_easy:<12.1f} {accuracy:<12.4f} {score:<12.4f} {status:<15}")
+            print(f"  {thresh:<6.2f} {pct_easy:<10.1f} {accuracy_loss:<10.4f} {100*time_saved_pct:<12.2f} {score:<10.4f} {status:<10}")
             
             threshold_results.append({
                 'threshold': thresh,
                 'pct_easy': pct_easy,
                 'num_easy': num_easy,
                 'accuracy': accuracy,
+                'accuracy_loss': accuracy_loss,
+                'time_saved_pct': time_saved_pct,
                 'score': score,
                 'is_best': is_best
             })
@@ -182,17 +218,24 @@ def main():
         summary_lines.append(f"Validation queries: {len(X_all)}")
         summary_lines.append(f"Correct: {sum(y_all)} ({100*sum(y_all)/len(y_all):.1f}%)")
         summary_lines.append(f"Wrong: {len(y_all)-sum(y_all)} ({100*(len(y_all)-sum(y_all))/len(y_all):.1f}%)")
-        summary_lines.append(f"\nThreshold Analysis (Cost-Sensitive):")
-        summary_lines.append(f"{'Threshold':<12} {'Easy %':<12} {'Accuracy':<12} {'Score':<12} {'Best?':<10}")
+        summary_lines.append(f"Baseline accuracy (threshold=0.5): {baseline_accuracy:.4f}")
+        summary_lines.append(f"\nTiming Data:")
+        summary_lines.append(f"  Total time: {timing_data['total_time']:.1f}s")
+        summary_lines.append(f"  Avg time/query: {timing_data['avg_time_per_query']:.4f}s")
+        summary_lines.append(f"\nThreshold Analysis (Cost-Aware):")
+        summary_lines.append(f"{'Thr':<6} {'Easy %':<10} {'AccLoss':<10} {'TimeSave%':<12} {'Score':<10} {'Best?':<10}")
         summary_lines.append(f"{'-'*58}")
         for res in threshold_results:
             best_marker = "✓ YES" if res['is_best'] else ""
             summary_lines.append(
-                f"{res['threshold']:<12.2f} {res['pct_easy']:<12.1f} "
-                f"{res['accuracy']:<12.4f} {res['score']:<12.4f} {best_marker:<10}"
+                f"{res['threshold']:<6.2f} {res['pct_easy']:<10.1f} "
+                f"{res['accuracy_loss']:<10.4f} {100*res['time_saved_pct']:<12.2f} "
+                f"{res['score']:<10.4f} {best_marker:<10}"
             )
         summary_lines.append(f"\n>>> RECOMMENDED THRESHOLD: {best_threshold:.2f}")
         summary_lines.append(f"    Expected easy queries: {optimal_thresholds[matcher]['expected_easy_pct']:.1f}%")
+        summary_lines.append(f"    Time saved: {threshold_results[[r['threshold'] for r in threshold_results].index(best_threshold)]['time_saved_pct']*100:.2f}%")
+        summary_lines.append(f"    Accuracy loss: {threshold_results[[r['threshold'] for r in threshold_results].index(best_threshold)]['accuracy_loss']:.4f}")
         summary_lines.append(f"    Optimal score: {best_score:.4f}")
     
     # Plot threshold curves (score)

@@ -16,6 +16,7 @@
   "hyperparams": {
     "threshold_dist": 25,
     "top_k": 20,
-    "train_val_split": 0.8
+    "train_val_split": 0.8,
+    "cost_weight": 1.0
   }
 }
