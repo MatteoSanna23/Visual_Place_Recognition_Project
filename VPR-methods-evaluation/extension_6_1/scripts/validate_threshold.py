@@ -1,14 +1,19 @@
 """
-Find optimal probability threshold for easy/hard query decision.
-Sweep thresholds and analyze trade-off between % easy queries and quality.
+Find optimal probability threshold for easy/hard query decision using cost-sensitive scoring.
+Sweep thresholds and find the threshold that maximizes: score = accuracy * pct_easy
+
+This balances:
+  - accuracy: don't lose quality
+  - pct_easy: maximize computational savings
 
 Input:
-  - lr_models.pkl
+  - lr_models.pkl (from Step 2)
   - Validation dataset (SF-XS val)
 
 Output:
-  - threshold_analysis.txt: Results for each threshold
+  - threshold_analysis.txt: Results for each threshold + BEST THRESHOLD
   - threshold_curves.png: Plot of trade-off curves
+  - optimal_thresholds.json: Best threshold for each matcher
 """
 
 import json
@@ -24,23 +29,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from utils.data_loader import load_inliers_val_set
 
 
-def compute_recall_at_k(distances: np.ndarray, threshold: float = 25.0, k: int = 1) -> float:
-    """
-    Compute Recall@K: percentage of queries with correct match in top-k.
-    
-    Args:
-        distances: Array of geo distances for top-k predictions
-        threshold: Distance threshold for correctness (default 25m)
-        k: Consider only first k predictions
-    
-    Returns:
-        Recall@K percentage (0-1)
-    """
-    top_k_distances = distances[:k]
-    correct = np.min(top_k_distances) <= threshold
-    return 1.0 if correct else 0.0
-
-
 def main():
     # Load config
     config_path = Path(__file__).parent.parent / "config" / "paths_config.json"
@@ -52,21 +40,21 @@ def main():
     vpr_models = cfg['vpr_models']
     val_dataset = cfg['input']['val_dataset']
     threshold_dist = cfg['hyperparams']['threshold_dist']
-    top_k = cfg['hyperparams']['top_k']
     
-    # Input: Logistic Regression models
+    # Input: models from Step 2
     models_dir = Path(base_path) / cfg['output']['base_dir'] / "lr_models"
     models_path = models_dir / "lr_models.pkl"
     
     if not models_path.exists():
-        print(f"Models file not found: {models_path}")
+        print(f"⚠️  Models file not found: {models_path}")
+        print("    Did you run Step 2?")
         return
     
     # Load models
     with open(models_path, 'rb') as f:
         models = pickle.load(f)
     
-    print(f"Loaded models: {list(models.keys())}")
+    print(f"✓ Loaded models: {list(models.keys())}")
     
     # Output directory
     output_dir = Path(base_path) / cfg['output']['base_dir'] / "threshold_analysis"
@@ -76,25 +64,26 @@ def main():
     thresholds = [0.50, 0.60, 0.70, 0.75, 0.80, 0.85, 0.90]
     
     summary_lines = []
-    summary_lines.append("=" * 80)
-    summary_lines.append("EXTENSION 6.1 - THRESHOLD VALIDATION")
-    summary_lines.append("=" * 80)
+    summary_lines.append("=" * 90)
+    summary_lines.append("EXTENSION 6.1 - STEP 3: THRESHOLD VALIDATION (COST-SENSITIVE)")
+    summary_lines.append("=" * 90)
     summary_lines.append("")
     
     results_by_matcher = {}
+    optimal_thresholds = {}
     
     # Process each matcher
     for matcher in matchers:
-        print(f"\n{'='*80}")
-        print(f"Processing matcher: {matcher}")
-        print(f"{'='*80}")
+        print(f"\n{'='*90}")
+        print(f"Processing matcher: {matcher.upper()}")
+        print(f"{'='*90}")
         
         # Collect validation data from ALL VPR models
         X_all = []
         y_all = []
         
         for vpr_model in vpr_models:
-            print(f"\n[Loading] {vpr_model}...")
+            print(f"\n  [Loading] {vpr_model}...")
             
             try:
                 X, y, dists = load_inliers_val_set(
@@ -109,79 +98,107 @@ def main():
                 y_all.extend(y)
                 
             except Exception as e:
-                print(f"Error: {e}")
+                print(f"    ⚠️  Error: {e}")
                 continue
         
         if len(X_all) == 0:
-            print(f"No validation data for {matcher}")
+            print(f"  ⚠️  No validation data for {matcher}")
             continue
         
         X_all = np.array(X_all)
         y_all = np.array(y_all)
         
-        print(f"\nValidation data loaded: {len(X_all)} queries")
-        print(f"Correct: {sum(y_all)} ({100*sum(y_all)/len(y_all):.1f}%)")
-        print(f"Wrong: {len(y_all)-sum(y_all)} ({100*(len(y_all)-sum(y_all))/len(y_all):.1f}%)")
+        print(f"\n  ✓ Validation data: {len(X_all)} queries")
+        print(f"    Correct: {sum(y_all)} ({100*sum(y_all)/len(y_all):.1f}%)")
+        print(f"    Wrong: {len(y_all)-sum(y_all)} ({100*(len(y_all)-sum(y_all))/len(y_all):.1f}%)")
         
         # Get model for this matcher
         lr_model = models[matcher]
         
         # Predict probabilities
         X_reshaped = X_all.reshape(-1, 1)
-        y_pred_proba = lr_model.predict_proba(X_reshaped)[:, 1] #   [0.3, 0.8, ...]
+        y_pred_proba = lr_model.predict_proba(X_reshaped)[:, 1]
         
-        # Sweep thresholds
-        print(f"\nThreshold sweep:")
-        print(f"{'Threshold':<12} {'Easy Queries %':<20} {'Easy Count':<15} {'Accuracy':<15}")
-        print(f"{'-'*62}")
+        # Sweep thresholds with cost-sensitive scoring
+        print(f"\n  Threshold sweep (Cost-Sensitive Score):")
+        print(f"  {'Threshold':<12} {'Easy %':<12} {'Accuracy':<12} {'Score':<12} {'Status':<15}")
+        print(f"  {'-'*63}")
         
         threshold_results = []
+        best_score = -np.inf
+        best_threshold = 0.5
         
         for thresh in thresholds:
-            # Classify as easy/hard
-            easy_mask = y_pred_proba >= thresh  # Easy if predicted probability of being correct is above threshold
-            num_easy = np.sum(easy_mask)
-            pct_easy = 100 * num_easy / len(X_all)
+            # Classify as easy/hard AND correct/wrong using the same threshold
+            # Higher threshold = more stringent = fewer predicted as correct
+            y_pred_binary = (y_pred_proba >= thresh).astype(int)
+            num_easy = np.sum(y_pred_binary)
+            pct_easy_frac = num_easy / len(X_all)
+            pct_easy = 100 * pct_easy_frac
             
-            # Accuracy on validation set
-            y_pred_binary = (y_pred_proba >= 0.5).astype(int)   # Final decision based on 0.5 threshold for correctness, not the easy/hard threshold but the actual correctness prediction
+            # Accuracy on validation set (using same threshold for consistency)
             accuracy = np.mean(y_pred_binary == y_all)
             
-            print(f"{thresh:<12.2f} {pct_easy:<20.1f} {num_easy:<15} {accuracy:<15.4f}")
+            # Cost-sensitive score: balance accuracy × ease
+            score = accuracy * pct_easy_frac
+            
+            # Track best threshold
+            is_best = False
+            if score > best_score:
+                best_score = score
+                best_threshold = thresh
+                is_best = True
+            
+            status = "BEST" if is_best else ""
+            print(f"  {thresh:<12.2f} {pct_easy:<12.1f} {accuracy:<12.4f} {score:<12.4f} {status:<15}")
             
             threshold_results.append({
                 'threshold': thresh,
                 'pct_easy': pct_easy,
                 'num_easy': num_easy,
-                'accuracy': accuracy
+                'accuracy': accuracy,
+                'score': score,
+                'is_best': is_best
             })
+        
+        optimal_thresholds[matcher] = {
+            'threshold': best_threshold,
+            'score': best_score,
+            'expected_easy_pct': threshold_results[[r['threshold'] for r in threshold_results].index(best_threshold)]['pct_easy']
+        }
         
         results_by_matcher[matcher] = {
             'threshold_results': threshold_results,
             'total_queries': len(X_all),
-            'y_pred_proba': y_pred_proba
+            'y_pred_proba': y_pred_proba,
+            'best_threshold': best_threshold,
+            'best_score': best_score
         }
         
         # Add to summary
-        summary_lines.append(f"\n{'─'*80}")
+        summary_lines.append(f"\n{'─'*90}")
         summary_lines.append(f"MATCHER: {matcher.upper()}")
-        summary_lines.append(f"{'─'*80}")
+        summary_lines.append(f"{'─'*90}")
         summary_lines.append(f"Validation queries: {len(X_all)}")
         summary_lines.append(f"Correct: {sum(y_all)} ({100*sum(y_all)/len(y_all):.1f}%)")
         summary_lines.append(f"Wrong: {len(y_all)-sum(y_all)} ({100*(len(y_all)-sum(y_all))/len(y_all):.1f}%)")
-        summary_lines.append(f"\nThreshold Analysis:")
-        summary_lines.append(f"{'Threshold':<12} {'Easy Queries %':<20} {'Easy Count':<15} {'Accuracy':<15}")
-        summary_lines.append(f"{'-'*62}")
+        summary_lines.append(f"\nThreshold Analysis (Cost-Sensitive):")
+        summary_lines.append(f"{'Threshold':<12} {'Easy %':<12} {'Accuracy':<12} {'Score':<12} {'Best?':<10}")
+        summary_lines.append(f"{'-'*58}")
         for res in threshold_results:
+            best_marker = "✓ YES" if res['is_best'] else ""
             summary_lines.append(
-                f"{res['threshold']:<12.2f} {res['pct_easy']:<20.1f} "
-                f"{res['num_easy']:<15} {res['accuracy']:<15.4f}"
+                f"{res['threshold']:<12.2f} {res['pct_easy']:<12.1f} "
+                f"{res['accuracy']:<12.4f} {res['score']:<12.4f} {best_marker:<10}"
             )
+        summary_lines.append(f"\n>>> RECOMMENDED THRESHOLD: {best_threshold:.2f}")
+        summary_lines.append(f"    Expected easy queries: {optimal_thresholds[matcher]['expected_easy_pct']:.1f}%")
+        summary_lines.append(f"    Optimal score: {best_score:.4f}")
     
-    # Plot threshold curves
+    # Plot threshold curves (score)
     plt.figure(figsize=(14, 8))
     
-    colors = {'loftr': 'blue', 'superglue': 'red'}
+    colors = {'loftr': 'blue', 'superglue': 'red', 'lightglue': 'green'}
     
     for matcher in matchers:
         if matcher not in results_by_matcher:
@@ -189,33 +206,60 @@ def main():
         
         results = results_by_matcher[matcher]['threshold_results']
         thresholds_plot = [r['threshold'] for r in results]
-        pct_easy_plot = [r['pct_easy'] for r in results]
+        scores_plot = [r['score'] for r in results]
+        best_idx = [r['is_best'] for r in results].index(True)
         
-        plt.plot(thresholds_plot, pct_easy_plot, 
+        plt.plot(thresholds_plot, scores_plot, 
                 marker='o', linewidth=2, markersize=8,
-                label=f"{matcher.upper()}", color=colors.get(matcher, 'green'))
+                label=f"{matcher.upper()}", color=colors.get(matcher, 'gray'))
+        
+        # Mark best threshold
+        plt.plot(thresholds_plot[best_idx], scores_plot[best_idx], 
+                marker='*', markersize=20, color=colors.get(matcher, 'gray'),
+                markeredgecolor='black', markeredgewidth=1.5)
     
     plt.xlabel('Probability Threshold', fontsize=12)
-    plt.ylabel('Percentage of Easy Queries (%)', fontsize=12)
-    plt.title('Threshold Analysis: Easy Queries vs Probability Threshold\n(Higher = More Queries Skip Expensive Matching)', fontsize=14)
+    plt.ylabel('Cost-Sensitive Score (accuracy × pct_easy)', fontsize=12)
+    plt.title('Threshold Optimization: Cost-Sensitive Score\n(★ = Best threshold per matcher)', fontsize=14)
     plt.grid(True, alpha=0.3)
     plt.legend(fontsize=11)
     plt.xticks(thresholds)
     plt.tight_layout()
     
-    plot_path = output_dir / "threshold_curves.png"
+    plot_path = output_dir / "threshold_curves_cost_sensitive.png"
     plt.savefig(plot_path, dpi=150, bbox_inches='tight')
-    print(f"\nPlot saved: {plot_path}")
+    print(f"\n✓ Plot saved: {plot_path}")
     plt.close()
     
     # Save summary
-    summary_lines.append(f"\n{'='*80}")
+    summary_lines.append(f"\n{'='*90}")
+    summary_lines.append("\nOPTIMAL THRESHOLDS (MATCHER-SPECIFIC):")
+    summary_lines.append(f"{'-'*90}")
+    for matcher, opt in optimal_thresholds.items():
+        summary_lines.append(f"\n{matcher.upper()}:")
+        summary_lines.append(f"  Optimal threshold: {opt['threshold']:.2f}")
+        summary_lines.append(f"  Expected easy queries: {opt['expected_easy_pct']:.1f}%")
+        summary_lines.append(f"  Cost-sensitive score: {opt['score']:.4f}")
+    
     summary_path = output_dir / "threshold_analysis.txt"
     with open(summary_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(summary_lines))
     
-    print(f"Summary saved: {summary_path}")
-    print(f"\n{'='*80}")
+    print(f"✓ Summary saved: {summary_path}")
+    
+    # Save optimal thresholds as JSON for Step 4
+    optimal_thresholds_path = output_dir / "optimal_thresholds.json"
+    with open(optimal_thresholds_path, 'w', encoding='utf-8') as f:
+        json.dump(optimal_thresholds, f, indent=2)
+    
+    print(f"✓ Optimal thresholds saved: {optimal_thresholds_path}")
+    
+    print(f"\n{'='*90}")
+    print("SUMMARY:")
+    for matcher, opt in optimal_thresholds.items():
+        print(f"  {matcher}: threshold={opt['threshold']:.2f}, easy={opt['expected_easy_pct']:.1f}%")
+    print(f"{'='*90}")
+
 
 if __name__ == "__main__":
     main()
