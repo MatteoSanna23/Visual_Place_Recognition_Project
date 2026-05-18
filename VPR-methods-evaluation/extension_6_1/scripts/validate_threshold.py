@@ -44,7 +44,7 @@ def compute_recall_at_k(distances: np.ndarray, threshold: float = 25.0, k: int =
 def main():
     # Load config
     config_path = Path(__file__).parent.parent / "config" / "paths_config.json"
-    with open(config_path) as f:
+    with open(config_path, encoding='utf-8') as f:
         cfg = json.load(f)
     
     base_path = cfg['input']['base_path']
@@ -211,7 +211,7 @@ def main():
     # Save summary
     summary_lines.append(f"\n{'='*80}")
     summary_path = output_dir / "threshold_analysis.txt"
-    with open(summary_path, 'w') as f:
+    with open(summary_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(summary_lines))
     
     print(f"Summary saved: {summary_path}")
