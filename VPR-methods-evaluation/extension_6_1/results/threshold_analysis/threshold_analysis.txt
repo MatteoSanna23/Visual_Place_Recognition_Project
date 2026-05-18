@@ -1,6 +1,11 @@
 ================================================================================
-EXTENSION 6.1 - THRESHOLD VALIDATION
+EXTENSION 6.1 - THRESHOLD VALIDATION (AUTOMATED SELECTION)
 ================================================================================
+Score formula: alpha × accuracy_on_easy + (1-alpha) × time_saved_pct
+where alpha (score_weight_accuracy) = 0.9
+  alpha=1.0  → Maximize ACCURACY only (ignore time savings)
+  alpha=0.5  → Balance ACCURACY and TIME SAVINGS equally
+  alpha=0.0  → Maximize TIME SAVINGS only (ignore accuracy)
 
 
 ────────────────────────────────────────────────────────────────────────────────
@@ -10,16 +15,26 @@ Validation queries: 5328
 Correct: 4418 (82.9%)
 Wrong: 910 (17.1%)
 
-Threshold Analysis:
-Threshold    Easy Queries %       Easy Count      Accuracy       
---------------------------------------------------------------
-0.50         77.5                 4128            0.9035         
-0.60         75.6                 4029            0.9035         
-0.70         74.2                 3954            0.9035         
-0.75         73.4                 3912            0.9035         
-0.80         72.8                 3881            0.9035         
-0.85         72.0                 3835            0.9035         
-0.90         70.9                 3777            0.9035         
+Timing Data:
+  Total time: 9773.7s
+  Avg time/query: 3.6688s
+
+Threshold Analysis (Automated Score: 0.9×accuracy + 0.09999999999999998×time_saved%):
+Thr    Easy %     Acc(Easy)    TimeSave%  Score      Best?     
+----------------------------------------------------------
+0.50   77.5       0.9729       154.95     1.030535   ✓ YES     
+0.60   75.6       0.9811       151.24     1.034261   ✓ YES     
+0.70   74.2       0.9841       148.42     1.034083             
+0.75   73.4       0.9882       146.85     1.036263   ✓ YES     
+0.80   72.8       0.9902       145.68     1.036870   ✓ YES     
+0.85   72.0       0.9909       143.96     1.035742             
+0.90   70.9       0.9929       141.78     1.035345             
+
+>>> RECOMMENDED THRESHOLD: 0.80
+Expected easy queries: 77.5%
+Accuracy on easy queries: 0.9729
+Time saved: 154.95%
+Optimal score: 1.030535
 
 ────────────────────────────────────────────────────────────────────────────────
 MATCHER: SUPERGLUE
@@ -28,15 +43,42 @@ Validation queries: 5328
 Correct: 4418 (82.9%)
 Wrong: 910 (17.1%)
 
-Threshold Analysis:
-Threshold    Easy Queries %       Easy Count      Accuracy       
---------------------------------------------------------------
-0.50         59.3                 3162            0.7601         
-0.60         56.8                 3026            0.7601         
-0.70         52.2                 2779            0.7601         
-0.75         52.2                 2779            0.7601         
-0.80         50.0                 2663            0.7601         
-0.85         47.7                 2542            0.7601         
-0.90         44.0                 2342            0.7601         
+Timing Data:
+  Total time: 3556.3s
+  Avg time/query: 1.3350s
 
-================================================================================
+Threshold Analysis (Automated Score: 0.9×accuracy + 0.09999999999999998×time_saved%):
+Thr    Easy %     Acc(Easy)    TimeSave%  Score      Best?     
+----------------------------------------------------------
+0.50   59.3       0.9965       118.70     1.015566   ✓ YES     
+0.60   56.8       0.9970       113.59     1.010915             
+0.70   52.2       0.9975       104.32     1.002052             
+0.75   52.2       0.9975       104.32     1.002052             
+0.80   50.0       0.9974       99.96      0.997599             
+0.85   47.7       0.9980       95.42      0.993653             
+0.90   44.0       0.9983       87.92      0.986378             
+
+>>> RECOMMENDED THRESHOLD: 0.50
+Expected easy queries: 59.3%
+Accuracy on easy queries: 0.9965
+Time saved: 118.70%
+Optimal score: 1.015566
+
+==========================================================================================
+
+SCORE WEIGHT CONFIGURATION:
+  score_weight_accuracy (alpha) = 0.9
+  Formula: 0.9×accuracy + 0.09999999999999998×time_saved_pct
+
+OPTIMAL THRESHOLDS (MATCHER-SPECIFIC, WITH REAL TIMING):
+------------------------------------------------------------------------------------------
+
+LOFTR:
+  Optimal threshold: 0.80
+  Expected easy queries: 72.8%
+  Automated score: 1.036870
+
+SUPERGLUE:
+  Optimal threshold: 0.50
+  Expected easy queries: 59.3%
+  Automated score: 1.015566

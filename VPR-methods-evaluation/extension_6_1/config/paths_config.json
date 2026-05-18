@@ -1,6 +1,6 @@
 {
   "input": {
-    "base_path": "C:/Users/leozi/Desktop/uni/Magi/AML/Visual_Place_Recognition/Visual_Place_Recognition_Project/VPR-methods-evaluation",
+    "base_path": "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation",
     "logs_dir": "training_logs",
     "training_datasets": ["svox_sun", "svox_night"],
     "val_dataset": "sf_xs_val",
@@ -17,6 +17,6 @@
     "threshold_dist": 25,
     "top_k": 20,
     "train_val_split": 0.8,
-    "cost_weight": 1.0
+    "score_weight_accuracy": 0.9
   }
 }
