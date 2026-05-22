@@ -1,7 +1,8 @@
 {
   "input": {
     "base_path": "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/VPR-methods-evaluation",
-    "logs_dir": "training_logs",
+    "training_logs_dir": "training_logs",
+    "testing_logs_dir": "testing_logs",
     "training_datasets": ["svox_sun", "svox_night"],
     "val_dataset": "sf_xs_val",
     "test_datasets": ["tokyo", "sf_xs_test", "svox_sun_test", "svox_night_test"]
@@ -10,8 +11,9 @@
   "matchers": ["loftr", "superglue"],
   "output": {
     "base_dir": "extension_6_1/results",
-    "step3": "validation",
-    "step4": "inference"
+    "lr_models" : "lr_models",
+    "th_analysis": "threshold_analysis",
+    "inference": "inference"
   },
   "hyperparams": {
     "threshold_dist": 25,

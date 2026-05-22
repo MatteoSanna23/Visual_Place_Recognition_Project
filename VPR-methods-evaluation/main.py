@@ -23,7 +23,7 @@ def main(args):
     # Clear previously configured loguru handlers to avoid duplicated logs.
     logger.remove()
     # Build the output path: logs/<user_subdir>/<timestamp>/.
-    log_dir = Path("training_logs") / args.log_dir
+    log_dir = Path("testing_logs") / args.log_dir
 
     # Save the executed CLI command for reproducibility.
     logger.info(" ".join(sys.argv))
