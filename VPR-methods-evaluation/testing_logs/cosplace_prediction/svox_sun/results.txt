@@ -1,0 +1,14 @@
+Distance Metric: L2
+Database: C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\gallery
+Queries: C:\Users\leozi\Desktop\uni\Magi\AML\Visual_Place_Recognition\data\svox\images\test\queries_sun
+Method: cosplace
+Backbone: ResNet50
+Descriptors Dimension: 2048
+Number of Queries: 854
+Number of Database Images: 17166
+
+R@1: 78.3, R@5: 89.6, R@10: 93.1, R@20: 95.0
+R@1: 78.34%
+R@5: 89.58%
+R@10: 93.09%
+R@20: 94.96%
