@@ -22,6 +22,7 @@ import sys
 import json
 import pickle
 import time
+import argparse
 from pathlib import Path
 from collections import defaultdict
 from copy import deepcopy
@@ -59,6 +60,59 @@ INFERENCE_DIR.mkdir(parents=True, exist_ok=True)
 VPR_MODELS = cfg['vpr_models']
 
 
+def detect_path_mapping():
+    """
+    Auto-detect path mapping from config and system.
+    Returns (old_prefix, new_prefix) based on BASE_PATH location.
+    """
+    base_path_str = str(BASE_PATH)
+    
+    # Check if we're on Windows (local path)
+    if "\\" in base_path_str or "C:" in base_path_str or "D:" in base_path_str:
+        # We're on Windows, default mapping should be TeamSpace -> Windows
+        old_prefix = "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/data/"
+        # Extract Windows data path from BASE_PATH structure
+        data_path = Path(BASE_PATH).parent.parent / "data"
+        new_prefix = str(data_path)
+        return old_prefix, new_prefix
+    else:
+        # We're on Linux/TeamSpace
+        old_prefix = "C:\\Users\\leozi\\Desktop\\uni\\Magi\\AML\\Visual_Place_Recognition\\data"
+        new_prefix = "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/data"
+        return old_prefix, new_prefix
+
+
+def convert_path(path, old_prefix, new_prefix):
+    """
+    Convert a path from old_prefix to new_prefix.
+    Handles both Windows and Unix path separators.
+    """
+    if not path:
+        return path
+    
+    # Normalize the path for comparison
+    path_normalized = path.replace("\\", "/")
+    old_normalized = old_prefix.replace("\\", "/")
+    
+    # Check if path starts with old prefix
+    if path_normalized.startswith(old_normalized):
+        # Extract the relative part
+        relative_part = path_normalized[len(old_normalized):].lstrip("/")
+        
+        # Build new path with proper separators
+        if "\\" in new_prefix or ":" in new_prefix:
+            # Target is Windows path
+            new_path = str(Path(new_prefix) / relative_part.replace("/", "\\"))
+        else:
+            # Target is Unix/TeamSpace path
+            new_path = new_prefix.rstrip("/") + "/" + relative_part
+        
+        return new_path
+    
+    # Path doesn't match old prefix, return as-is
+    return path
+
+
 def load_lr_models():
     """Load trained LR models from step train_lr."""
     models_file = MODELS_DIR / "lr_models.pkl"
@@ -75,7 +129,7 @@ def load_optimal_thresholds():
     return thresholds
 
 
-def parse_preds_file(preds_file_path):
+def parse_preds_file(preds_file_path, old_prefix, new_prefix):
     """Parse a single preds.txt file to extract top-k rankings."""
     predictions = []
     positives = []
@@ -93,6 +147,7 @@ def parse_preds_file(preds_file_path):
     while i < len(lines) and lines[i].strip() and "Positives paths:" not in lines[i]:
         path = lines[i].strip()
         if path:
+            path = convert_path(path, old_prefix, new_prefix)
             predictions.append(path)
         i += 1
     
@@ -105,6 +160,7 @@ def parse_preds_file(preds_file_path):
     while i < len(lines) and lines[i].strip():
         path = lines[i].strip()
         if path:
+            path = convert_path(path, old_prefix, new_prefix)
             positives.append(path)
         i += 1
     
@@ -170,7 +226,7 @@ def calculate_recalls(preds_file_path, top_k_list=[1, 5, 10], threshold_dist=THR
     return recalls
 
 
-def process_matcher(matcher_name, lr_models, thresholds):
+def process_matcher(matcher_name, lr_models, thresholds, old_prefix, new_prefix):
     """Process inference for a single matcher."""
     print(f"\n{'='*90}")
     print(f"Processing matcher: {matcher_name.upper()}")
@@ -223,7 +279,7 @@ def process_matcher(matcher_name, lr_models, thresholds):
             
             try:
                 # Parse preds file
-                predictions, positives = parse_preds_file(preds_file)
+                predictions, positives = parse_preds_file(preds_file, old_prefix, new_prefix)
                 
                 if not predictions or not positives:
                     continue
@@ -234,9 +290,15 @@ def process_matcher(matcher_name, lr_models, thresholds):
                 # === STEP 1: Run matching on top-1 ===
                 query_path = None
                 with open(preds_file, 'r') as f:
-                    for line in f:
+                    lines = f.readlines()
+                    for i, line in enumerate(lines):
                         if "Query path:" in line:
+                            # Try to extract path from same line
                             query_path = line.split("Query path:")[1].strip()
+                            # If empty, it might be on the next line
+                            if not query_path and i + 1 < len(lines):
+                                query_path = lines[i + 1].strip()
+                            query_path = convert_path(query_path, old_prefix, new_prefix)
                             break
                 
                 if not query_path or not os.path.exists(query_path):
@@ -361,6 +423,9 @@ def process_matcher(matcher_name, lr_models, thresholds):
 
 
 def main():
+    old_prefix = globals().get('OLD_PREFIX')
+    new_prefix = globals().get('NEW_PREFIX')
+    
     print("\n" + "="*90)
     print("EXTENSION 6.1 - ADAPTIVE INFERENCE")
     print("="*90)
@@ -392,6 +457,7 @@ def main():
     print(f"  Matchers: {list(lr_models.keys())}")
     print(f"  Test datasets: {TEST_DATASETS}")
     print(f"  Testing logs dir: {TESTING_LOGS_DIR}")
+    print(f"  Using prefixes: '{old_prefix}' -> '{new_prefix}'")
     
     # Process each matcher
     all_results = {}
@@ -400,7 +466,7 @@ def main():
             print(f"\n[WARN] Matcher {matcher} not in trained models, skipping")
             continue
         
-        results = process_matcher(matcher, lr_models, thresholds)
+        results = process_matcher(matcher, lr_models, thresholds, old_prefix, new_prefix)
         all_results[matcher] = results
     
     # Summary results
@@ -440,4 +506,26 @@ def main():
         json.dump(all_results, f, indent=2)
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Adaptive inference with configurable path mapping')
+    parser.add_argument('--old-prefix', help='Old path prefix (source path to convert from)')
+    parser.add_argument('--new-prefix', help='New path prefix (target path to convert to)')
+    args = parser.parse_args()
+    
+    # Detect or use provided path mapping
+    if args.old_prefix and args.new_prefix:
+        old_prefix = args.old_prefix
+        new_prefix = args.new_prefix
+        print(f"\n[PATH MAPPING]")
+        print(f"  Old prefix: {old_prefix}")
+        print(f"  New prefix: {new_prefix}")
+    else:
+        old_prefix, new_prefix = detect_path_mapping()
+        print(f"\n[AUTO-DETECTED PATH MAPPING]")
+        print(f"  Old prefix: {old_prefix}")
+        print(f"  New prefix: {new_prefix}")
+    
+    # Store in globals for use in main
+    globals()['OLD_PREFIX'] = old_prefix
+    globals()['NEW_PREFIX'] = new_prefix
+    
     main()

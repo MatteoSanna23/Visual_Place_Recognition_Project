@@ -1,0 +1,169 @@
+==========================================================================================
+EXTENSION 6.1 - ADAPTIVE INFERENCE RESULTS
+==========================================================================================
+
+==========================================================================================
+MATCHER: LOFTR
+Threshold: 0.80
+Expected easy%: 72.8%
+==========================================================================================
+
+
+Dataset: tokyo
+------------------------------------------------------------------------------------------
+  Total queries: 315
+  Easy queries: 156 (49.5%)
+  Hard queries: 159 (50.5%)
+
+  Recall@1:  0.1772
+  Recall@5:  0.4661
+  Recall@10: 0.6364
+
+  Timing:
+    Avg time (easy): 0.2463s
+    Avg time (hard): 4.7393s
+    Total time (easy): 38.42s
+    Total time (hard): 753.55s
+    Total time saved: 353.79s
+    Baseline time/query: 2.5142s
+
+
+Dataset: sf_xs
+------------------------------------------------------------------------------------------
+  Total queries: 966
+  Easy queries: 548 (56.7%)
+  Hard queries: 418 (43.3%)
+
+  Recall@1:  0.1606
+  Recall@5:  0.4329
+  Recall@10: 0.5954
+
+  Timing:
+    Avg time (easy): 0.2646s
+    Avg time (hard): 4.9986s
+    Total time (easy): 145.02s
+    Total time (hard): 2089.43s
+    Total time saved: 1122.56s
+    Baseline time/query: 2.3131s
+
+
+Dataset: svox_sun
+------------------------------------------------------------------------------------------
+  Total queries: 854
+  Easy queries: 622 (72.8%)
+  Hard queries: 232 (27.2%)
+
+  Recall@1:  0.2141
+  Recall@5:  0.6476
+  Recall@10: 0.8135
+
+  Timing:
+    Avg time (easy): 0.2425s
+    Avg time (hard): 4.7682s
+    Total time (easy): 150.84s
+    Total time (hard): 1106.22s
+    Total time saved: 764.73s
+    Baseline time/query: 1.4720s
+
+
+Dataset: svox_night
+------------------------------------------------------------------------------------------
+  Total queries: 823
+  Easy queries: 348 (42.3%)
+  Hard queries: 475 (57.7%)
+
+  Recall@1:  0.1431
+  Recall@5:  0.4535
+  Recall@10: 0.6252
+
+  Timing:
+    Avg time (easy): 0.2414s
+    Avg time (hard): 4.7391s
+    Total time (easy): 83.96s
+    Total time (hard): 2250.80s
+    Total time saved: 903.35s
+    Baseline time/query: 2.8406s
+
+
+==========================================================================================
+MATCHER: SUPERGLUE
+Threshold: 0.50
+Expected easy%: 59.3%
+==========================================================================================
+
+
+Dataset: tokyo
+------------------------------------------------------------------------------------------
+  Total queries: 315
+  Easy queries: 137 (43.5%)
+  Hard queries: 178 (56.5%)
+
+  Recall@1:  0.1772
+  Recall@5:  0.4661
+  Recall@10: 0.6364
+
+  Timing:
+    Avg time (easy): 0.1730s
+    Avg time (hard): 3.4463s
+    Total time (easy): 23.69s
+    Total time (hard): 613.44s
+    Total time saved: 253.41s
+    Baseline time/query: 2.0226s
+
+
+Dataset: sf_xs
+------------------------------------------------------------------------------------------
+  Total queries: 966
+  Easy queries: 444 (46.0%)
+  Hard queries: 522 (54.0%)
+
+  Recall@1:  0.1606
+  Recall@5:  0.4329
+  Recall@10: 0.5954
+
+  Timing:
+    Avg time (easy): 0.1737s
+    Avg time (hard): 3.4669s
+    Total time (easy): 77.10s
+    Total time (hard): 1809.74s
+    Total time saved: 790.14s
+    Baseline time/query: 1.9533s
+
+
+Dataset: svox_sun
+------------------------------------------------------------------------------------------
+  Total queries: 854
+  Easy queries: 659 (77.2%)
+  Hard queries: 195 (22.8%)
+
+  Recall@1:  0.2141
+  Recall@5:  0.6476
+  Recall@10: 0.8135
+
+  Timing:
+    Avg time (easy): 0.1743s
+    Avg time (hard): 3.4554s
+    Total time (easy): 114.88s
+    Total time (hard): 673.80s
+    Total time saved: 493.72s
+    Baseline time/query: 0.9235s
+
+
+Dataset: svox_night
+------------------------------------------------------------------------------------------
+  Total queries: 823
+  Easy queries: 386 (46.9%)
+  Hard queries: 437 (53.1%)
+
+  Recall@1:  0.1431
+  Recall@5:  0.4535
+  Recall@10: 0.6252
+
+  Timing:
+    Avg time (easy): 0.1774s
+    Avg time (hard): 3.4567s
+    Total time (easy): 68.46s
+    Total time (hard): 1510.58s
+    Total time saved: 672.13s
+    Baseline time/query: 1.9186s
+
