@@ -1,12 +1,12 @@
 """
-Inliers Analysis
-Analyze the distribution of inliers_top1 for each matcher across all training datasets.
-Extract features (X) and labels (y) for logistic regression training.
+Inliers Analysis (Dataset-Specific)
+Analyze the distribution of inliers_top1 for each matcher across training datasets.
+Train SEPARATE models for each dataset (svox_sun, svox_night) to capture dataset-specific inliers distributions.
 
 Output:
-  - inliers_{matcher}.pkl: Training data (X, y)
-  - distribution_{matcher}.png: Histogram plots
-  - step1_summary.txt: Statistics and summary
+  - inliers_{matcher}_{dataset}.pkl: Training data (X, y) per dataset
+  - distribution_{matcher}_{dataset}.png: Histogram plots per dataset
+  - inliers_analysis_summary.txt: Statistics and summary
 """
 
 import json
@@ -40,112 +40,106 @@ def main():
     
     summary_lines = []
     summary_lines.append("=" * 80)
-    summary_lines.append("EXTENSION 6.1 - INLIERS ANALYSIS SUMMARY")
+    summary_lines.append("EXTENSION 6.1 - INLIERS ANALYSIS (DATASET-SPECIFIC)")
     summary_lines.append("=" * 80)
+    summary_lines.append("Training separate models for each dataset to capture dataset-specific distributions")
+    summary_lines.append("This allows analysis of how inliers distribution varies across environmental conditions")
     summary_lines.append("")
     
-    # Process each matcher
-    for matcher in matchers:
+    # Process each dataset separately
+    for dataset in training_datasets:
         print(f"\n{'='*80}")
-        print(f"Processing matcher: {matcher}")
+        print(f"Processing dataset: {dataset}")
         print(f"{'='*80}")
         
-        # We collect data from ALL VPR models for this matcher
-        X_all = []
-        y_all = []
-        
-        for vpr_model in vpr_models:
-            print(f"\n[{vpr_model}] Loading training data...")
+        # Process each matcher for this dataset
+        for matcher in matchers:
+            print(f"\n  Matcher: {matcher}")
             
-            try:
-                X, y = load_inliers_and_labels(
-                    base_path=base_path,
-                    vpr_model=vpr_model,
-                    matcher=matcher,
-                    datasets=training_datasets,
-                    threshold_dist=threshold_dist
-                )
+            # We collect data from ALL VPR models for this matcher in this dataset
+            X_all = []
+            y_all = []
+            
+            for vpr_model in vpr_models:
+                print(f"    [{vpr_model}] Loading data...")
                 
-                X_all.extend(X)
-                y_all.extend(y)
-                
-            except Exception as e:
-                print(f"Error loading data for {vpr_model}: {e}")
+                try:
+                    X, y = load_inliers_and_labels(
+                        base_path=base_path,
+                        vpr_model=vpr_model,
+                        matcher=matcher,
+                        datasets=[dataset],  # ← ONLY THIS DATASET
+                        threshold_dist=threshold_dist
+                    )
+                    
+                    X_all.extend(X)
+                    y_all.extend(y)
+                    
+                except Exception as e:
+                    print(f"      Error: {e}")
+                    continue
+            
+            if len(X_all) == 0:
+                print(f"    No data loaded for {matcher} in {dataset}")
                 continue
-        
-        if len(X_all) == 0:
-            print(f"No data loaded for {matcher}")
-            continue
-        
-        X_all = np.array(X_all)
-        y_all = np.array(y_all)
-        
-        # Save as pickle
-        output_pkl = output_dir / f"inliers_{matcher}.pkl"
-        data_dict = {'X': X_all, 'y': y_all}
-        with open(output_pkl, 'wb') as f:
-            pickle.dump(data_dict, f)
-        print(f"\nData saved: {output_pkl}")
-        
-        # Compute statistics
-        stats = get_inliers_statistics(X_all, y_all)
-        
-        # Plot distribution
-        X_correct = X_all[y_all == 1]
-        X_wrong = X_all[y_all == 0]
-        
-        output_png = output_dir / f"distribution_{matcher}.png"
-        plot_inliers_distribution(X_correct, X_wrong, matcher, output_png)
-        
-        # Print summary
-        print(f"\n[Statistics] {matcher}")
-        print(f"Total samples: {len(X_all)}")
-        print(f"Correct queries: {stats['correct']['count']} ({100*stats['correct']['count']/len(X_all):.1f}%)")
-        print(f"Wrong queries: {stats['wrong']['count']} ({100*stats['wrong']['count']/len(X_all):.1f}%)")
-        
-        print(f"\nInliers - Correct queries:")
-        print(f"Mean: {stats['correct']['mean']:.2f}")
-        print(f"Std: {stats['correct']['std']:.2f}")
-        print(f"Median (p50): {stats['correct']['p50']:.2f}")
-        print(f"Range: [{stats['correct']['min']:.0f}, {stats['correct']['max']:.0f}]")
-        print(f"Percentiles: p25={stats['correct']['p25']:.2f}, p75={stats['correct']['p75']:.2f}")
-        
-        print(f"\nInliers - Wrong queries:")
-        print(f"Mean: {stats['wrong']['mean']:.2f}")
-        print(f"Std: {stats['wrong']['std']:.2f}")
-        print(f"Median (p50): {stats['wrong']['p50']:.2f}")
-        print(f"Range: [{stats['wrong']['min']:.0f}, {stats['wrong']['max']:.0f}]")
-        print(f"Percentiles: p25={stats['wrong']['p25']:.2f}, p75={stats['wrong']['p75']:.2f}")
-        
-        # Separation quality
-        overlap_min = max(stats['wrong']['max'], stats['correct']['min'])
-        overlap_max = min(stats['correct']['max'], stats['wrong']['min'])
-        
-        if overlap_max >= overlap_min:
-            print(f"\nOverlap region: [{overlap_min:.0f}, {overlap_max:.0f}]")
-            print(f"Queries in overlap: Poor separability")
-        else:
-            print(f"\nGood separation! Gap: {overlap_min - overlap_max:.0f}")
-        
-        # Add to summary file
-        summary_lines.append(f"\n{'─'*80}")
-        summary_lines.append(f"MATCHER: {matcher}")
-        summary_lines.append(f"{'─'*80}")
-        summary_lines.append(f"Total samples: {len(X_all)}")
-        summary_lines.append(f"Correct queries: {stats['correct']['count']} ({100*stats['correct']['count']/len(X_all):.1f}%)")
-        summary_lines.append(f"Wrong queries: {stats['wrong']['count']} ({100*stats['wrong']['count']/len(X_all):.1f}%)")
-        summary_lines.append(f"\nCorrect queries - Inliers:")
-        summary_lines.append(f"  Mean: {stats['correct']['mean']:.2f} ± {stats['correct']['std']:.2f}")
-        summary_lines.append(f"  Median: {stats['correct']['p50']:.2f}")
-        summary_lines.append(f"  Range: [{stats['correct']['min']:.0f}, {stats['correct']['max']:.0f}]")
-        summary_lines.append(f"\nWrong queries - Inliers:")
-        summary_lines.append(f"  Mean: {stats['wrong']['mean']:.2f} ± {stats['wrong']['std']:.2f}")
-        summary_lines.append(f"  Median: {stats['wrong']['p50']:.2f}")
-        summary_lines.append(f"  Range: [{stats['wrong']['min']:.0f}, {stats['wrong']['max']:.0f}]")
+            
+            X_all = np.array(X_all)
+            y_all = np.array(y_all)
+            
+            # Save as pickle with dataset-specific name
+            output_pkl = output_dir / f"inliers_{matcher}_{dataset}.pkl"
+            data_dict = {'X': X_all, 'y': y_all}
+            with open(output_pkl, 'wb') as f:
+                pickle.dump(data_dict, f)
+            print(f"    Saved: {output_pkl}")
+            
+            # Compute statistics
+            stats = get_inliers_statistics(X_all, y_all)
+            
+            # Plot distribution
+            X_correct = X_all[y_all == 1]
+            X_wrong = X_all[y_all == 0]
+            
+            output_png = output_dir / f"distribution_{matcher}_{dataset}.png"
+            plot_inliers_distribution(X_correct, X_wrong, f"{matcher}_{dataset}", output_png)
+            
+            # Print summary
+            print(f"\n    [Statistics] {matcher}_{dataset}")
+            print(f"    Total samples: {len(X_all)}")
+            print(f"    Correct queries: {stats['correct']['count']} ({100*stats['correct']['count']/len(X_all):.1f}%)")
+            print(f"    Wrong queries: {stats['wrong']['count']} ({100*stats['wrong']['count']/len(X_all):.1f}%)")
+            
+            print(f"\n    Inliers - Correct queries:")
+            print(f"    Mean: {stats['correct']['mean']:.2f}")
+            print(f"    Std: {stats['correct']['std']:.2f}")
+            print(f"    Median (p50): {stats['correct']['p50']:.2f}")
+            print(f"    Range: [{stats['correct']['min']:.0f}, {stats['correct']['max']:.0f}]")
+            
+            print(f"\n    Inliers - Wrong queries:")
+            print(f"    Mean: {stats['wrong']['mean']:.2f}")
+            print(f"    Std: {stats['wrong']['std']:.2f}")
+            print(f"    Median (p50): {stats['wrong']['p50']:.2f}")
+            print(f"    Range: [{stats['wrong']['min']:.0f}, {stats['wrong']['max']:.0f}]")
+            
+            # Add to summary file
+            summary_lines.append(f"\n{'─'*80}")
+            summary_lines.append(f"DATASET: {dataset} | MATCHER: {matcher}")
+            summary_lines.append(f"{'─'*80}")
+            summary_lines.append(f"Total samples: {len(X_all)}")
+            summary_lines.append(f"Correct queries: {stats['correct']['count']} ({100*stats['correct']['count']/len(X_all):.1f}%)")
+            summary_lines.append(f"Wrong queries: {stats['wrong']['count']} ({100*stats['wrong']['count']/len(X_all):.1f}%)")
+            summary_lines.append(f"\nCorrect queries - Inliers:")
+            summary_lines.append(f"  Mean: {stats['correct']['mean']:.2f} ± {stats['correct']['std']:.2f}")
+            summary_lines.append(f"  Median: {stats['correct']['p50']:.2f}")
+            summary_lines.append(f"  Range: [{stats['correct']['min']:.0f}, {stats['correct']['max']:.0f}]")
+            summary_lines.append(f"\nWrong queries - Inliers:")
+            summary_lines.append(f"  Mean: {stats['wrong']['mean']:.2f} ± {stats['wrong']['std']:.2f}")
+            summary_lines.append(f"  Median: {stats['wrong']['p50']:.2f}")
+            summary_lines.append(f"  Range: [{stats['wrong']['min']:.0f}, {stats['wrong']['max']:.0f}]")
     
     # Save summary
     summary_lines.append(f"\n{'='*80}")
-    summary_path = output_dir / "inliers_analysis_summary.txt"
+    summary_path = output_dir / "inliers_analysis_summary_dataset_specific.txt"
     with open(summary_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(summary_lines))
 
