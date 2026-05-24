@@ -1,0 +1,54 @@
+{
+  "loftr_svox_sun": {
+    "tokyo": {
+      "total_queries": 315,
+      "easy_queries": 154,
+      "hard_queries": 161,
+      "easy_pct": 48.888888888888886,
+      "recall@1": 0.7619047619047619,
+      "recall@5": 0.8063492063492064,
+      "recall@10": 0.8222222222222222,
+      "avg_time_easy": 0.19787331835016028,
+      "avg_time_hard": 3.6333508239769787
+    }
+  },
+  "superglue_svox_sun": {
+    "tokyo": {
+      "total_queries": 315,
+      "easy_queries": 135,
+      "hard_queries": 180,
+      "easy_pct": 42.857142857142854,
+      "recall@1": 0.7555555555555555,
+      "recall@5": 0.8,
+      "recall@10": 0.8285714285714286,
+      "avg_time_easy": 0.07659418847825793,
+      "avg_time_hard": 1.4083294616805182
+    }
+  },
+  "loftr_svox_night": {
+    "tokyo": {
+      "total_queries": 315,
+      "easy_queries": 164,
+      "hard_queries": 151,
+      "easy_pct": 52.06349206349206,
+      "recall@1": 0.7523809523809524,
+      "recall@5": 0.8031746031746032,
+      "recall@10": 0.8222222222222222,
+      "avg_time_easy": 0.2017832223961993,
+      "avg_time_hard": 3.7236233720716263
+    }
+  },
+  "superglue_svox_night": {
+    "tokyo": {
+      "total_queries": 315,
+      "easy_queries": 135,
+      "hard_queries": 180,
+      "easy_pct": 42.857142857142854,
+      "recall@1": 0.7555555555555555,
+      "recall@5": 0.8,
+      "recall@10": 0.8285714285714286,
+      "avg_time_easy": 0.07563517005355269,
+      "avg_time_hard": 1.405629919634925
+    }
+  }
+}

@@ -1,0 +1,42 @@
+====================================================================================================
+EXTENSION 6.1 - STEP 4: ADAPTIVE INFERENCE (DATASET-SPECIFIC TRANSFER ANALYSIS)
+====================================================================================================
+
+Analysis: How models from each training dataset perform on all test datasets
+Reveals environmental variation impact on model transferability
+
+
+====================================================================================================
+MODELS TRAINED ON: SVOX_SUN
+====================================================================================================
+
+Matcher: LOFTR | Threshold: 0.75
+Test Dataset         Queries      Easy%      R@1        R@5        R@10      
+--------------------------------------------------------------------------------
+tokyo                315          48.9       0.7619     0.8063     0.8222    
+
+Matcher: SUPERGLUE | Threshold: 0.50
+Test Dataset         Queries      Easy%      R@1        R@5        R@10      
+--------------------------------------------------------------------------------
+tokyo                315          42.9       0.7556     0.8000     0.8286    
+
+====================================================================================================
+MODELS TRAINED ON: SVOX_NIGHT
+====================================================================================================
+
+Matcher: LOFTR | Threshold: 0.90
+Test Dataset         Queries      Easy%      R@1        R@5        R@10      
+--------------------------------------------------------------------------------
+tokyo                315          52.1       0.7524     0.8032     0.8222    
+
+Matcher: SUPERGLUE | Threshold: 0.50
+Test Dataset         Queries      Easy%      R@1        R@5        R@10      
+--------------------------------------------------------------------------------
+tokyo                315          42.9       0.7556     0.8000     0.8286    
+
+====================================================================================================
+INTERPRETATION:
+- Compare Recall@1 for same matcher across different training sources
+- If Recall drops on certain test datasets, environmental mismatch exists
+- This justifies dataset-specific model training approach
+====================================================================================================

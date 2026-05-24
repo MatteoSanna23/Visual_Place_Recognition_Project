@@ -1,0 +1,22 @@
+{
+  "loftr_svox_sun": {
+    "threshold": 0.75,
+    "score": 1.03673852145324,
+    "expected_easy_pct": 72.56006006006007
+  },
+  "superglue_svox_sun": {
+    "threshold": 0.5,
+    "score": 1.0155657676653909,
+    "expected_easy_pct": 59.346846846846844
+  },
+  "loftr_svox_night": {
+    "threshold": 0.9,
+    "score": 1.032809438628492,
+    "expected_easy_pct": 76.16366366366367
+  },
+  "superglue_svox_night": {
+    "threshold": 0.5,
+    "score": 1.0155657676653909,
+    "expected_easy_pct": 59.346846846846844
+  }
+}

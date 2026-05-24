@@ -1,0 +1,126 @@
+==========================================================================================
+EXTENSION 6.1 - THRESHOLD VALIDATION (DATASET-SPECIFIC ANALYSIS)
+==========================================================================================
+Score formula: alpha × accuracy_on_easy + (1-alpha) × time_saved_pct
+where alpha (score_weight_accuracy) = 0.9
+  alpha=1.0  → Maximize ACCURACY only
+  alpha=0.5  → Balance ACCURACY and TIME SAVINGS
+  alpha=0.0  → Maximize TIME SAVINGS only
+
+Dataset-specific models allow analysis of transfer between datasets
+(e.g., how does threshold from svox_sun perform on svox_night_test?)
+
+
+──────────────────────────────────────────────────────────────────────────────────────────
+DATASET: svox_sun | MATCHER: LOFTR
+──────────────────────────────────────────────────────────────────────────────────────────
+Validation queries: 5328
+Correct: 4418 (82.9%)
+
+Threshold Analysis:
+Thr    Easy %     Acc(Easy)    TimeSave%  Score      Best?     
+------------------------------------------------------------
+0.50   76.7       0.9763       153.49     1.032140             
+0.60   74.6       0.9834       149.14     1.034185             
+0.70   73.2       0.9887       146.40     1.036242             
+0.75   72.6       0.9907       145.12     1.036739   ✓ YES     
+0.80   71.7       0.9916       143.47     1.035932             
+0.85   70.9       0.9929       141.78     1.035345             
+0.90   69.4       0.9938       138.70     1.033098             
+
+>>> RECOMMENDED THRESHOLD: 0.75
+Expected easy queries: 72.6%
+Accuracy on easy queries: 0.9907
+Optimal score: 1.036739
+
+──────────────────────────────────────────────────────────────────────────────────────────
+DATASET: svox_sun | MATCHER: SUPERGLUE
+──────────────────────────────────────────────────────────────────────────────────────────
+Validation queries: 5328
+Correct: 4418 (82.9%)
+
+Threshold Analysis:
+Thr    Easy %     Acc(Easy)    TimeSave%  Score      Best?     
+------------------------------------------------------------
+0.50   59.3       0.9965       118.70     1.015566   ✓ YES     
+0.60   56.8       0.9970       113.59     1.010915             
+0.70   52.2       0.9975       104.32     1.002052             
+0.75   50.0       0.9974       99.96      0.997599             
+0.80   47.7       0.9980       95.42      0.993653             
+0.85   46.0       0.9984       91.93      0.990462             
+0.90   44.0       0.9983       87.92      0.986378             
+
+>>> RECOMMENDED THRESHOLD: 0.50
+Expected easy queries: 59.3%
+Accuracy on easy queries: 0.9965
+Optimal score: 1.015566
+
+──────────────────────────────────────────────────────────────────────────────────────────
+DATASET: svox_night | MATCHER: LOFTR
+──────────────────────────────────────────────────────────────────────────────────────────
+Validation queries: 5328
+Correct: 4418 (82.9%)
+
+Threshold Analysis:
+Thr    Easy %     Acc(Easy)    TimeSave%  Score      Best?     
+------------------------------------------------------------
+0.50   81.3       0.9511       162.57     1.018520             
+0.60   79.9       0.9596       159.87     1.023525             
+0.70   79.3       0.9629       158.67     1.025242             
+0.75   78.0       0.9699       156.08     1.029024             
+0.80   77.5       0.9729       154.95     1.030535             
+0.85   77.1       0.9747       154.28     1.031505             
+0.90   76.2       0.9783       152.33     1.032809   ✓ YES     
+
+>>> RECOMMENDED THRESHOLD: 0.90
+Expected easy queries: 76.2%
+Accuracy on easy queries: 0.9783
+Optimal score: 1.032809
+
+──────────────────────────────────────────────────────────────────────────────────────────
+DATASET: svox_night | MATCHER: SUPERGLUE
+──────────────────────────────────────────────────────────────────────────────────────────
+Validation queries: 5328
+Correct: 4418 (82.9%)
+
+Threshold Analysis:
+Thr    Easy %     Acc(Easy)    TimeSave%  Score      Best?     
+------------------------------------------------------------
+0.50   59.3       0.9965       118.70     1.015566   ✓ YES     
+0.60   56.8       0.9970       113.59     1.010915             
+0.70   54.2       0.9972       108.45     1.005956             
+0.75   54.2       0.9972       108.45     1.005956             
+0.80   52.2       0.9975       104.32     1.002052             
+0.85   50.0       0.9974       99.96      0.997599             
+0.90   47.7       0.9980       95.42      0.993653             
+
+>>> RECOMMENDED THRESHOLD: 0.50
+Expected easy queries: 59.3%
+Accuracy on easy queries: 0.9965
+Optimal score: 1.015566
+
+==========================================================================================
+
+OPTIMAL THRESHOLDS (DATASET-SPECIFIC):
+For transfer analysis: Test how each threshold performs on other datasets
+------------------------------------------------------------------------------------------
+
+Trained on LOFTR_SVOX | SUN:
+  Optimal threshold: 0.75
+  Expected easy queries: 72.6%
+  Automated score: 1.036739
+
+Trained on SUPERGLUE_SVOX | SUN:
+  Optimal threshold: 0.50
+  Expected easy queries: 59.3%
+  Automated score: 1.015566
+
+Trained on LOFTR_SVOX | NIGHT:
+  Optimal threshold: 0.90
+  Expected easy queries: 76.2%
+  Automated score: 1.032809
+
+Trained on SUPERGLUE_SVOX | NIGHT:
+  Optimal threshold: 0.50
+  Expected easy queries: 59.3%
+  Automated score: 1.015566

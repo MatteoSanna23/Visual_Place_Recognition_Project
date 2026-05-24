@@ -1,0 +1,67 @@
+================================================================================
+EXTENSION 6.1 - LOGISTIC REGRESSION TRAINING (DATASET-SPECIFIC)
+================================================================================
+Training separate models for each dataset to capture distribution variations
+
+
+────────────────────────────────────────────────────────────────────────────────
+DATASET: svox_sun | MATCHER: loftr
+────────────────────────────────────────────────────────────────────────────────
+Training samples: 1139
+Validation samples: 285
+
+Model Parameters:
+Coefficient: 0.109496
+Intercept: -3.277650
+
+Validation Performance:
+AUPRC: 0.9803
+AUC-ROC: 0.9724
+Accuracy: 0.9368
+
+────────────────────────────────────────────────────────────────────────────────
+DATASET: svox_sun | MATCHER: superglue
+────────────────────────────────────────────────────────────────────────────────
+Training samples: 1139
+Validation samples: 285
+
+Model Parameters:
+Coefficient: 0.298757
+Intercept: -3.997113
+
+Validation Performance:
+AUPRC: 0.9724
+AUC-ROC: 0.9570
+Accuracy: 0.9228
+
+────────────────────────────────────────────────────────────────────────────────
+DATASET: svox_night | MATCHER: loftr
+────────────────────────────────────────────────────────────────────────────────
+Training samples: 1123
+Validation samples: 281
+
+Model Parameters:
+Coefficient: 0.234026
+Intercept: -4.992552
+
+Validation Performance:
+AUPRC: 0.9149
+AUC-ROC: 0.9370
+Accuracy: 0.9039
+
+────────────────────────────────────────────────────────────────────────────────
+DATASET: svox_night | MATCHER: superglue
+────────────────────────────────────────────────────────────────────────────────
+Training samples: 1123
+Validation samples: 281
+
+Model Parameters:
+Coefficient: 0.413967
+Intercept: -5.515145
+
+Validation Performance:
+AUPRC: 0.9116
+AUC-ROC: 0.9456
+Accuracy: 0.9110
+
+================================================================================

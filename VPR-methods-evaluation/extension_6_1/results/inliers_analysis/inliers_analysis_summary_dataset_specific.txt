@@ -1,0 +1,76 @@
+================================================================================
+EXTENSION 6.1 - INLIERS ANALYSIS (DATASET-SPECIFIC)
+================================================================================
+Training separate models for each dataset to capture dataset-specific distributions
+This allows analysis of how inliers distribution varies across environmental conditions
+
+
+────────────────────────────────────────────────────────────────────────────────
+DATASET: svox_sun | MATCHER: loftr
+────────────────────────────────────────────────────────────────────────────────
+Total samples: 1424
+Correct queries: 940 (66.0%)
+Wrong queries: 484 (34.0%)
+
+Correct queries - Inliers:
+  Mean: 142.00 ± 105.58
+  Median: 121.00
+  Range: [7, 649]
+
+Wrong queries - Inliers:
+  Mean: 14.85 ± 17.23
+  Median: 11.00
+  Range: [0, 258]
+
+────────────────────────────────────────────────────────────────────────────────
+DATASET: svox_sun | MATCHER: superglue
+────────────────────────────────────────────────────────────────────────────────
+Total samples: 1424
+Correct queries: 940 (66.0%)
+Wrong queries: 484 (34.0%)
+
+Correct queries - Inliers:
+  Mean: 35.93 ± 23.97
+  Median: 31.00
+  Range: [3, 175]
+
+Wrong queries - Inliers:
+  Mean: 8.83 ± 5.61
+  Median: 7.00
+  Range: [0, 53]
+
+────────────────────────────────────────────────────────────────────────────────
+DATASET: svox_night | MATCHER: loftr
+────────────────────────────────────────────────────────────────────────────────
+Total samples: 1404
+Correct queries: 520 (37.0%)
+Wrong queries: 884 (63.0%)
+
+Correct queries - Inliers:
+  Mean: 92.73 ± 87.18
+  Median: 67.50
+  Range: [6, 500]
+
+Wrong queries - Inliers:
+  Mean: 10.17 ± 7.29
+  Median: 9.00
+  Range: [5, 145]
+
+────────────────────────────────────────────────────────────────────────────────
+DATASET: svox_night | MATCHER: superglue
+────────────────────────────────────────────────────────────────────────────────
+Total samples: 1404
+Correct queries: 520 (37.0%)
+Wrong queries: 884 (63.0%)
+
+Correct queries - Inliers:
+  Mean: 29.01 ± 18.57
+  Median: 26.50
+  Range: [2, 118]
+
+Wrong queries - Inliers:
+  Mean: 6.80 ± 3.55
+  Median: 6.00
+  Range: [0, 50]
+
+================================================================================

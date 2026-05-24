@@ -5,7 +5,7 @@
     "testing_logs_dir": "testing_logs",
     "training_datasets": ["svox_sun", "svox_night"],
     "val_dataset": "sf_xs_val",
-    "test_datasets": ["tokyo", "sf_xs_test", "svox_sun_test", "svox_night_test"]
+    "test_datasets": ["tokyo"]
   },
   "vpr_models": ["cosplace", "mixvpr"],
   "matchers": ["loftr", "superglue"],
@@ -19,6 +19,6 @@
     "threshold_dist": 25,
     "top_k": 20,
     "train_val_split": 0.8,
-    "score_weight_accuracy": 0.9
+    "score_weight_accuracy": 0.6
   }
 }

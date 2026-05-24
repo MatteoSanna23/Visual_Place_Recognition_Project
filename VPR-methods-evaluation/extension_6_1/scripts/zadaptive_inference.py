@@ -67,9 +67,9 @@ TOP_K = cfg['hyperparams']['top_k']
 
 # Paths
 RESULTS_DIR = Path(BASE_PATH) / cfg['output']['base_dir']
-MODELS_DIR = RESULTS_DIR / cfg['output'].get('step2', 'models')
-THRESHOLD_DIR = RESULTS_DIR / cfg['output']['step3']
-INFERENCE_DIR = RESULTS_DIR / cfg['output']['step4']
+MODELS_DIR = RESULTS_DIR / cfg['output']['lr_models']
+THRESHOLD_DIR = RESULTS_DIR / cfg['output']['th_analysis']
+INFERENCE_DIR = RESULTS_DIR / cfg['output']['inference']
 INFERENCE_DIR.mkdir(parents=True, exist_ok=True)
 
 VPR_MODELS = cfg['vpr_models']
@@ -85,25 +85,84 @@ def detect_path_mapping():
     # Check if we're on Windows (local path)
     if "\\" in base_path_str or "C:" in base_path_str or "D:" in base_path_str:
         # We're on Windows, convert from TeamSpace to Windows
-        old_prefix = "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/data/"
+        old_prefix = "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/data"
         data_path = Path(BASE_PATH).parent.parent / "data"
         new_prefix = str(data_path)
         return old_prefix, new_prefix
     else:
-        # We're on TeamSpace, convert from Windows to TeamSpace
+        # We're on TeamSpace
+        # Paths might be either Windows format (from old generation) or already TeamSpace format
         old_prefix = "C:\\Users\\leozi\\Desktop\\uni\\Magi\\AML\\Visual_Place_Recognition\\data"
         new_prefix = "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/data"
         return old_prefix, new_prefix
 
 
+def validate_path_mapping(old_prefix, new_prefix, test_preds_dir):
+    """
+    Validate path mapping by checking a sample preds file.
+    Returns (is_valid, sample_original, sample_converted, exists)
+    """
+    preds_files = sorted(test_preds_dir.glob("*.txt"))
+    if not preds_files:
+        return False, None, None, False
+    
+    try:
+        sample_file = preds_files[0]
+        
+        # Read the file
+        with open(sample_file, 'r') as f:
+            lines = f.readlines()
+        
+        # Find a sample prediction path
+        original_in_file = None
+        in_predictions = False
+        for line in lines:
+            if "Predictions paths:" in line:
+                in_predictions = True
+                continue
+            if in_predictions:
+                if line.strip() and "Positives" not in line:
+                    original_in_file = line.strip()
+                    break
+        
+        if not original_in_file:
+            return False, None, None, False
+        
+        # Convert the path
+        converted = convert_path(original_in_file, old_prefix, new_prefix)
+        exists = os.path.exists(converted)
+        
+        return True, original_in_file, converted, exists
+    
+    except Exception as e:
+        return False, None, None, False
+
+
 def convert_path(path, old_prefix, new_prefix):
-    """Convert a path from old_prefix to new_prefix."""
+    """Convert a path from old_prefix to new_prefix.
+    If path is already in new_prefix format, return as-is.
+    """
     if not path:
         return path
     
-    # Normalize the path for comparison
+    # Normalize paths for comparison
     path_normalized = path.replace("\\", "/")
     old_normalized = old_prefix.replace("\\", "/")
+    new_normalized = new_prefix.replace("\\", "/")
+    
+    # Check if path is already in the target format
+    if path_normalized.startswith(new_normalized):
+        return path
+    
+    # Check if path has incorrect TeamSpace prefix (missing Visual_Place_Recognition_Project)
+    if "/teamspace/studios/this_studio/data/" in path_normalized:
+        # Fix the path by inserting the missing project folder
+        corrected = path_normalized.replace(
+            "/teamspace/studios/this_studio/data/",
+            "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/data/"
+        )
+        if os.path.exists(corrected):
+            return corrected
     
     # Check if path starts with old prefix
     if path_normalized.startswith(old_normalized):
@@ -296,13 +355,16 @@ def process_inference(training_dataset, matcher_name, lr_models, thresholds, old
         recall_10 = 0.0
         time_easy = 0.0
         time_hard = 0.0
+        skip_reasons = defaultdict(int)
         
         # Progress bar for query processing
         preds_subset = preds_files[:min(500, len(preds_files))]
+        
         for preds_file in tqdm(preds_subset, desc=f"      {test_dataset}", leave=False, unit=" query"):
             try:
                 predictions, positives = parse_preds_file(preds_file, old_prefix, new_prefix)
                 if not predictions or not positives:
+                    skip_reasons['no_predictions_or_positives'] += 1
                     continue
                 
                 total_queries += 1
@@ -310,13 +372,23 @@ def process_inference(training_dataset, matcher_name, lr_models, thresholds, old
                 # Load query path
                 query_path = None
                 with open(preds_file, 'r') as f:
-                    for line in f:
+                    lines = f.readlines()
+                    for i, line in enumerate(lines):
                         if "Query path:" in line:
-                            query_path = line.split("Query path:")[1].strip()
-                            query_path = convert_path(query_path, old_prefix, new_prefix)
+                            # Query path might be on the same line or next line
+                            path_part = line.split("Query path:")[1].strip()
+                            if path_part:
+                                query_path = path_part
+                            elif i + 1 < len(lines):
+                                # Try next line
+                                query_path = lines[i + 1].strip()
                             break
                 
+                if query_path:
+                    query_path = convert_path(query_path, old_prefix, new_prefix)
+                
                 if not query_path or not os.path.exists(query_path):
+                    skip_reasons['query_path_missing'] += 1
                     continue
                 
                 # Get distances from predictions
@@ -328,6 +400,7 @@ def process_inference(training_dataset, matcher_name, lr_models, thresholds, old
                 # === STEP 1: Run matching on top-1 ===
                 top1_path = predictions[0]
                 if not os.path.exists(top1_path):
+                    skip_reasons['top1_path_missing'] += 1
                     continue
                 
                 match_start = time.time()
@@ -384,6 +457,7 @@ def process_inference(training_dataset, matcher_name, lr_models, thresholds, old
                 recall_10 += recalls['recall@10']
                 
             except Exception as e:
+                skip_reasons['exception'] += 1
                 continue
         
         if total_queries > 0:
@@ -407,7 +481,11 @@ def process_inference(training_dataset, matcher_name, lr_models, thresholds, old
                 'avg_time_hard': avg_time_hard,
             }
             
-            print(f"✓ R@1={recall_1:.4f} | Easy={easy_pct:.1f}% | Queries={total_queries}")
+            status_msg = f"✓ R@1={recall_1:.4f} | Easy={easy_pct:.1f}% | Queries={total_queries}"
+            if skip_reasons and easy_queries == 0 and hard_queries == 0:
+                status_msg += f" | Skipped: {dict(skip_reasons)}"
+            
+            print(status_msg)
         else:
             print(f"[SKIP - no valid queries]")
     
@@ -431,6 +509,24 @@ def main():
     print(f"\n[PATH MAPPING]")
     print(f"  Old: {old_prefix}")
     print(f"  New: {new_prefix}")
+    
+    # Validate path mapping with a sample file
+    print(f"\n[VALIDATING PATH MAPPING]")
+    test_preds_dir = Path(BASE_PATH) / TESTING_LOGS_DIR / f"{VPR_MODELS[0]}_prediction" / TEST_DATASETS[0] / "preds"
+    
+    if test_preds_dir.exists():
+        is_valid, orig, converted, exists = validate_path_mapping(old_prefix, new_prefix, test_preds_dir)
+        if is_valid:
+            print(f"  Original path in file: {orig}")
+            print(f"  Converted to:          {converted}")
+            print(f"  File exists: {'✓ YES' if exists else '✗ NO'}")
+            
+            if not exists:
+                print(f"\n  [INFO] Path fix attempted in convert_path() - will retry during processing")
+        else:
+            print(f"  [WARNING] Could not validate path mapping - will attempt conversion during processing")
+    else:
+        print(f"  [WARNING] Test preds directory not found: {test_preds_dir}")
     
     # Load models and thresholds
     print(f"\n[Loading] Dataset-specific models and thresholds...")

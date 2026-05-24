@@ -157,8 +157,9 @@ def main():
             threshold_results = []
             best_score = -np.inf
             best_threshold = 0.5
+            best_threshold_idx = 0
             
-            for thresh in thresholds:
+            for idx, thresh in enumerate(thresholds):
                 easy_mask = y_pred_proba >= thresh
                 num_easy = np.sum(easy_mask)
                 pct_easy = 100 * num_easy / len(X_all)
@@ -173,14 +174,10 @@ def main():
                 
                 score = score_weight_accuracy * accuracy_on_easy + (1 - score_weight_accuracy) * time_saved_pct
                 
-                is_best = False
                 if score > best_score:
                     best_score = score
                     best_threshold = thresh
-                    is_best = True
-                
-                status = "← BEST" if is_best else ""
-                print(f"    {thresh:<6.2f} {pct_easy:<10.1f} {accuracy_on_easy:<12.4f} {100*time_saved_pct:<10.2f} {score:<10.6f} {status:<10}")
+                    best_threshold_idx = idx
                 
                 threshold_results.append({
                     'threshold': thresh,
@@ -188,16 +185,25 @@ def main():
                     'num_easy': num_easy,
                     'accuracy_on_easy': accuracy_on_easy,
                     'time_saved_pct': time_saved_pct,
-                    'score': score,
-                    'is_best': is_best
+                    'score': score
                 })
+                
+                status = ""
+                print(f"    {thresh:<6.2f} {pct_easy:<10.1f} {accuracy_on_easy:<12.4f} {100*time_saved_pct:<10.2f} {score:<10.6f} {status:<10}")
+            
+            # Mark only the best threshold in results for plotting
+            for i, result in enumerate(threshold_results):
+                result['is_best'] = (i == best_threshold_idx)
+            
+            # Get the best result
+            best_result = threshold_results[best_threshold_idx]
             
             # Store optimal threshold
             threshold_key = f"{matcher}_{dataset}"
             optimal_thresholds[threshold_key] = {
                 'threshold': best_threshold,
                 'score': best_score,
-                'expected_easy_pct': threshold_results[[r['threshold'] for r in threshold_results].index(best_threshold)]['pct_easy']
+                'expected_easy_pct': best_result['pct_easy']
             }
             
             results_by_dataset_matcher[threshold_key] = {
@@ -224,7 +230,6 @@ def main():
                     f"{res['accuracy_on_easy']:<12.4f} {100*res['time_saved_pct']:<10.2f} "
                     f"{res['score']:<10.6f} {best_marker:<10}"
                 )
-            best_result = [r for r in threshold_results if r['is_best']][0]
             summary_lines.append(f"\n>>> RECOMMENDED THRESHOLD: {best_threshold:.2f}")
             summary_lines.append(f"Expected easy queries: {best_result['pct_easy']:.1f}%")
             summary_lines.append(f"Accuracy on easy queries: {best_result['accuracy_on_easy']:.4f}")
@@ -243,9 +248,10 @@ def main():
                 continue
             
             results = results_by_dataset_matcher[key]['threshold_results']
+            best_threshold_val = results_by_dataset_matcher[key]['best_threshold']
             thresholds_plot = [r['threshold'] for r in results]
             scores_plot = [r['score'] for r in results]
-            best_idx = [r['is_best'] for r in results].index(True)
+            best_idx = next(i for i, r in enumerate(results) if r['threshold'] == best_threshold_val)
             
             label = f"{dataset}_{matcher.upper()}"
             plt.plot(thresholds_plot, scores_plot, 
