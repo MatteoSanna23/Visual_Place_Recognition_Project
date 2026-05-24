@@ -208,21 +208,16 @@ def is_correct(predicted_idx, preds_file_path, threshold_dist=THRESHOLD_DIST):
     return 1 if geo_dist <= threshold_dist else 0
 
 
-def calculate_recalls(preds_file_path, top_k_list=[1, 5, 10], threshold_dist=THRESHOLD_DIST):
-    """Calculate recall@k metrics."""
-    distances = get_list_distances_from_preds(str(preds_file_path))
-    
-    # Count total correct predictions (all with distance <= threshold)
-    total_correct = sum(1 for d in distances if d <= threshold_dist)
-    
-    if total_correct == 0:
-        return {f'recall@{k}': 0.0 for k in top_k_list}
+def calculate_recalls(preds_file_path, top_k_list=[1, 5, 10], threshold_dist=THRESHOLD_DIST, distances=None):
+    """Calculate recall@k metrics"""
+    # Use provided distances or extract from file
+    if distances is None:
+        distances = get_list_distances_from_preds(str(preds_file_path))
     
     recalls = {}
     for k in top_k_list:
-        correct_at_k = sum(1 for i in range(min(k, len(distances)))
-                          if distances[i] <= threshold_dist)
-        recalls[f'recall@{k}'] = correct_at_k / total_correct
+        has_correct = any(distances[i] <= threshold_dist for i in range(min(k, len(distances))))
+        recalls[f'recall@{k}'] = 1.0 if has_correct else 0.0
     return recalls
 
 
@@ -287,6 +282,9 @@ def process_matcher(matcher_name, lr_models, thresholds, old_prefix, new_prefix)
                 metrics['total_queries'] += 1
                 query_start_time = time.time()
                 
+                # === Load distances from predictions file ===
+                original_distances = get_list_distances_from_preds(str(preds_file))
+                
                 # === STEP 1: Run matching on top-1 ===
                 query_path = None
                 with open(preds_file, 'r') as f:
@@ -329,6 +327,8 @@ def process_matcher(matcher_name, lr_models, thresholds, old_prefix, new_prefix)
                     total_match_time = match_time_top1
                     metrics['time_easy'] += total_match_time
                     decision = "EASY"
+                    # Use original distances (no reordering for EASY)
+                    ranked_distances = original_distances
                 
                 else:
                     # HARD: run full matching on top-20
@@ -349,12 +349,15 @@ def process_matcher(matcher_name, lr_models, thresholds, old_prefix, new_prefix)
                     ranked_indices = np.argsort(inliers_list)[::-1]
                     final_ranking = [predictions[i] for i in ranked_indices]
                     
+                    # Re-rank distances according to same indices
+                    ranked_distances = [original_distances[i] for i in ranked_indices]
+                    
                     total_match_time = time.time() - full_match_start
                     metrics['time_hard'] += total_match_time
                     decision = "HARD"
                 
-                # === STEP 4: Calculate recalls ===
-                recalls = calculate_recalls(preds_file, threshold_dist=THRESHOLD_DIST)
+                # === STEP 4: Calculate recalls using ranked distances ===
+                recalls = calculate_recalls(preds_file, threshold_dist=THRESHOLD_DIST, distances=ranked_distances)
                 metrics['recall@1'] += recalls['recall@1']
                 metrics['recall@5'] += recalls['recall@5']
                 metrics['recall@10'] += recalls['recall@10']
