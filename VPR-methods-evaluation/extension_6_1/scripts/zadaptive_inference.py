@@ -36,6 +36,7 @@ from collections import defaultdict
 from copy import deepcopy
 import numpy as np
 from PIL import Image
+from tqdm import tqdm
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
@@ -177,25 +178,29 @@ def parse_preds_file(preds_file_path, old_prefix, new_prefix):
     return predictions[:TOP_K], positives
 
 
-def run_image_matching(query_img_path, db_img_path, matcher_name, img_size=512):
-    """Run image matching between query and database image."""
+def run_image_matching(query_img_loaded, db_img_path, matcher, img_size=512):
+    """Run image matching between query and database image.
+    
+    Args:
+        query_img_loaded: Pre-loaded query image tensor (or path if not loaded)
+        db_img_path: Path to database image
+        matcher: Pre-instantiated matcher object
+        img_size: Image size for resizing
+    """
     try:
         if not HAS_MATCHING:
-            # Placeholder: return random inliers for testing
             return np.random.randint(10, 150)
         
-        if matcher_name.lower() == 'loftr':
-            matcher = get_matcher('loftr', device=get_default_device())
-        elif matcher_name.lower() == 'superglue':
-            matcher = get_matcher('superglue', device=get_default_device())
+        # Load query image if it's a path string
+        if isinstance(query_img_loaded, str):
+            img0 = matcher.load_image(query_img_loaded, resize=img_size)
         else:
-            raise ValueError(f"Unknown matcher: {matcher_name}")
+            img0 = query_img_loaded
         
-        img0 = matcher.load_image(query_img_path, resize=img_size)
+        # Load database image
         img1 = matcher.load_image(db_img_path, resize=img_size)
         
         result = matcher(deepcopy(img0), img1)
-        
         inliers = result.get('num_inliers', 0)
         return inliers
     
@@ -226,17 +231,17 @@ def calculate_recalls(preds_file_path, top_k_list=[1, 5, 10], threshold_dist=THR
     return recalls
 
 
-def process_inference(training_dataset, matcher, lr_models, thresholds, old_prefix, new_prefix):
+def process_inference(training_dataset, matcher_name, lr_models, thresholds, old_prefix, new_prefix):
     """
     Process inference for one training_dataset/matcher combination.
     Tests on all test_datasets to show transfer.
     """
     print(f"\n  {'─'*88}")
-    print(f"  Dataset-Specific: {training_dataset.upper()} | Matcher: {matcher.upper()}")
+    print(f"  Dataset-Specific: {training_dataset.upper()} | Matcher: {matcher_name.upper()}")
     print(f"  {'─'*88}")
     
-    model_key = f"{matcher}_{training_dataset}"
-    threshold_key = f"{matcher}_{training_dataset}"
+    model_key = f"{matcher_name}_{training_dataset}"
+    threshold_key = f"{matcher_name}_{training_dataset}"
     
     if model_key not in lr_models:
         print(f"    [ERROR] Model not found: {model_key}")
@@ -250,6 +255,20 @@ def process_inference(training_dataset, matcher, lr_models, thresholds, old_pref
     threshold = thresholds[threshold_key]['threshold']
     
     print(f"    Threshold: {threshold:.2f}")
+    
+    # ========== LOAD MATCHER ONCE ==========
+    print(f"    Loading {matcher_name.upper()} matcher...", end=" ", flush=True)
+    try:
+        if matcher_name.lower() == 'loftr':
+            matcher_instance = get_matcher('loftr', device=get_default_device())
+        elif matcher_name.lower() == 'superglue':
+            matcher_instance = get_matcher('superglue', device=get_default_device())
+        else:
+            raise ValueError(f"Unknown matcher: {matcher_name}")
+        print("✓")
+    except Exception as e:
+        print(f"[FAILED: {e}]")
+        return None
     
     transfer_results = {}
     
@@ -278,7 +297,9 @@ def process_inference(training_dataset, matcher, lr_models, thresholds, old_pref
         time_easy = 0.0
         time_hard = 0.0
         
-        for preds_file in preds_files[:min(500, len(preds_files))]:  # Limit for speed
+        # Progress bar for query processing
+        preds_subset = preds_files[:min(500, len(preds_files))]
+        for preds_file in tqdm(preds_subset, desc=f"      {test_dataset}", leave=False, unit=" query"):
             try:
                 predictions, positives = parse_preds_file(preds_file, old_prefix, new_prefix)
                 if not predictions or not positives:
@@ -310,7 +331,7 @@ def process_inference(training_dataset, matcher, lr_models, thresholds, old_pref
                     continue
                 
                 match_start = time.time()
-                inliers_top1 = run_image_matching(query_path, top1_path, matcher)
+                inliers_top1 = run_image_matching(query_path, top1_path, matcher_instance)
                 match_time_top1 = time.time() - match_start
                 
                 # === STEP 2: Predict with LR ===
@@ -329,12 +350,21 @@ def process_inference(training_dataset, matcher, lr_models, thresholds, old_pref
                     hard_queries += 1
                     full_match_start = time.time()
                     
+                    # Pre-load query image once for batch matching
+                    try:
+                        img_size = 512
+                        query_img_loaded = matcher_instance.load_image(query_path, resize=img_size)
+                    except:
+                        query_img_loaded = query_path  # Fallback to path-based loading
+                    
                     inliers_list = []
-                    for pred_path in predictions:
+                    # Progress bar for hard query matching (top-20)
+                    for pred_path in tqdm(predictions, desc="        Matching top-20", leave=False, unit=" match", disable=len(predictions)<5):
                         if not os.path.exists(pred_path):
                             inliers_list.append(0)
                         else:
-                            inliers = run_image_matching(query_path, pred_path, matcher)
+                            # Pass pre-loaded query image and matcher instance
+                            inliers = run_image_matching(query_img_loaded, pred_path, matcher_instance)
                             inliers_list.append(inliers)
                     
                     # Re-rank by inliers (descending)
@@ -431,13 +461,13 @@ def main():
         print(f"Training Dataset: {training_dataset.upper()}")
         print(f"{'='*90}")
         
-        for matcher in MATCHERS:
+        for matcher_name in MATCHERS:
             results = process_inference(
-                training_dataset, matcher, lr_models, thresholds, 
+                training_dataset, matcher_name, lr_models, thresholds, 
                 old_prefix, new_prefix
             )
             if results:
-                key = f"{matcher}_{training_dataset}"
+                key = f"{matcher_name}_{training_dataset}"
                 all_results[key] = results
     
     # ======== SAVE RESULTS ========
