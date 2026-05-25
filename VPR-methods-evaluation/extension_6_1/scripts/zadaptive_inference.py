@@ -70,14 +70,14 @@ def detect_path_mapping():
     # Check if we're on Windows (local path)
     if "\\" in base_path_str or "C:" in base_path_str or "D:" in base_path_str:
         # We're on Windows, convert from TeamSpace to Windows
-        old_prefix = "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/data"
+        old_prefix = "/teamspace/studios/this_studio/data"
         data_path = Path(BASE_PATH).parent.parent / "data"
         new_prefix = str(data_path)
         return old_prefix, new_prefix
     else:
         # We're on TeamSpace
         old_prefix = "C:\\Users\\leozi\\Desktop\\uni\\Magi\\AML\\Visual_Place_Recognition\\data"
-        new_prefix = "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/data"
+        new_prefix = "/teamspace/studios/this_studio/data"
         return old_prefix, new_prefix
 
 
@@ -327,7 +327,7 @@ def process_matcher(matcher_name, lr_models, thresholds, old_prefix, new_prefix)
         skip_reasons = defaultdict(int)
         
         # Process queries with progress bar
-        preds_subset = preds_files[:min(500, len(preds_files))]
+        preds_subset = preds_files  # Process all queries, no limit
         
         for preds_file in tqdm(preds_subset, desc=f"    {dataset}", leave=False, unit=" query"):
             
