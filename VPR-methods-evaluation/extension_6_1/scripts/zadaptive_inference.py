@@ -28,6 +28,7 @@ from collections import defaultdict
 from copy import deepcopy
 import numpy as np
 from PIL import Image
+from tqdm import tqdm
 
 from matching import get_matcher, available_models
 from matching.utils import get_default_device
@@ -42,8 +43,8 @@ with open(config_path, 'r') as f:
     cfg = json.load(f)
 
 BASE_PATH = cfg['input']['base_path']
-TRAINING_LOGS_DIR = cfg['input']['training_logs_dir']
-TESTING_LOGS_DIR = cfg['input']['testing_logs_dir']
+TRAINING_LOGS_DIR = cfg['input'].get('training_logs_dir', 'training_logs')
+TESTING_LOGS_DIR = cfg['input'].get('testing_logs_dir', 'testing_logs')
 MATCHERS = cfg['matchers']
 TEST_DATASETS = cfg['input']['test_datasets']
 THRESHOLD_DIST = cfg['hyperparams']['threshold_dist']
@@ -51,48 +52,91 @@ TOP_K = cfg['hyperparams']['top_k']
 
 # Paths
 RESULTS_DIR = Path(BASE_PATH) / cfg['output']['base_dir']
-MODELS_DIR = RESULTS_DIR / cfg['output']["lr_models"]
+MODELS_DIR = RESULTS_DIR / cfg['output']['lr_models']
 THRESHOLD_DIR = RESULTS_DIR / cfg['output']['th_analysis']
 INFERENCE_DIR = RESULTS_DIR / cfg['output']['inference']
 INFERENCE_DIR.mkdir(parents=True, exist_ok=True)
 
-# VPR models and matchers to test
 VPR_MODELS = cfg['vpr_models']
 
 
 def detect_path_mapping():
     """
     Auto-detect path mapping from config and system.
-    Returns (old_prefix, new_prefix) based on BASE_PATH location.
+    Returns (old_prefix, new_prefix) for path conversion.
     """
     base_path_str = str(BASE_PATH)
     
     # Check if we're on Windows (local path)
     if "\\" in base_path_str or "C:" in base_path_str or "D:" in base_path_str:
-        # We're on Windows, default mapping should be TeamSpace -> Windows
-        old_prefix = "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/data/"
-        # Extract Windows data path from BASE_PATH structure
+        # We're on Windows, convert from TeamSpace to Windows
+        old_prefix = "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/data"
         data_path = Path(BASE_PATH).parent.parent / "data"
         new_prefix = str(data_path)
         return old_prefix, new_prefix
     else:
-        # We're on Linux/TeamSpace
+        # We're on TeamSpace
         old_prefix = "C:\\Users\\leozi\\Desktop\\uni\\Magi\\AML\\Visual_Place_Recognition\\data"
         new_prefix = "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/data"
         return old_prefix, new_prefix
 
 
-def convert_path(path, old_prefix, new_prefix):
+def validate_path_mapping(old_prefix, new_prefix, test_preds_dir):
     """
-    Convert a path from old_prefix to new_prefix.
-    Handles both Windows and Unix path separators.
+    Validate path mapping by checking a sample preds file.
+    Returns (is_valid, sample_original, sample_converted, exists)
+    """
+    preds_files = sorted(test_preds_dir.glob("*.txt"))
+    if not preds_files:
+        return False, None, None, False
+    
+    try:
+        sample_file = preds_files[0]
+        
+        # Read the file
+        with open(sample_file, 'r') as f:
+            lines = f.readlines()
+        
+        # Find a sample prediction path
+        original_in_file = None
+        in_predictions = False
+        for line in lines:
+            if "Predictions paths:" in line:
+                in_predictions = True
+                continue
+            if in_predictions:
+                if line.strip() and "Positives" not in line:
+                    original_in_file = line.strip()
+                    break
+        
+        if not original_in_file:
+            return False, None, None, False
+        
+        # Convert the path
+        converted = convert_path(original_in_file, old_prefix, new_prefix)
+        exists = os.path.exists(converted)
+        
+        return True, original_in_file, converted, exists
+    
+    except Exception as e:
+        return False, None, None, False
+
+
+def convert_path(path, old_prefix, new_prefix):
+    """Convert a path from old_prefix to new_prefix.
+    If path is already in new_prefix format, return as-is.
     """
     if not path:
         return path
     
-    # Normalize the path for comparison
+    # Normalize paths for comparison
     path_normalized = path.replace("\\", "/")
     old_normalized = old_prefix.replace("\\", "/")
+    new_normalized = new_prefix.replace("\\", "/")
+    
+    # Check if path is already in the target format
+    if path_normalized.startswith(new_normalized):
+        return path
     
     # Check if path starts with old prefix
     if path_normalized.startswith(old_normalized):
@@ -167,30 +211,31 @@ def parse_preds_file(preds_file_path, old_prefix, new_prefix):
     return predictions[:TOP_K], positives
 
 
-def run_image_matching(query_img_path, db_img_path, matcher_name, img_size=512):
-    """
-    Run image matching between query and database image.
-    Returns: number of inliers (keypoint matches after geometric verification)
+def run_image_matching(query_img_loaded, db_img_path, matcher, img_size=512):
+    """Run image matching between query and database image.
+    
+    Args:
+        query_img_loaded: Pre-loaded query image tensor (or path if not loaded)
+        db_img_path: Path to database image
+        matcher: Pre-instantiated matcher object
+        img_size: Image size for resizing
     """
     try:
-        if matcher_name.lower() == 'loftr':
-            matcher = get_matcher('loftr', device=get_default_device())
-        elif matcher_name.lower() == 'superglue':
-            matcher = get_matcher('superglue', device=get_default_device())
+        # Load query image if it's a path string
+        if isinstance(query_img_loaded, str):
+            img0 = matcher.load_image(query_img_loaded, resize=img_size)
         else:
-            raise ValueError(f"Unknown matcher: {matcher_name}")
+            img0 = query_img_loaded
         
-        img0 = matcher.load_image(query_img_path, resize=img_size)
+        # Load database image
         img1 = matcher.load_image(db_img_path, resize=img_size)
         
         result = matcher(deepcopy(img0), img1)
-        
         inliers = result.get('num_inliers', 0)
-        
         return inliers
     
     except Exception as e:
-        print(f"  [ERROR] Matching failed: {e}")
+        print(f"    [ERROR] Matching failed: {e}")
         return 0
 
 
@@ -228,11 +273,24 @@ def process_matcher(matcher_name, lr_models, thresholds, old_prefix, new_prefix)
     print(f"{'='*90}")
     
     results_per_dataset = {}
-    query_decisions = []  # For logging easy/hard decisions
     
     threshold = thresholds[matcher_name]['threshold']
     print(f"  Optimal threshold: {threshold:.2f}")
-    print(f"  Expected easy queries: {thresholds[matcher_name]['expected_easy_pct']:.1f}%\n")
+    print(f"  Expected easy queries: {thresholds[matcher_name]['expected_easy_pct']:.1f}%")
+    
+    # ========== LOAD MATCHER ONCE ==========
+    print(f"  Loading {matcher_name.upper()} matcher...", end=" ", flush=True)
+    try:
+        if matcher_name.lower() == 'loftr':
+            matcher_instance = get_matcher('loftr', device=get_default_device())
+        elif matcher_name.lower() == 'superglue':
+            matcher_instance = get_matcher('superglue', device=get_default_device())
+        else:
+            raise ValueError(f"Unknown matcher: {matcher_name}")
+        print("✓\n")
+    except Exception as e:
+        print(f"[FAILED: {e}]")
+        return results_per_dataset
     
     for dataset in TEST_DATASETS:
         print(f"\n  Processing dataset: {dataset}")
@@ -266,24 +324,28 @@ def process_matcher(matcher_name, lr_models, thresholds, old_prefix, new_prefix)
             'count_hard': 0,
         }
         
-        query_times = []
+        skip_reasons = defaultdict(int)
         
-        for query_idx, preds_file in enumerate(preds_files):
-            if (query_idx + 1) % 100 == 0:
-                print(f"Progress: {query_idx + 1}/{len(preds_files)}")
+        # Process queries with progress bar
+        preds_subset = preds_files[:min(500, len(preds_files))]
+        
+        for preds_file in tqdm(preds_subset, desc=f"    {dataset}", leave=False, unit=" query"):
             
             try:
                 # Parse preds file
                 predictions, positives = parse_preds_file(preds_file, old_prefix, new_prefix)
                 
                 if not predictions or not positives:
+                    skip_reasons['no_predictions_or_positives'] += 1
                     continue
                 
                 metrics['total_queries'] += 1
-                query_start_time = time.time()
                 
                 # === Load distances from predictions file ===
-                original_distances = get_list_distances_from_preds(str(preds_file))
+                try:
+                    original_distances = get_list_distances_from_preds(str(preds_file))
+                except:
+                    original_distances = [float('inf')] * len(predictions)
                 
                 # === STEP 1: Run matching on top-1 ===
                 query_path = None
@@ -291,24 +353,30 @@ def process_matcher(matcher_name, lr_models, thresholds, old_prefix, new_prefix)
                     lines = f.readlines()
                     for i, line in enumerate(lines):
                         if "Query path:" in line:
-                            # Try to extract path from same line
-                            query_path = line.split("Query path:")[1].strip()
-                            # If empty, it might be on the next line
-                            if not query_path and i + 1 < len(lines):
+                            # Query path might be on the same line or next line
+                            path_part = line.split("Query path:")[1].strip()
+                            if path_part:
+                                query_path = path_part
+                            elif i + 1 < len(lines):
+                                # Try next line
                                 query_path = lines[i + 1].strip()
-                            query_path = convert_path(query_path, old_prefix, new_prefix)
                             break
                 
+                if query_path:
+                    query_path = convert_path(query_path, old_prefix, new_prefix)
+                
                 if not query_path or not os.path.exists(query_path):
+                    skip_reasons['query_path_missing'] += 1
                     continue
                 
                 top1_path = predictions[0]
                 if not os.path.exists(top1_path):
+                    skip_reasons['top1_path_missing'] += 1
                     continue
                 
                 # Run matching on top-1 (measure timing)
                 match_start = time.time()
-                inliers_top1 = run_image_matching(query_path, top1_path, matcher_name)
+                inliers_top1 = run_image_matching(query_path, top1_path, matcher_instance)
                 match_time_top1 = time.time() - match_start
                 
                 # === STEP 2: Predict with LR ===
@@ -323,56 +391,52 @@ def process_matcher(matcher_name, lr_models, thresholds, old_prefix, new_prefix)
                     # EASY: use top-1, skip full matching
                     metrics['easy_queries'] += 1
                     metrics['count_easy'] += 1
-                    final_ranking = predictions  # Keep original ranking
                     total_match_time = match_time_top1
                     metrics['time_easy'] += total_match_time
-                    decision = "EASY"
-                    # Use original distances (no reordering for EASY)
                     ranked_distances = original_distances
-                
+                    
                 else:
-                    # HARD: run full matching on top-20
+                    # HARD: run full matching on top-20, re-rank by inliers
                     metrics['hard_queries'] += 1
                     metrics['count_hard'] += 1
                     full_match_start = time.time()
                     
-                    # Run full matching on all top-20 predictions
+                    # Pre-load query image once for batch matching
+                    try:
+                        img_size = 512
+                        query_img_loaded = matcher_instance.load_image(query_path, resize=img_size)
+                    except:
+                        query_img_loaded = query_path  # Fallback to path-based loading
+                    
                     inliers_list = []
-                    for pred_path in predictions:
+                    # Progress bar for hard query matching (top-20)
+                    for pred_path in tqdm(predictions, desc="        Matching top-20", leave=False, unit=" match", disable=len(predictions)<5):
                         if not os.path.exists(pred_path):
                             inliers_list.append(0)
                         else:
-                            inliers = run_image_matching(query_path, pred_path, matcher_name)
+                            # Pass pre-loaded query image and matcher instance
+                            inliers = run_image_matching(query_img_loaded, pred_path, matcher_instance)
                             inliers_list.append(inliers)
                     
-                    # Re-rank predictions by inliers (descending order)
+                    # Re-rank by inliers (descending)
                     ranked_indices = np.argsort(inliers_list)[::-1]
-                    final_ranking = [predictions[i] for i in ranked_indices]
-                    
-                    # Re-rank distances according to same indices
                     ranked_distances = [original_distances[i] for i in ranked_indices]
                     
                     total_match_time = time.time() - full_match_start
                     metrics['time_hard'] += total_match_time
-                    decision = "HARD"
                 
                 # === STEP 4: Calculate recalls using ranked distances ===
-                recalls = calculate_recalls(preds_file, threshold_dist=THRESHOLD_DIST, distances=ranked_distances)
+                recalls = calculate_recalls(
+                    preds_file, 
+                    threshold_dist=THRESHOLD_DIST, 
+                    distances=ranked_distances
+                )
                 metrics['recall@1'] += recalls['recall@1']
                 metrics['recall@5'] += recalls['recall@5']
                 metrics['recall@10'] += recalls['recall@10']
                 
-                query_times.append({
-                    'query_id': query_idx,
-                    'decision': decision,
-                    'prob_correct': prob_correct,
-                    'inliers_top1': inliers_top1,
-                    'time': total_match_time,
-                    'recall@1': recalls['recall@1'],
-                })
-                
             except Exception as e:
-                print(f"[ERROR] Query {query_idx}: {e}")
+                skip_reasons['exception'] += 1
                 continue
         
         # === Compute final metrics ===
@@ -381,10 +445,8 @@ def process_matcher(matcher_name, lr_models, thresholds, old_prefix, new_prefix)
             metrics['recall@5'] /= metrics['total_queries']
             metrics['recall@10'] /= metrics['total_queries']
             
-            avg_time_easy = (metrics['time_easy'] / metrics['count_easy'] 
-                            if metrics['count_easy'] > 0 else 0)
-            avg_time_hard = (metrics['time_hard'] / metrics['count_hard'] 
-                            if metrics['count_hard'] > 0 else 0)
+            avg_time_easy = metrics['time_easy'] / metrics['count_easy'] if metrics['count_easy'] > 0 else 0
+            avg_time_hard = metrics['time_hard'] / metrics['count_hard'] if metrics['count_hard'] > 0 else 0
             
             easy_pct = 100 * metrics['easy_queries'] / metrics['total_queries']
             hard_pct = 100 * metrics['hard_queries'] / metrics['total_queries']
@@ -411,58 +473,73 @@ def process_matcher(matcher_name, lr_models, thresholds, old_prefix, new_prefix)
                 'baseline_time_per_query': baseline_time_per_query,
             }
             
-            print(f"\n    Results for {dataset}:")
-            print(f"      Total queries: {metrics['total_queries']}")
-            print(f"      Easy queries: {metrics['easy_queries']} ({easy_pct:.1f}%)")
-            print(f"      Hard queries: {metrics['hard_queries']} ({hard_pct:.1f}%)")
-            print(f"      Recall@1: {metrics['recall@1']:.4f}")
-            print(f"      Recall@5: {metrics['recall@5']:.4f}")
-            print(f"      Recall@10: {metrics['recall@10']:.4f}")
-            print(f"      Avg time (easy): {avg_time_easy:.4f}s")
-            print(f"      Avg time (hard): {avg_time_hard:.4f}s")
-            print(f"      Total time saved: {total_time_saved:.2f}s")
+            status_msg = f"✓ R@1={metrics['recall@1']:.4f} | Easy={easy_pct:.1f}% | Queries={metrics['total_queries']}"
+            if skip_reasons and metrics['easy_queries'] == 0 and metrics['hard_queries'] == 0:
+                status_msg += f" | Skipped: {dict(skip_reasons)}"
+            
+            print(status_msg)
+        else:
+            print(f"[SKIP - no valid queries]")
     
     return results_per_dataset
 
 
 def main():
-    old_prefix = globals().get('OLD_PREFIX')
-    new_prefix = globals().get('NEW_PREFIX')
-    
     print("\n" + "="*90)
-    print("EXTENSION 6.1 - ADAPTIVE INFERENCE")
+    print("EXTENSION 6.1 - ADAPTIVE INFERENCE (MATCHER-WISE)")
     print("="*90)
+    
+    # Detect path mapping
+    old_prefix, new_prefix = detect_path_mapping()
+    print(f"\n[PATH MAPPING]")
+    print(f"  Old: {old_prefix}")
+    print(f"  New: {new_prefix}")
+    
+    # Validate path mapping with a sample file
+    print(f"\n[VALIDATING PATH MAPPING]")
+    test_preds_dir = Path(BASE_PATH) / TESTING_LOGS_DIR / f"{VPR_MODELS[0]}_prediction" / TEST_DATASETS[0] / "preds"
+    
+    if test_preds_dir.exists():
+        is_valid, orig, converted, exists = validate_path_mapping(old_prefix, new_prefix, test_preds_dir)
+        if is_valid:
+            print(f"  Original path in file: {orig}")
+            print(f"  Converted to:          {converted}")
+            print(f"  File exists: {'✓ YES' if exists else '✗ NO'}")
+            
+            if not exists:
+                print(f"\n  [INFO] Path fix attempted in convert_path() - will retry during processing")
+        else:
+            print(f"  [WARNING] Could not validate path mapping - will attempt conversion during processing")
+    else:
+        print(f"  [WARNING] Test preds directory not found: {test_preds_dir}")
     
     # Check if testing logs directory exists
     testing_logs_path = Path(BASE_PATH) / TESTING_LOGS_DIR
     if not testing_logs_path.exists():
-        print(f"\n[ERROR] Testing logs directory not found: {testing_logs_path}")
-        print(f"\nPlease create the directory structure:")
-        print(f"  {testing_logs_path}/")
-        print(f"    ├─ {VPR_MODELS[0]}_prediction/")
-        print(f"    │  ├─ tokyo/preds/")
-        print(f"    │  ├─ sf_xs_test/preds/")
-        print(f"    │  ├─ svox_sun_test/preds/")
-        print(f"    │  └─ svox_night_test/preds/")
-        print(f"    └─ {VPR_MODELS[1]}_prediction/")
-        print(f"       ├─ tokyo/preds/")
-        print(f"       ├─ sf_xs_test/preds/")
-        print(f"       ├─ svox_sun_test/preds/")
-        print(f"       └─ svox_night_test/preds/")
-        print(f"\nEach preds/ folder should contain *.txt files with predictions.")
+        print(f"\n[ERROR] Testing logs not found: {testing_logs_path}")
+        print(f"Waiting for test predictions to be available...")
         return
     
     # Load models and thresholds
-    print("\n[Loading] LR models and optimal thresholds...")
-    lr_models = load_lr_models()
-    thresholds = load_optimal_thresholds()
+    print(f"\n[Loading] LR models and optimal thresholds...")
+    try:
+        lr_models = load_lr_models()
+        thresholds = load_optimal_thresholds()
+    except FileNotFoundError as e:
+        print(f"[ERROR] Missing files: {e}")
+        print("Make sure Steps 2-3 completed successfully")
+        return
     
-    print(f"  Matchers: {list(lr_models.keys())}")
+    print(f"✓ Loaded {len(lr_models)} models")
+    print(f"✓ Loaded {len(thresholds)} threshold configs")
+    print(f"  Matchers: {MATCHERS}")
     print(f"  Test datasets: {TEST_DATASETS}")
-    print(f"  Testing logs dir: {TESTING_LOGS_DIR}")
-    print(f"  Using prefixes: '{old_prefix}' -> '{new_prefix}'")
     
-    # Process each matcher
+    # ======== MATCHER-WISE PROCESSING ========
+    print(f"\n\n{'='*90}")
+    print("ADAPTIVE INFERENCE PROCESSING")
+    print(f"{'='*90}")
+    
     all_results = {}
     for matcher in MATCHERS:
         if matcher not in lr_models:
@@ -509,26 +586,4 @@ def main():
         json.dump(all_results, f, indent=2)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Adaptive inference with configurable path mapping')
-    parser.add_argument('--old-prefix', help='Old path prefix (source path to convert from)')
-    parser.add_argument('--new-prefix', help='New path prefix (target path to convert to)')
-    args = parser.parse_args()
-    
-    # Detect or use provided path mapping
-    if args.old_prefix and args.new_prefix:
-        old_prefix = args.old_prefix
-        new_prefix = args.new_prefix
-        print(f"\n[PATH MAPPING]")
-        print(f"  Old prefix: {old_prefix}")
-        print(f"  New prefix: {new_prefix}")
-    else:
-        old_prefix, new_prefix = detect_path_mapping()
-        print(f"\n[AUTO-DETECTED PATH MAPPING]")
-        print(f"  Old prefix: {old_prefix}")
-        print(f"  New prefix: {new_prefix}")
-    
-    # Store in globals for use in main
-    globals()['OLD_PREFIX'] = old_prefix
-    globals()['NEW_PREFIX'] = new_prefix
-    
     main()
