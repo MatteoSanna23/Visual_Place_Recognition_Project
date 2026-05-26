@@ -11,6 +11,7 @@ import sys
 import json
 import pickle
 import time
+import datetime
 import argparse
 from pathlib import Path
 from collections import defaultdict
@@ -532,10 +533,24 @@ def main():
     # Save results and summary
     # Create summary
     summary_lines = []
-    summary_lines.append("="*100)
-    summary_lines.append("EXTENSION 6.1 - STEP 4: ADAPTIVE INFERENCE (DATASET-SPECIFIC TRANSFER ANALYSIS)")
-    summary_lines.append("="*100)
-    summary_lines.append("")
+    
+    # Check if file exists to decide on header
+    summary_file = INFERENCE_DIR / "adaptive_inference.txt"
+    file_exists = summary_file.exists()
+    
+    # Add header based on whether file exists
+    if not file_exists:
+        # First run: add main header
+        summary_lines.append("="*100)
+        summary_lines.append("EXTENSION 6.1 - STEP 4: ADAPTIVE INFERENCE (DATASET-SPECIFIC TRANSFER ANALYSIS)")
+        summary_lines.append("="*100)
+        summary_lines.append("")
+    else:
+        # Subsequent runs: add timestamp separator
+        summary_lines.append("\n" + "="*100)
+        summary_lines.append(f"RUN EXECUTED AT: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        summary_lines.append("="*100)
+        summary_lines.append("")
     
     for training_dataset in TRAINING_DATASETS:
         summary_lines.append(f"\n{'='*100}")
@@ -563,9 +578,9 @@ def main():
                     f"{metrics['recall@10']:<10.4f}"
                 )
     
-    summary_file = INFERENCE_DIR / "adaptive_inference.txt"
-    with open(summary_file, 'w') as f:
-        f.write('\n'.join(summary_lines))
+    # Append to file (create if doesn't exist, append if exists)
+    with open(summary_file, 'a') as f:
+        f.write('\n'.join(summary_lines) + '\n')
     
     print(f"\n✓ Transfer analysis saved: {summary_file}")
     

@@ -3,14 +3,6 @@ EXTENSION 6.1 - THRESHOLD VALIDATION (DATASET-SPECIFIC ANALYSIS)
 ==========================================================================================
 Score formula: alpha × accuracy_on_easy + (1-alpha) × time_saved_pct
 where alpha (score_weight_accuracy) = 0.9
-  alpha=1.0  → Maximize ACCURACY only
-  alpha=0.5  → Balance ACCURACY and TIME SAVINGS
-  alpha=0.0  → Maximize TIME SAVINGS only
-
-Dataset-specific models allow analysis of transfer between datasets
-(e.g., how does threshold from svox_sun perform on svox_night_test?)
-
-
 ──────────────────────────────────────────────────────────────────────────────────────────
 DATASET: svox_sun | MATCHER: LOFTR
 ──────────────────────────────────────────────────────────────────────────────────────────
@@ -101,8 +93,7 @@ Optimal score: 1.015566
 
 ==========================================================================================
 
-OPTIMAL THRESHOLDS (DATASET-SPECIFIC):
-For transfer analysis: Test how each threshold performs on other datasets
+OPTIMAL THRESHOLDS:
 ------------------------------------------------------------------------------------------
 
 Trained on LOFTR_SVOX | SUN:

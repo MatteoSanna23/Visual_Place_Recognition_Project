@@ -1,9 +1,6 @@
 ================================================================================
-EXTENSION 6.1 - INLIERS ANALYSIS (DATASET-SPECIFIC)
+EXTENSION 6.1 - INLIERS ANALYSIS
 ================================================================================
-Training separate models for each dataset to capture dataset-specific distributions
-This allows analysis of how inliers distribution varies across environmental conditions
-
 
 ────────────────────────────────────────────────────────────────────────────────
 DATASET: svox_sun | MATCHER: loftr

@@ -1,12 +1,6 @@
 ====================================================================================================
 EXTENSION 6.1 - STEP 4: ADAPTIVE INFERENCE (DATASET-SPECIFIC TRANSFER ANALYSIS)
 ====================================================================================================
-
-Analysis: How models from each training dataset perform on all test datasets
-Reveals environmental variation impact on model transferability
-
-
-====================================================================================================
 MODELS TRAINED ON: SVOX_SUN
 ====================================================================================================
 
@@ -34,9 +28,4 @@ Test Dataset         Queries      Easy%      R@1        R@5        R@10
 --------------------------------------------------------------------------------
 tokyo                315          42.9       0.7556     0.8000     0.8286    
 
-====================================================================================================
-INTERPRETATION:
-- Compare Recall@1 for same matcher across different training sources
-- If Recall drops on certain test datasets, environmental mismatch exists
-- This justifies dataset-specific model training approach
 ====================================================================================================

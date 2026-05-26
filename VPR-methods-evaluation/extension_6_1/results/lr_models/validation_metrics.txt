@@ -1,8 +1,6 @@
 ================================================================================
-EXTENSION 6.1 - LOGISTIC REGRESSION TRAINING (DATASET-SPECIFIC)
+EXTENSION 6.1 - LOGISTIC REGRESSION TRAINING
 ================================================================================
-Training separate models for each dataset to capture distribution variations
-
 
 ────────────────────────────────────────────────────────────────────────────────
 DATASET: svox_sun | MATCHER: loftr
