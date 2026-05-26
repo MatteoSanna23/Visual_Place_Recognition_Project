@@ -1,15 +1,12 @@
 """
-Validate and select optimal thresholds (DATASET-SPECIFIC)
-For each training dataset, find optimal probability thresholds for each matcher.
-
 Input:
-  - lr_models_dataset_specific.pkl (from Step 2)
+  - lr_models.pkl (from train_lr.py)
   - Validation dataset (SF-XS val)
 
 Output:
-  - threshold_analysis_dataset_specific.txt: Results for each dataset/matcher
-  - threshold_curves_dataset_specific.png: Plot of trade-off curves
-  - optimal_thresholds_dataset_specific.json: Best threshold for each dataset/matcher
+  - threshold_analysis.txt: Results for each dataset/matcher
+  - threshold_curves.png: Plot of trade-off curves
+  - optimal_thresholds.json: Best threshold for each dataset/matcher
 """
 
 import json
@@ -22,7 +19,7 @@ import matplotlib.pyplot as plt
 # Add utils to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from utils.data_loader import load_inliers_val_set
+from utils.data_loader import load_inliers_and_labels
 
 
 def main():
@@ -39,9 +36,9 @@ def main():
     threshold_dist = cfg['hyperparams']['threshold_dist']
     score_weight_accuracy = cfg['hyperparams'].get('score_weight_accuracy', 0.5)
     
-    # Input: models from train_lr.py (dataset-specific)
+    # Input: models from train_lr.py
     models_dir = Path(base_path) / cfg['output']['base_dir'] / "lr_models"
-    models_path = models_dir / "lr_models_dataset_specific.pkl"
+    models_path = models_dir / "lr_models.pkl"
     
     if not models_path.exists():
         print(f"Models file not found: {models_path}")
@@ -51,7 +48,7 @@ def main():
     with open(models_path, 'rb') as f:
         models = pickle.load(f)
     
-    print(f"✓ Loaded {len(models)} models: {list(models.keys())}")
+    print(f"Loaded {len(models)} models: {list(models.keys())}")
     
     # Output directory
     output_dir = Path(base_path) / cfg['output']['base_dir'] / "threshold_analysis"
@@ -66,33 +63,25 @@ def main():
     summary_lines.append("=" * 90)
     summary_lines.append(f"Score formula: alpha × accuracy_on_easy + (1-alpha) × time_saved_pct")
     summary_lines.append(f"where alpha (score_weight_accuracy) = {score_weight_accuracy}")
-    summary_lines.append(f"  alpha=1.0  → Maximize ACCURACY only")
-    summary_lines.append(f"  alpha=0.5  → Balance ACCURACY and TIME SAVINGS")
-    summary_lines.append(f"  alpha=0.0  → Maximize TIME SAVINGS only")
-    summary_lines.append(f"\nDataset-specific models allow analysis of transfer between datasets")
-    summary_lines.append(f"(e.g., how does threshold from svox_sun perform on svox_night_test?)")
     summary_lines.append("")
     
     results_by_dataset_matcher = {}
     optimal_thresholds = {}
     
-    # Process each training dataset
     for dataset in training_datasets:
-        print(f"\n{'='*90}")
-        print(f"Processing dataset: {dataset}")
-        print(f"{'='*90}")
         
-        # Process each matcher for this dataset
+        print(f"Processing dataset: {dataset}")
+        
         for matcher in matchers:
             print(f"\n  Matcher: {matcher.upper()}")
             
-            # Get model key for this dataset/matcher
+            # Get model
             model_key = f"{matcher}_{dataset}"
             if model_key not in models:
                 print(f"    Model not found for key: {model_key}")
                 continue
             
-            # Load timing
+            # Load timing from old training logs
             timing_data = {'total_time': None, 'avg_time_per_query': None}
             for vpr_model in vpr_models:
                 timing_file = Path(base_path) / "training_logs" / f"{vpr_model}_image_matching" / matcher / val_dataset / "timing_report.txt"
@@ -117,11 +106,11 @@ def main():
             
             for vpr_model in vpr_models:
                 try:
-                    X, y, dists = load_inliers_val_set(
+                    X, y = load_inliers_and_labels(
                         base_path=base_path,
                         vpr_model=vpr_model,
                         matcher=matcher,
-                        val_dataset=val_dataset,
+                        dataset=val_dataset,
                         threshold_dist=threshold_dist
                     )
                     
@@ -140,7 +129,6 @@ def main():
             y_all = np.array(y_all)
             
             print(f"    Validation data: {len(X_all)} queries")
-            print(f"    Correct: {sum(y_all)} ({100*sum(y_all)/len(y_all):.1f}%)")
             
             # Get model for this dataset/matcher combination
             lr_model = models[model_key]
@@ -148,12 +136,7 @@ def main():
             # Predict probabilities
             X_reshaped = X_all.reshape(-1, 1)
             y_pred_proba = lr_model.predict_proba(X_reshaped)[:, 1]
-            
-            # Sweep thresholds
-            print(f"    Threshold sweep:")
-            print(f"    {'Thr':<6} {'Easy %':<10} {'Acc(Easy)':<12} {'TimeSave%':<10} {'Score':<10} {'Status':<10}")
-            print(f"    {'-'*60}")
-            
+                   
             threshold_results = []
             best_score = -np.inf
             best_threshold = 0.5
@@ -187,9 +170,6 @@ def main():
                     'time_saved_pct': time_saved_pct,
                     'score': score
                 })
-                
-                status = ""
-                print(f"    {thresh:<6.2f} {pct_easy:<10.1f} {accuracy_on_easy:<12.4f} {100*time_saved_pct:<10.2f} {score:<10.6f} {status:<10}")
             
             # Mark only the best threshold in results for plotting
             for i, result in enumerate(threshold_results):
@@ -238,7 +218,6 @@ def main():
     # Plot threshold curves (dataset-specific analysis)
     plt.figure(figsize=(16, 10))
     
-    colors_dataset = {'svox_sun': '🔴', 'svox_night': '🌙'}
     styles = {'loftr': '-', 'superglue': '--'}
     
     for dataset in training_datasets:
@@ -264,21 +243,20 @@ def main():
     
     plt.xlabel('Probability Threshold', fontsize=12)
     plt.ylabel(f'Score ({score_weight_accuracy:.1%}×acc + {1-score_weight_accuracy:.1%}×time)', fontsize=12)
-    plt.title(f'Threshold Optimization (Dataset-Specific)\nalpha={score_weight_accuracy}, Shows Transfer Analysis', fontsize=14)
+    plt.title(f'Threshold Optimization \nalpha={score_weight_accuracy}, Shows Transfer Analysis', fontsize=14)
     plt.grid(True, alpha=0.3)
     plt.legend(fontsize=10, loc='best')
     plt.xticks(thresholds)
     plt.tight_layout()
 
-    plot_path = output_dir / f"threshold_curves_dataset_specific_alpha{score_weight_accuracy:.1%}.png"
+    plot_path = output_dir / f"threshold_curves_alpha{score_weight_accuracy:.1%}.png"
     plt.savefig(plot_path, dpi=150, bbox_inches='tight')
     print(f"\n✓ Plot saved: {plot_path}")
     plt.close()
     
     # Save summary
     summary_lines.append(f"\n{'='*90}")
-    summary_lines.append(f"\nOPTIMAL THRESHOLDS (DATASET-SPECIFIC):")
-    summary_lines.append(f"For transfer analysis: Test how each threshold performs on other datasets")
+    summary_lines.append(f"\nOPTIMAL THRESHOLDS:")
     summary_lines.append(f"{'-'*90}")
     for threshold_key, opt in optimal_thresholds.items():
         dataset, matcher = threshold_key.rsplit('_', 1)
@@ -287,23 +265,17 @@ def main():
         summary_lines.append(f"  Expected easy queries: {opt['expected_easy_pct']:.1f}%")
         summary_lines.append(f"  Automated score: {opt['score']:.6f}")
     
-    summary_path = output_dir / "threshold_analysis_dataset_specific.txt"
+    summary_path = output_dir / "threshold_analysis.txt"
     with open(summary_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(summary_lines))
     
     print(f"✓ Summary saved: {summary_path}")
     
-    # Save optimal thresholds as JSON for Step 4
-    optimal_thresholds_path = output_dir / "optimal_thresholds_dataset_specific.json"
+    optimal_thresholds_path = output_dir / "optimal_thresholds.json"
     with open(optimal_thresholds_path, 'w', encoding='utf-8') as f:
         json.dump(optimal_thresholds, f, indent=2)
     
-    print(f"✓ Optimal thresholds saved: {optimal_thresholds_path}")
-    
-    print(f"\n{'='*90}")
-    print("DATASET-SPECIFIC THRESHOLD ANALYSIS COMPLETE")
-    print(f"{'='*90}\n")
-
+    print(f"Optimal thresholds saved: {optimal_thresholds_path}")
 
 if __name__ == "__main__":
     main()

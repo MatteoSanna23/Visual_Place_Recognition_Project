@@ -1,16 +1,10 @@
 """
-Train dataset-specific logistic regression models to predict P(correct | inliers_top1).
-For each dataset (svox_sun, svox_night), train separate models for each matcher.
-This captures how inliers distributions vary across environmental conditions.
-
-Models are trained on data from inliers_analysis and validated on a held-out validation set.
-
 Input:
   - inliers_{matcher}_{dataset}.pkl (from inliers_analysis)
 
 Output:
-  - lr_models_dataset_specific.pkl: Dict of {matcher_dataset: LogisticRegression}
-  - validation_metrics_dataset_specific.txt: Performance metrics
+  - lr_models.pkl: Dict of {matcher_dataset: LogisticRegression}
+  - validation_metrics.txt: Performance metrics
 """
 
 import json
@@ -49,19 +43,14 @@ def main():
     summary_lines.append("=" * 80)
     summary_lines.append("EXTENSION 6.1 - LOGISTIC REGRESSION TRAINING (DATASET-SPECIFIC)")
     summary_lines.append("=" * 80)
-    summary_lines.append("Training separate models for each dataset to capture distribution variations")
-    summary_lines.append("")
     
     # Dictionary to store all trained models: {matcher_dataset: LR_model}
     models = {}
     
-    # Process each dataset
     for dataset in training_datasets:
-        print(f"\n{'='*80}")
-        print(f"Processing dataset: {dataset}")
-        print(f"{'='*80}")
         
-        # Process each matcher for this dataset
+        print(f"Processing dataset: {dataset}")
+        
         for matcher in matchers:
             print(f"\n  Matcher: {matcher}")
             
@@ -82,8 +71,6 @@ def main():
                 continue
             
             print(f"  Loaded {len(X)} samples")
-            print(f"  Correct: {sum(y)} ({100*sum(y)/len(y):.1f}%)")
-            print(f"  Wrong: {len(y)-sum(y)} ({100*(len(y)-sum(y))/len(y):.1f}%)")
             
             # Split into train/validation
             X_train, X_val, y_train, y_val = train_test_split(
@@ -92,12 +79,8 @@ def main():
                 random_state=42,
                 stratify=y
             )
-            
-            print(f"  Train/Val split ({train_val_split:.0%}/{1-train_val_split:.0%}):")
-            print(f"  Train: {len(X_train)} samples")
-            print(f"  Val:   {len(X_val)} samples")
-            
-            # Train logistic regression
+
+            # Train
             print(f"  Training LogisticRegression...")
             lr = LogisticRegression(random_state=42, max_iter=1000)
             
@@ -106,19 +89,11 @@ def main():
             X_val_reshaped = X_val.reshape(-1, 1)
             
             lr.fit(X_train_reshaped, y_train)
-            print(f"  Model trained")
-            print(f"  Coefficient: {lr.coef_[0][0]:.6f}")
-            print(f"  Intercept: {lr.intercept_[0]:.6f}")
             
             # Evaluate on validation set
             y_pred_proba = lr.predict_proba(X_val_reshaped)[:, 1]
             metrics = compute_auprc_and_accuracy(y_val, y_pred_proba)
-            
-            print(f"  Validation Metrics:")
-            print(f"  AUPRC: {metrics['auprc']:.4f}")
-            print(f"  AUC-ROC: {metrics['auc_roc']:.4f}")
-            print(f"  Accuracy: {metrics['accuracy']:.4f}")
-            
+   
             # Store model with dataset_specific key
             model_key = f"{matcher}_{dataset}"
             models[model_key] = lr
@@ -138,14 +113,14 @@ def main():
             summary_lines.append(f"Accuracy: {metrics['accuracy']:.4f}")
     
     # Save all models
-    models_path = output_dir / "lr_models_dataset_specific.pkl"
+    models_path = output_dir / "lr_models.pkl"
     with open(models_path, 'wb') as f:
         pickle.dump(models, f)
     print(f"\n\nAll models saved: {models_path}")
     
     # Save summary
     summary_lines.append(f"\n{'='*80}")
-    summary_path = output_dir / "validation_metrics_dataset_specific.txt"
+    summary_path = output_dir / "validation_metrics.txt"
     with open(summary_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(summary_lines))
 

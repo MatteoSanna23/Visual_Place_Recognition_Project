@@ -12,7 +12,7 @@ def plot_inliers_distribution(
 ) -> None:
     """
     Plot histogram of inliers distribution for correct vs wrong queries.
-    
+
     Args:
         X_correct: Inliers for correct queries
         X_wrong: Inliers for wrong queries
