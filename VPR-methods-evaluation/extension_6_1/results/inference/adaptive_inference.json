@@ -140,47 +140,47 @@
   "superglue_svox_night": {
     "tokyo": {
       "total_queries": 315,
-      "easy_queries": 135,
-      "hard_queries": 180,
-      "easy_pct": 42.857142857142854,
+      "easy_queries": 124,
+      "hard_queries": 191,
+      "easy_pct": 39.36507936507937,
       "recall@1": 0.7555555555555555,
       "recall@5": 0.8,
       "recall@10": 0.8285714285714286,
-      "avg_time_easy": 0.07563517005355269,
-      "avg_time_hard": 1.405629919634925
+      "avg_time_easy": 0.10480142408801664,
+      "avg_time_hard": 2.0418222300045152
     },
     "svox_sun": {
       "total_queries": 500,
-      "easy_queries": 394,
-      "hard_queries": 106,
-      "easy_pct": 78.8,
-      "recall@1": 0.86,
+      "easy_queries": 383,
+      "hard_queries": 117,
+      "easy_pct": 76.6,
+      "recall@1": 0.864,
       "recall@5": 0.934,
       "recall@10": 0.942,
-      "avg_time_easy": 0.07285380908075323,
-      "avg_time_hard": 1.3410135327645067
+      "avg_time_easy": 0.07847726936439932,
+      "avg_time_hard": 1.429115580697345
     },
     "svox_night": {
       "total_queries": 500,
-      "easy_queries": 231,
-      "hard_queries": 269,
-      "easy_pct": 46.2,
-      "recall@1": 0.724,
-      "recall@5": 0.776,
+      "easy_queries": 216,
+      "hard_queries": 284,
+      "easy_pct": 43.2,
+      "recall@1": 0.73,
+      "recall@5": 0.778,
       "recall@10": 0.786,
-      "avg_time_easy": 0.07265637756942155,
-      "avg_time_hard": 1.3079237184559989
+      "avg_time_easy": 0.08001376854048835,
+      "avg_time_hard": 1.4422248425618025
     },
     "sf_xs": {
       "total_queries": 480,
-      "easy_queries": 223,
-      "hard_queries": 257,
-      "easy_pct": 46.458333333333336,
+      "easy_queries": 206,
+      "hard_queries": 274,
+      "easy_pct": 42.916666666666664,
       "recall@1": 0.7520833333333333,
       "recall@5": 0.7875,
       "recall@10": 0.79375,
-      "avg_time_easy": 0.07320233096990884,
-      "avg_time_hard": 1.3495120204376339
+      "avg_time_easy": 0.07892164327565906,
+      "avg_time_hard": 1.4444428891161063
     }
   }
 }

@@ -78,18 +78,18 @@ Correct: 4418 (82.9%)
 Threshold Analysis:
 Thr    Easy %     Acc(Easy)    TimeSave%  Score      Best?     
 ------------------------------------------------------------
-0.50   59.3       0.9965       118.70     1.015566   ✓ YES     
-0.60   56.8       0.9970       113.59     1.010915             
-0.70   54.2       0.9972       108.45     1.005956             
+0.50   59.3       0.9965       118.70     1.005566       
+0.60   56.8       0.9970       113.59     1.000915             
+0.70   54.2       0.9972       108.45     1.005956   ✓ YES          
 0.75   54.2       0.9972       108.45     1.005956             
 0.80   52.2       0.9975       104.32     1.002052             
 0.85   50.0       0.9974       99.96      0.997599             
 0.90   47.7       0.9980       95.42      0.993653             
 
->>> RECOMMENDED THRESHOLD: 0.50
-Expected easy queries: 59.3%
-Accuracy on easy queries: 0.9965
-Optimal score: 1.015566
+>>> RECOMMENDED THRESHOLD: 0.70
+Expected easy queries: 54.2%
+Accuracy on easy queries: 0.9972
+Optimal score: 1.005956
 
 ==========================================================================================
 
@@ -112,6 +112,6 @@ Trained on LOFTR_SVOX | NIGHT:
   Automated score: 1.032809
 
 Trained on SUPERGLUE_SVOX | NIGHT:
-  Optimal threshold: 0.50
-  Expected easy queries: 59.3%
-  Automated score: 1.015566
+  Optimal threshold: 0.70
+  Expected easy queries: 54.2%
+  Automated score: 1.005956

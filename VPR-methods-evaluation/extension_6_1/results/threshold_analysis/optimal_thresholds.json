@@ -15,8 +15,8 @@
     "expected_easy_pct": 76.16366366366367
   },
   "superglue_svox_night": {
-    "threshold": 0.5,
-    "score": 1.0155657676653909,
-    "expected_easy_pct": 59.346846846846844
+    "threshold": 0.7,
+    "score": 1.005956385387394,
+    "expected_easy_pct": 54.24793074038543
   }
 }
