@@ -40,6 +40,7 @@ def parse_arguments():
     return parser.parse_args()
 
 def main(args):
+    # Initialize configuration parameters and matcher infrastructure
     device = args.device
     matcher_name = args.matcher
     img_size = args.im_size
@@ -52,13 +53,14 @@ def main(args):
     old_prefix = args.old_path_prefix
     new_prefix = args.new_path_prefix
 
+    # Define output directory for correspondence analysis artifacts
     output_folder = Path(preds_folder + f"_{matcher_name}") if args.out_dir is None else Path(args.out_dir)
     output_folder.mkdir(exist_ok=True)
     
+    # Enumerate prediction files and apply optional query sampling
     txt_files = glob(os.path.join(preds_folder, "*.txt"))
     txt_files.sort(key=lambda x: int(Path(x).stem))
 
-    # Apply sampling if requested
     if query_sample_fraction < 1.0:
         num_samples = max(1, int(len(txt_files) * query_sample_fraction))
         sample_step = len(txt_files) // num_samples
@@ -68,7 +70,7 @@ def main(args):
     start_query = start_query if start_query >= 0 else 0
     num_queries = num_queries if num_queries >= 0 else len(txt_files)
 
-    # --- Start monitoring time ---
+    # Initialize execution timing infrastructure
     start_time_total = time.time()
     count_processed = 0
     
@@ -80,16 +82,17 @@ def main(args):
         results = []
         q_path, pred_paths = read_file_preds(txt_file)
         
-        # Convert Windows paths to Linux paths
+        # Apply filesystem path normalization across heterogeneous platforms
         q_path = q_path.replace("\\", "/")
         pred_paths = [p.replace("\\", "/") for p in pred_paths]
         
-        # Map paths if prefixes are provided
+        # Execute platform-specific path mapping when configured
         if old_prefix is not None and new_prefix is not None:
             if q_path.startswith(old_prefix):
                 q_path = q_path.replace(old_prefix, new_prefix, 1)
             pred_paths = [p.replace(old_prefix, new_prefix, 1) if p.startswith(old_prefix) else p for p in pred_paths]
         
+        # Execute feature correspondence analysis across database candidates
         img0 = matcher.load_image(q_path, resize=img_size)
         for pred_path in pred_paths[:num_preds]:
             img1 = matcher.load_image(pred_path, resize=img_size)
@@ -99,13 +102,14 @@ def main(args):
         torch.save(results, out_file)
         count_processed += 1
         
-    # --- COMPUTE TIMING STATISTICS and SAVE ---
+    # Compute execution statistics and generate timing report
     end_time_total = time.time()
     total_duration = end_time_total - start_time_total
     
     if count_processed > 0:
         avg_time = total_duration / count_processed
         
+        # Persist timing metrics for performance characterization
         stats_file = output_folder.joinpath("timing_report.txt")
         with open(stats_file, "w") as f:
             f.write(f"--- Timing Report for {matcher_name} ---\n")

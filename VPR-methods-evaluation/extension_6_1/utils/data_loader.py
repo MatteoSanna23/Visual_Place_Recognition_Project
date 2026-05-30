@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Tuple, List, Dict
 import sys
 
-# Add parent directory to path to access util.py
+# Extend module search path to enable access to parent directory utilities
 parent_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(parent_dir))
 from util import get_list_distances_from_preds
@@ -18,7 +18,8 @@ def load_inliers_and_labels(
     threshold_dist: float = 25.0
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
-    Load inliers_top1 and correctness labels from a single dataset.
+    Retrieve inlier correspondence counts and reference ground-truth labels for training dataset.
+    Integrates image matching results with geographic distance metrics for performance labeling.
     
     Args:
         base_path: Base path to VPR-methods-evaluation directory
@@ -35,7 +36,7 @@ def load_inliers_and_labels(
     X = []  # inliers_top1
     y = []  # is_correct
     
-    # Paths
+    # Define directory paths for image matching results and prediction metadata
     torch_dir = Path(base_path) / "training_logs" / f"{vpr_model}_image_matching" / matcher / dataset
     preds_dir = Path(base_path) / "training_logs" / f"{vpr_model}_prediction" / dataset / "preds"
     
@@ -51,7 +52,7 @@ def load_inliers_and_labels(
         print(f"Predictions directory not found: {preds_dir}")
         return np.array(X), np.array(y)
     
-    # List torch files (one per query)
+    # Enumerate serialized result artifacts with one file per query instance
     torch_files = sorted(torch_dir.glob("*.torch"))
     
     if not torch_files:
@@ -62,29 +63,29 @@ def load_inliers_and_labels(
     
     count_loaded = 0
     for torch_file in torch_files:
-        # Extract query ID from filename (e.g., "000.torch" → "000")
+        # Parse query identifier from serialized filename convention
         query_id = torch_file.stem
         
-        # Corresponding prediction file
+        # Locate associated prediction metadata file
         txt_file = preds_dir / f"{query_id}.txt"
         
         if not txt_file.exists():
             continue
         
         try:
-            # Load .torch file (results from image matching)
+            # Deserialize image matching result artifact containing correspondence statistics
             results = torch.load(torch_file, weights_only=False)
             
-            # Extract inliers from top-1 match
+            # Extract inlier correspondence count from primary database candidate match
             inliers_top1 = results[0]['num_inliers']
             
-            # Load distances from prediction file
+            # Parse geographic distance measurements from structured prediction file
             distances = get_list_distances_from_preds(str(txt_file))
             
-            # Get distance of top-1 prediction
+            # Retrieve geographic distance metric of top-ranked database candidate
             geo_dist_top1 = distances[0]
             
-            # Label: is the top-1 prediction correct?
+            # Assign binary label indicating localization success based on distance threshold
             is_correct = 1 if geo_dist_top1 <= threshold_dist else 0
             
             X.append(inliers_top1)
@@ -100,26 +101,32 @@ def load_inliers_and_labels(
     X = np.array(X)
     y = np.array(y)
     
-    print(f"\n[Summary] Loaded: {len(X)} queries")
-    print(f"  Correct: {sum(y)} ({100*sum(y)/len(y):.1f}%)")
-    print(f"  Wrong: {len(y)-sum(y)} ({100*(len(y)-sum(y))/len(y):.1f}%)")
+    print(f"\n[Summary] Dataset statistics aggregation completed: {len(X)} samples")
+    print(f"  Correct predictions: {sum(y)} ({100*sum(y)/len(y):.1f}%)")
+    print(f"  Incorrect predictions: {len(y)-sum(y)} ({100*(len(y)-sum(y))/len(y):.1f}%)")
     
     return X, y
 
 
 def get_inliers_statistics(X: np.ndarray, y: np.ndarray) -> Dict:
     """  
+    Compute comprehensive distributional statistics for inlier correspondence counts.
+    Stratifies analysis by prediction outcome (correct vs. incorrect) to characterize
+    feature-label relationship characteristics.
+    
     Args:
         X: Array of inliers values
         y: Array of correctness labels
     
     Returns:
-        Dictionary with statistics
+        Dictionary with stratified statistical summaries
     """
     
+    # Partition feature vectors according to outcome classification
     X_correct = X[y == 1]
     X_wrong = X[y == 0]
     
+    # Aggregate comprehensive descriptive statistics across stratified subsets
     stats = {
         'correct': {
             'count': len(X_correct),

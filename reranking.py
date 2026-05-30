@@ -20,8 +20,8 @@ def parse_arguments():
 
 def parse_original_results(preds_dir):
     """
-    Reads the original retrieval performance from results.txt 
-    located in the parent directory of 'preds'.
+    Extract retrieval performance metrics from baseline evaluation results.
+    Parses structured output file to retrieve recall values for comparative analysis.
     """
     results_path = Path(preds_dir).parent / "results.txt"
     original_recalls = {}
@@ -35,6 +35,7 @@ def parse_original_results(preds_dir):
     return original_recalls
 
 def main(args):
+    # Initialize configuration parameters and data structures
     preds_folder = args.preds_dir
     inliers_folder = Path(args.inliers_dir)
     num_preds = args.num_preds
@@ -44,7 +45,7 @@ def main(args):
     dataset = args.dataset
     matcher = args.matcher
 
-    # Load original retrieval recalls for comparison
+    # Load baseline retrieval performance for comparative evaluation
     original_stats = parse_original_results(preds_folder)
 
     txt_files = glob(os.path.join(preds_folder, "*.txt"))
@@ -53,16 +54,16 @@ def main(args):
     total_queries = len(txt_files)
     recalls_reranked = np.zeros(len(recall_values))
     
-    # Lists for inlier correlation analysis
+    # Aggregate inlier statistics stratified by localization outcome
     inliers_correct_queries = []
     inliers_wrong_queries = []
 
-    # Iterate through queries (tqdm removed to keep .txt output clean)
+    # Process each query and execute re-ranking by feature correspondence metrics
     for txt_file_query in txt_files:
-        # Get original distances from retrieval part, for the top num_preds predictions
+        # Retrieve geographic distance measurements from baseline prediction rankings
         geo_dists_orig = torch.tensor(get_list_distances_from_preds(txt_file_query))[:num_preds]
         
-        # Load inliers from the matching step
+        # Load correspondence statistics from image matching analysis
         torch_file_query = inliers_folder.joinpath(Path(txt_file_query).name.replace('txt', 'torch'))
         if not torch_file_query.exists(): 
             continue
@@ -72,26 +73,26 @@ def main(args):
         for i in range(min(len(query_results), num_preds)):
             query_db_inliers[i] = query_results[i]['num_inliers']
 
-        # Analysis: correlation between original R@1 correctness and inliers
+        # Characterize inlier distribution stratified by initial retrieval success
         if geo_dists_orig[0] <= threshold:
             inliers_correct_queries.append(query_db_inliers[0].item())
         else:
             inliers_wrong_queries.append(query_db_inliers[0].item())
 
-        # Geometric Re-ranking based on inlier count 
+        # Apply geometric re-ordering based on feature correspondence counts
         _, indices = torch.sort(query_db_inliers, descending=True)
         geo_dists_reranked = geo_dists_orig[indices]
         
-        # Calculate Reranked Recall@N
+        # Evaluate localization accuracy at multiple recall thresholds
         for i, n in enumerate(recall_values):
             if torch.any(geo_dists_reranked[:n] <= threshold):
                 recalls_reranked[i:] += 1
                 break
 
-    # Final recall calculation
+    # Normalize recall metrics and prepare for comparative reporting
     recalls_reranked = recalls_reranked / total_queries * 100
 
-    # --- PRINT COMPARISON TABLE ---
+    # Generate and display comprehensive re-ranking evaluation summary
     print("\n" + "="*65)
     print(f"VPR RE-RANKING EVALUATION ({total_queries} queries)")
     print("-" * 65)
@@ -104,8 +105,7 @@ def main(args):
         print(f"R@{val:<8} | {orig} | {recalls_reranked[i]:>13.2f}%")
     print("="*65)
 
-    # --- GENERATE INLIER HISTOGRAM ---
-    # This addresses the goal of finding correlation between correctness and inliers
+    # Visualize feature correspondence distribution for outcome-stratified query sets
     if inliers_correct_queries or inliers_wrong_queries:
         plt.figure(figsize=(11, 7))
         plt.hist(inliers_correct_queries, bins=30, alpha=0.5, label='Correct Queries (Original R@1)', color='green')
@@ -117,7 +117,7 @@ def main(args):
         plt.grid(axis='y', alpha=0.3)
         plt.tight_layout()
         
-        # Save histogram in the same folder as .torch files
+        # Persist visualization artifact for downstream analysis
         plot_path = inliers_folder / "analysis_histogram.png"
         plt.savefig(plot_path)
         print(f"Histogram saved to: {plot_path}")

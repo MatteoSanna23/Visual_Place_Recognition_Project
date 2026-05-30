@@ -23,7 +23,7 @@ from utils.data_loader import load_inliers_and_labels
 
 
 def main():
-    # Load config
+    # Load configuration parameters from external configuration file
     config_path = Path(__file__).parent.parent / "config" / "paths_config.json"
     with open(config_path, encoding='utf-8') as f:
         cfg = json.load(f)
@@ -36,7 +36,7 @@ def main():
     threshold_dist = cfg['hyperparams']['threshold_dist']
     score_weight_accuracy = cfg['hyperparams'].get('score_weight_accuracy', 0.5)
     
-    # Input: models from train_lr.py
+    # Define input directory for pre-trained logistic regression model artifacts
     models_dir = Path(base_path) / cfg['output']['base_dir'] / "lr_models"
     models_path = models_dir / "lr_models.pkl"
     
@@ -44,17 +44,17 @@ def main():
         print(f"Models file not found: {models_path}")
         return
     
-    # Load models
+    # Deserialize pre-trained classifier ensemble from persistent storage
     with open(models_path, 'rb') as f:
         models = pickle.load(f)
     
     print(f"Loaded {len(models)} models: {list(models.keys())}")
     
-    # Output directory
+    # Initialize output directory structure for threshold optimization results
     output_dir = Path(base_path) / cfg['output']['base_dir'] / "threshold_analysis"
     output_dir.mkdir(parents=True, exist_ok=True)
     
-    # Thresholds to sweep
+    # Define probability threshold candidates for systematic sensitivity analysis
     thresholds = [0.50, 0.60, 0.70, 0.75, 0.80, 0.85, 0.90]
     
     summary_lines = []
@@ -75,13 +75,13 @@ def main():
         for matcher in matchers:
             print(f"\n  Matcher: {matcher.upper()}")
             
-            # Get model
+            # Retrieve pre-trained classifier associated with current dataset-matcher combination
             model_key = f"{matcher}_{dataset}"
             if model_key not in models:
                 print(f"    Model not found for key: {model_key}")
                 continue
             
-            # Load timing from old training logs
+            # Extract execution timing statistics from historical training logs
             timing_data = {'total_time': None, 'avg_time_per_query': None}
             for vpr_model in vpr_models:
                 timing_file = Path(base_path) / "training_logs" / f"{vpr_model}_image_matching" / matcher / val_dataset / "timing_report.txt"
@@ -100,7 +100,7 @@ def main():
                 timing_data['total_time'] = 1.0
                 timing_data['avg_time_per_query'] = 1.0
             
-            # Collect validation data from ALL VPR models
+            # Aggregate validation correspondence data from all available VPR models
             X_all = []
             y_all = []
             
@@ -130,10 +130,10 @@ def main():
             
             print(f"    Validation data: {len(X_all)} queries")
             
-            # Get model for this dataset/matcher combination
+            # Retrieve trained logistic regression classifier for inference on validation set
             lr_model = models[model_key]
             
-            # Predict probabilities
+            # Generate probabilistic predictions on validation feature vectors
             X_reshaped = X_all.reshape(-1, 1)
             y_pred_proba = lr_model.predict_proba(X_reshaped)[:, 1]
                    
@@ -215,7 +215,7 @@ def main():
             summary_lines.append(f"Accuracy on easy queries: {best_result['accuracy_on_easy']:.4f}")
             summary_lines.append(f"Optimal score: {best_result['score']:.6f}")
     
-    # Plot threshold curves (dataset-specific analysis)
+    # Generate comparative threshold trade-off visualization across dataset-model pairs
     plt.figure(figsize=(16, 10))
     
     styles = {'loftr': '-', 'superglue': '--'}
@@ -237,7 +237,7 @@ def main():
                     marker='o', linewidth=2, markersize=6,
                     label=label, linestyle=styles.get(matcher, '-'))
             
-            # Mark best threshold
+            # Highlight optimal threshold selection with distinct visual marker
             plt.plot(thresholds_plot[best_idx], scores_plot[best_idx], 
                     marker='*', markersize=15, markeredgecolor='black', markeredgewidth=1)
     
@@ -254,7 +254,7 @@ def main():
     print(f"\n✓ Plot saved: {plot_path}")
     plt.close()
     
-    # Save summary
+    # Serialize comprehensive threshold optimization results to persistent text format
     summary_lines.append(f"\n{'='*90}")
     summary_lines.append(f"\nOPTIMAL THRESHOLDS:")
     summary_lines.append(f"{'-'*90}")
@@ -271,6 +271,7 @@ def main():
     
     print(f"✓ Summary saved: {summary_path}")
     
+    # Persist optimal probability thresholds in structured JSON format for downstream applications
     optimal_thresholds_path = output_dir / "optimal_thresholds.json"
     with open(optimal_thresholds_path, 'w', encoding='utf-8') as f:
         json.dump(optimal_thresholds, f, indent=2)

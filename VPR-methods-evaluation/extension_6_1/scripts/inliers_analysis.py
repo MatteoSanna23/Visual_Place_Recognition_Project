@@ -21,7 +21,7 @@ from utils.visualization import plot_inliers_distribution
 
 
 def main():
-    # Load config
+    # Load configuration parameters from external configuration file
     config_path = Path(__file__).parent.parent / "config" / "paths_config.json"
     with open(config_path) as f:
         cfg = json.load(f)
@@ -32,7 +32,7 @@ def main():
     training_datasets = cfg['input']['training_datasets']
     threshold_dist = cfg['hyperparams']['threshold_dist']
     
-    # Output directories
+    # Initialize output directory structure for results storage
     output_dir = Path(base_path) / cfg['output']['base_dir'] / "inliers_analysis"
     output_dir.mkdir(parents=True, exist_ok=True)
     
@@ -48,7 +48,7 @@ def main():
         for matcher in matchers:
             print(f"\n  Matcher: {matcher}")
             
-            # We collect data from ALL VPR models for this matcher in this dataset
+            # Aggregate inlier correspondence counts from all VPR models for comparative analysis
             X_all = []
             y_all = []
             
@@ -78,24 +78,24 @@ def main():
             X_all = np.array(X_all)
             y_all = np.array(y_all)
             
-            # Save results
+            # Persist aggregated inlier data and correspondence labels
             output_pkl = output_dir / f"inliers_{matcher}_{dataset}.pkl"
             data_dict = {'X': X_all, 'y': y_all}
             with open(output_pkl, 'wb') as f:
                 pickle.dump(data_dict, f)
             print(f"Saved: {output_pkl}")
             
-            # Compute statistics
+            # Calculate comprehensive statistical descriptors for inlier distributions
             stats = get_inliers_statistics(X_all, y_all)
             
-            # Plot distribution
+            # Generate comparative distribution analysis visualization
             X_correct = X_all[y_all == 1]
             X_wrong = X_all[y_all == 0]
             
             output_png = output_dir / f"distribution_{matcher}_{dataset}.png"
             plot_inliers_distribution(X_correct, X_wrong, f"{matcher}_{dataset}", output_png)
             
-            # Add to summary file
+            # Append detailed statistical summary to comprehensive analysis report
             summary_lines.append(f"\n{'─'*80}")
             summary_lines.append(f"DATASET: {dataset} | MATCHER: {matcher}")
             summary_lines.append(f"{'─'*80}")
@@ -111,7 +111,7 @@ def main():
             summary_lines.append(f"  Median: {stats['wrong']['p50']:.2f}")
             summary_lines.append(f"  Range: [{stats['wrong']['min']:.0f}, {stats['wrong']['max']:.0f}]")
     
-    # Save summary
+    # Serialize comprehensive analysis summary to persistent text format
     summary_lines.append(f"\n{'='*80}")
     summary_path = output_dir / "inliers_analysis_summary.txt"
     with open(summary_path, 'w', encoding='utf-8') as f:

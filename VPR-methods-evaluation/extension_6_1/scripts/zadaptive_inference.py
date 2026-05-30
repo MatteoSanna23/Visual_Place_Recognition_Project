@@ -59,20 +59,21 @@ VPR_MODELS = cfg['vpr_models']
 
 def detect_path_mapping():
     """
-    Auto-detect path mapping from config and system.
-    Returns (old_prefix, new_prefix) for path conversion.
+    Automatically infer platform-specific path translation mapping from runtime configuration.
+    Enables seamless dataset access across Windows and TeamSpace filesystem environments.
+    Returns (old_prefix, new_prefix) for systematic path prefix conversion.
     """
     base_path_str = str(BASE_PATH)
     
-    # Check if Windows
+    # Determine platform architecture through filesystem path pattern analysis
     if "\\" in base_path_str or "C:" in base_path_str or "D:" in base_path_str:
-        # We're on Windows, convert from TeamSpace to Windows
+        # Execute Windows-to-TeamSpace directory mapping translation
         old_prefix = "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/data"
         data_path = Path(BASE_PATH).parent.parent / "data"
         new_prefix = str(data_path)
         return old_prefix, new_prefix
     else:
-        # We're on TeamSpace
+        # Execute TeamSpace-to-Windows directory mapping translation
         old_prefix = "C:\\Users\\leozi\\Desktop\\uni\\Magi\\AML\\Visual_Place_Recognition\\data"
         new_prefix = "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/data"
         return old_prefix, new_prefix
@@ -80,7 +81,8 @@ def detect_path_mapping():
 
 def validate_path_mapping(old_prefix, new_prefix, test_preds_dir):
     """
-    Validate path mapping by checking a sample preds file.
+    Validate correctness and applicability of inferred path mapping configuration.
+    Performs sample-based filesystem validation to ensure converted paths reference valid resources.
     Returns (is_valid, sample_original, sample_converted, exists)
     """
     preds_files = sorted(test_preds_dir.glob("*.txt"))
@@ -90,11 +92,11 @@ def validate_path_mapping(old_prefix, new_prefix, test_preds_dir):
     try:
         sample_file = preds_files[0]
         
-        # Read the file
+        # Parse prediction results file and extract path-based metadata
         with open(sample_file, 'r') as f:
             lines = f.readlines()
         
-        # Find a sample prediction path
+        # Locate and extract representative prediction path from structured file format
         original_in_file = None
         in_predictions = False
         for line in lines:
@@ -109,7 +111,7 @@ def validate_path_mapping(old_prefix, new_prefix, test_preds_dir):
         if not original_in_file:
             return False, None, None, False
         
-        # Convert the path
+        # Apply platform-agnostic path translation function
         converted = convert_path(original_in_file, old_prefix, new_prefix)
         exists = os.path.exists(converted)
         
@@ -120,24 +122,25 @@ def validate_path_mapping(old_prefix, new_prefix, test_preds_dir):
 
 
 def convert_path(path, old_prefix, new_prefix):
-    """Convert a path from old_prefix to new_prefix.
+    """Systematically translate filesystem paths across platform-specific directory hierarchies.
+    Implements robust conversion logic for cross-platform resource location resolution.
     If path is already in new_prefix format, return as-is.
     """
     if not path:
         return path
     
-    # Normalize paths for comparison
+    # Normalize all path separators for consistent string-based prefix matching
     path_normalized = path.replace("\\", "/")
     old_normalized = old_prefix.replace("\\", "/")
     new_normalized = new_prefix.replace("\\", "/")
     
-    # Check if path is already in the target format
+    # Verify path compliance with target platform format to avoid redundant conversions
     if path_normalized.startswith(new_normalized):
         return path
     
-    # Check if path has incorrect TeamSpace prefix (missing Visual_Place_Recognition_Project)
+    # Detect and correct incomplete TeamSpace paths with missing project directory component
     if "/teamspace/studios/this_studio/data/" in path_normalized:
-        # Fix the path by inserting the missing project folder
+        # Reconstruct path by inserting omitted project namespace component
         corrected = path_normalized.replace(
             "/teamspace/studios/this_studio/data/",
             "/teamspace/studios/this_studio/Visual_Place_Recognition_Project/data/"
@@ -145,12 +148,12 @@ def convert_path(path, old_prefix, new_prefix):
         if os.path.exists(corrected):
             return corrected
     
-    # Check if path starts with old prefix
+    # Apply direct prefix substitution when source path matches legacy format identifier
     if path_normalized.startswith(old_normalized):
-        # Extract the relative part
+        # Isolate and preserve filesystem hierarchy beneath substitutable prefix component
         relative_part = path_normalized[len(old_normalized):].lstrip("/")
         
-        # Build new path with proper separators
+        # Reconstruct absolute path using target platform conventions and separators
         if "\\" in new_prefix or ":" in new_prefix:
             # Target is Windows path
             new_path = str(Path(new_prefix) / relative_part.replace("/", "\\"))
@@ -160,7 +163,7 @@ def convert_path(path, old_prefix, new_prefix):
         
         return new_path
     
-    # Path doesn't match old prefix, return as-is
+    # Return path unchanged when no matching legacy format detected
     return path
 
 
@@ -250,9 +253,10 @@ def run_image_matching(query_img_loaded, db_img_path, matcher, img_size=512):
 
 def calculate_recalls(preds_file_path, top_k_list=[1, 5, 10], threshold_dist=THRESHOLD_DIST, distances=None):
     """
-    Calculate recall@k
+    Compute retrieval performance metrics at multiple rank thresholds.
+    Evaluates localization accuracy based on distance-to-threshold comparison.
     """
-    # Use provided distances or extract from file
+    # Leverage provided distance metrics or extract from structured prediction file
     if distances is None:
         try:
             distances = get_list_distances_from_preds(str(preds_file_path))
@@ -262,7 +266,7 @@ def calculate_recalls(preds_file_path, top_k_list=[1, 5, 10], threshold_dist=THR
     
     recalls = {}
     for k in top_k_list:
-        # Recall@k = 1 if any of top-k has correct match (distance <= threshold)
+        # Detect positive match within ranked top-k subset using distance threshold comparison
         has_correct = any(distances[i] <= threshold_dist 
                          for i in range(min(k, len(distances))))
         recalls[f'recall@{k}'] = 1.0 if has_correct else 0.0
@@ -272,7 +276,8 @@ def calculate_recalls(preds_file_path, top_k_list=[1, 5, 10], threshold_dist=THR
 
 def process_inference(training_dataset, matcher_name, lr_models, thresholds, old_prefix, new_prefix):
     """
-    Process inference for one training_dataset/matcher combination.
+    Execute adaptive inference pipeline for specific training dataset and matcher architecture.
+    Implements dataset-specific model application with cross-dataset transfer evaluation.
   
     """
     print(f"  Dataset-Specific: {training_dataset.upper()} | Matcher: {matcher_name.upper()}")
@@ -344,18 +349,18 @@ def process_inference(training_dataset, matcher_name, lr_models, thresholds, old
                 
                 total_queries += 1
                 
-                # Load query path
+                # Extract query image identifier from structured prediction metadata
                 query_path = None
                 with open(preds_file, 'r') as f:
                     lines = f.readlines()
                     for i, line in enumerate(lines):
                         if "Query path:" in line:
-                            # Query path might be on the same line or next line
+                            # Extract path specification which may span multiple lines
                             path_part = line.split("Query path:")[1].strip()
                             if path_part:
                                 query_path = path_part
                             elif i + 1 < len(lines):
-                                # Try next line
+                                # Retrieve path specification from continuation line
                                 query_path = lines[i + 1].strip()
                             break
                 
@@ -366,13 +371,13 @@ def process_inference(training_dataset, matcher_name, lr_models, thresholds, old
                     skip_reasons['query_path_missing'] += 1
                     continue
                 
-                # Get distances from predictions
+                # Obtain reference distance metrics from pre-computed retrieval scores
                 try:
                     original_distances = get_list_distances_from_preds(str(preds_file))
                 except:
                     original_distances = [float('inf')] * len(predictions)
                 
-                # === 1: Run matching on top-1 ===
+                # PHASE 1: Execute feature matching on top-ranked database candidate
                 top1_path = predictions[0]
                 if not os.path.exists(top1_path):
                     skip_reasons['top1_path_missing'] += 1
@@ -382,23 +387,23 @@ def process_inference(training_dataset, matcher_name, lr_models, thresholds, old
                 inliers_top1 = run_image_matching(query_path, top1_path, matcher_instance)
                 match_time_top1 = time.time() - match_start
                 
-                # === 2: Predict with LR ===
+                # PHASE 2: Apply trained logistic regression classifier for confidence estimation
                 X_test = np.array([[inliers_top1]])
                 prob_correct = lr_model.predict_proba(X_test)[0][1]
                 
-                # === 3: Decide easy vs hard ===
+                # PHASE 3: Route query to appropriate processing pipeline based on confidence threshold
                 if prob_correct >= threshold:
-                    # EASY: use top-1, skip full matching
+                    # EASY-CASE PATH: Accept top-1 prediction without exhaustive matching computation
                     easy_queries += 1
                     time_easy += match_time_top1
                     ranked_distances = original_distances
                     
                 else:
-                    # HARD: run full matching on top-20 and re-rank
+                    # HARD-CASE PATH: Execute comprehensive matching across full candidate set and reorder
                     hard_queries += 1
                     full_match_start = time.time()
                     
-                    # Pre-load query image once for batch matching
+                    # Cache-load query visual information for efficient batch correspondence analysis
                     try:
                         img_size = 512
                         query_img_loaded = matcher_instance.load_image(query_path, resize=img_size)
@@ -414,13 +419,13 @@ def process_inference(training_dataset, matcher_name, lr_models, thresholds, old
                             inliers = run_image_matching(query_img_loaded, pred_path, matcher_instance)
                             inliers_list.append(inliers)
                     
-                    # Re-rank by inliers (descending)
+                    # Sort candidate set by correspondence strength in descending order
                     ranked_indices = np.argsort(inliers_list)[::-1]
                     ranked_distances = [original_distances[i] for i in ranked_indices]
                     
                     time_hard += time.time() - full_match_start
                 
-                # === 4: Calculate recalls ===
+                # PHASE 4: Evaluate localization success through distance-based recall metrics
                 recalls = calculate_recalls(
                     preds_file, 
                     threshold_dist=THRESHOLD_DIST, 
@@ -467,14 +472,14 @@ def process_inference(training_dataset, matcher_name, lr_models, thresholds, old
 
 
 def main():
-    # Check if testing logs exist
+    # Verify prerequisite execution logs from preceding evaluation pipeline stages
     testing_logs_path = Path(BASE_PATH) / TESTING_LOGS_DIR
     if not testing_logs_path.exists():
         print(f"\n[ERROR] Testing logs not found: {testing_logs_path}")
         print(f"Waiting for test predictions to be available...")
         return
     
-    # Detect path mapping
+    # Infer platform-appropriate directory mapping from system configuration parameters
     old_prefix, new_prefix = detect_path_mapping()
     print(f"\n[PATH MAPPING]")
     print(f"  Old: {old_prefix}")
@@ -531,14 +536,14 @@ def main():
                 all_results[key] = results
     
     # Save results and summary
-    # Create summary
+    # Synthesize comprehensive evaluation report with metrics aggregation
     summary_lines = []
     
     # Check if file exists to decide on header
     summary_file = INFERENCE_DIR / "adaptive_inference.txt"
     file_exists = summary_file.exists()
     
-    # Add header based on whether file exists
+    # Append content with platform-appropriate header based on execution context
     if not file_exists:
         # First run: add main header
         summary_lines.append("="*100)
@@ -578,13 +583,13 @@ def main():
                     f"{metrics['recall@10']:<10.4f}"
                 )
     
-    # Append to file (create if doesn't exist, append if exists)
+    # Append complete results to persistent storage with incremental update semantics
     with open(summary_file, 'a') as f:
         f.write('\n'.join(summary_lines) + '\n')
     
     print(f"\n✓ Transfer analysis saved: {summary_file}")
     
-    # Save JSON
+    # Serialize aggregated evaluation results in JSON interchange format for downstream processing
     json_file = INFERENCE_DIR / "adaptive_inference.json"
     with open(json_file, 'w') as f:
         json.dump(all_results, f, indent=2)

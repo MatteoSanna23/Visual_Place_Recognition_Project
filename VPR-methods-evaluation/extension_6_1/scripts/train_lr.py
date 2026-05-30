@@ -22,7 +22,7 @@ from utils.metrics import compute_auprc_and_accuracy
 
 
 def main():
-    # Load config
+    # Load configuration parameters from external configuration file
     config_path = Path(__file__).parent.parent / "config" / "paths_config.json"
     with open(config_path) as f:
         cfg = json.load(f)
@@ -32,10 +32,10 @@ def main():
     training_datasets = cfg['input']['training_datasets']
     train_val_split = cfg['hyperparams']['train_val_split']
     
-    # Input directory
+    # Define input data directory containing precomputed inlier analysis results
     inliers_analysis_dir = Path(base_path) / cfg['output']['base_dir'] / "inliers_analysis"
     
-    # Output directory
+    # Initialize output directory structure for model artifacts and validation results
     output_dir = Path(base_path) / cfg['output']['base_dir'] / "lr_models"
     output_dir.mkdir(parents=True, exist_ok=True)
     
@@ -44,7 +44,7 @@ def main():
     summary_lines.append("EXTENSION 6.1 - LOGISTIC REGRESSION TRAINING (DATASET-SPECIFIC)")
     summary_lines.append("=" * 80)
     
-    # Dictionary to store all trained models: {matcher_dataset: LR_model}
+    # Dictionary structure for storing trained logistic regression models indexed by matcher-dataset pairs
     models = {}
     
     for dataset in training_datasets:
@@ -54,7 +54,7 @@ def main():
         for matcher in matchers:
             print(f"\n  Matcher: {matcher}")
             
-            # Load data from inliers_analysis with dataset-specific name
+            # Retrieve inlier correspondence data from precomputed dataset-specific analysis results
             pkl_path = inliers_analysis_dir / f"inliers_{matcher}_{dataset}.pkl"
             
             if not pkl_path.exists():
@@ -72,7 +72,7 @@ def main():
             
             print(f"  Loaded {len(X)} samples")
             
-            # Split into train/validation
+            # Partition dataset into stratified training and validation subsets
             X_train, X_val, y_train, y_val = train_test_split(
                 X, y, 
                 test_size=(1 - train_val_split),
@@ -80,25 +80,25 @@ def main():
                 stratify=y
             )
 
-            # Train
+            # Train logistic regression classifier on training subset
             print(f"  Training LogisticRegression...")
             lr = LogisticRegression(random_state=42, max_iter=1000)
             
-            # Reshape for sklearn (needs 2D input)
+            # Reshape feature vectors to sklearn-compatible 2D matrix format
             X_train_reshaped = X_train.reshape(-1, 1)
             X_val_reshaped = X_val.reshape(-1, 1)
             
             lr.fit(X_train_reshaped, y_train)
             
-            # Evaluate on validation set
+            # Assess model performance on independent validation set via probabilistic predictions
             y_pred_proba = lr.predict_proba(X_val_reshaped)[:, 1]
             metrics = compute_auprc_and_accuracy(y_val, y_pred_proba)
    
-            # Store model with dataset_specific key
+            # Persist trained classifier using dataset-specific composite identifier
             model_key = f"{matcher}_{dataset}"
             models[model_key] = lr
             
-            # Add to summary
+            # Compile comprehensive training and validation statistics for final report
             summary_lines.append(f"\n{'─'*80}")
             summary_lines.append(f"DATASET: {dataset} | MATCHER: {matcher}")
             summary_lines.append(f"{'─'*80}")
@@ -112,13 +112,13 @@ def main():
             summary_lines.append(f"AUC-ROC: {metrics['auc_roc']:.4f}")
             summary_lines.append(f"Accuracy: {metrics['accuracy']:.4f}")
     
-    # Save all models
+    # Serialize all trained classifier models to persistent storage
     models_path = output_dir / "lr_models.pkl"
     with open(models_path, 'wb') as f:
         pickle.dump(models, f)
     print(f"\n\nAll models saved: {models_path}")
     
-    # Save summary
+    # Serialize comprehensive analysis summary to persistent text format
     summary_lines.append(f"\n{'='*80}")
     summary_path = output_dir / "validation_metrics.txt"
     with open(summary_path, 'w', encoding='utf-8') as f:
