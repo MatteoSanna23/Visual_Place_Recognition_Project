@@ -155,7 +155,7 @@ def main():
                 time_saved_sec = num_easy * timing_data['avg_time_per_query']
                 time_saved_pct = time_saved_sec / timing_data['total_time']
                 
-                score = score_weight_accuracy * accuracy_on_easy + (1 - score_weight_accuracy) * time_saved_pct
+                score = score_weight_accuracy * accuracy_on_easy + (1 - score_weight_accuracy) * (19/20) * time_saved_pct
                 
                 if score > best_score:
                     best_score = score
